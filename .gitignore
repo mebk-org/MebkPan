@@ -12,3 +12,4 @@ app/src/test/java/com/mebk/pan/ExampleUnitTest.java
 gradle/wrapper/gradle-wrapper.jar
 gradlew
 *.bat
+app/proguard-rules.pro
