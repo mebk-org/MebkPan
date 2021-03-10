@@ -1,0 +1,14 @@
+*.iml
+.gradle
+/local.properties
+/.idea/*
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+app/src/androidTest/java/com/mebk/pan/ExampleInstrumentedTest.java
+app/src/test/java/com/mebk/pan/ExampleUnitTest.java
+gradle/wrapper/gradle-wrapper.jar
+gradlew
+*.bat
