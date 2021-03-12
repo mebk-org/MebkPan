@@ -7,10 +7,10 @@
 /captures
 .externalNativeBuild
 .cxx
-app/src/androidTest/java/com/mebk/pan/ExampleInstrumentedTest.java
-app/src/test/java/com/mebk/pan/ExampleUnitTest.java
+app/src/androidTest/*
+app/src/test/*
 gradle/wrapper/gradle-wrapper.jar
 gradlew
 *.bat
 app/proguard-rules.pro
-app/src/androidTest/java/com/mebk/pan/utils/HttpConfigure.kt
+app/src/main/java/com/mebk/pan/utils/HttpConfigure.kt
