@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">MebkPan</string>
     <string name="title_activity_login">LoginActivity</string>
+
+<!--    左侧菜单栏-->
+    <string name="Settings">设置</string>
+    <string name="Help">意见与反馈</string>
+<!--    底部导航栏-->
+    <string name="File">文件</string>
+    <string name="Img">相册</string>
 </resources>
