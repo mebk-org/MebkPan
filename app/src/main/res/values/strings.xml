@@ -8,4 +8,6 @@
     <!--    底部导航栏-->
     <string name="File">文件</string>
     <string name="Img">相册</string>
+    <string name="email">邮箱</string>
+    <string name="pwd">密码</string>
 </resources>
