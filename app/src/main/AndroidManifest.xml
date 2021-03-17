@@ -14,9 +14,9 @@
         <activity android:name=".LoginActivity">
 
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:logo="@mipmap/communist">
+        <activity android:name=".MainActivity"
+            android:logo="@mipmap/communist"
+              >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

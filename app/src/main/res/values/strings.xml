@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">MebkPan</string>
-
     <string name="login">登录</string>
 
     <!--    左侧菜单栏-->
