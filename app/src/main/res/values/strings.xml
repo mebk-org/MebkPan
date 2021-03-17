@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MebkPan</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="login">登录</string>
 </resources>
