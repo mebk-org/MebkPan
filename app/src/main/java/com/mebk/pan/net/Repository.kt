@@ -25,9 +25,9 @@ class Repository() {
                 .loginApi(requestBody)
         LogUtil.err(this::class.java, response.body().toString())
 
-        if (response.code() == 200) {
+        if (response.code() == 200 && response.code() == 0) {
             val cookieMap = response.headers().toMultimap()
-            retrofitClient.cookies= cookieMap["set-cookie"]!!
+            retrofitClient.cookies = cookieMap["set-cookie"]!!
         }
 
         return response

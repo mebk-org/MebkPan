@@ -7,12 +7,13 @@
     tools:context=".LoginActivity">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/loginActivity_username_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="64dp"
+        android:focusableInTouchMode="false"
         android:paddingStart="-10dp"
         app:boxBackgroundMode="none"
         app:boxCollapsedPaddingTop="6dp"
@@ -30,19 +31,20 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
+        android:id="@+id/loginActivity_pwd_textInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="64dp"
+        android:focusableInTouchMode="false"
         android:hint="@string/pwd"
         android:paddingStart="-10dp"
         app:boxBackgroundMode="none"
         app:boxCollapsedPaddingTop="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/loginActivity_username_textInputLayout"
         app:passwordToggleDrawable="@drawable/password_visible_invisible"
         app:passwordToggleEnabled="true">
 
@@ -60,7 +62,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/login"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+        app:layout_constraintEnd_toEndOf="@+id/loginActivity_pwd_textInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/loginActivity_pwd_textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/loginActivity_pwd_textInputLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>
