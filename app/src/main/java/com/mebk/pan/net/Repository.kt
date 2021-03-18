@@ -1,6 +1,7 @@
 package com.mebk.pan.net
 
 import com.google.gson.JsonObject
+import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.utils.HttpConfigure
 import com.mebk.pan.utils.LogUtil
@@ -8,7 +9,6 @@ import com.mebk.pan.utils.RetrofitClient
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.Retrofit
 
 class Repository() {
     private var retrofitClient = RetrofitClient()
@@ -32,4 +32,14 @@ class Repository() {
 
         return response
     }
+
+    //获取网盘文件
+    suspend fun getDirectory():Response<DirectoryDto>{
+        val response = retrofit.create(WebService::class.java)
+                .getDirectoryApi()
+        LogUtil.err(this::class.java, response.body().toString())
+
+        return response
+    }
+
 }

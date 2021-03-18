@@ -11,6 +11,8 @@
     <color name="colorPrimaryDark">#ECECEC</color>
     <color name="colorAccent">#ECECEC</color>
     <color name="textColor">#AD92C2</color>
+    <color name="communism">#DC2913</color>
+    <color name="communism_clink">#73524D</color>
     <color name="verifyLoginColor">#322F50</color>
     <color name="transparent">#00000000</color><!--透明色 -->
     <color name="half_white">#7FFFFFFF</color><!--白色 -->
