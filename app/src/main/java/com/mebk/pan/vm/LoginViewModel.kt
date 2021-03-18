@@ -9,24 +9,28 @@ import com.mebk.pan.dtos.UserDto
 import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
+    companion object {
+        const val LOGIN_SUCCESS = 0
+        const val LOGIN_FAILED = 40001
+    }
+
     private val application = getApplication<MyApplication>()
-    lateinit var userInfo: MutableLiveData<UserDto>
-    var loginInfo = MutableLiveData<String>().also {
-        it.value = "登陆失败"
+    private lateinit var userInfo: MutableLiveData<UserDto>
+    var loginInfo = MutableLiveData<Map<String, String>>().also {
     }
 
     fun login(username: String, pwd: String, captchaCode: String) = viewModelScope.launch {
-        var response = application.repository.getUser(username, pwd, captchaCode)
+        val response = application.repository.getUser(username, pwd, captchaCode)
         if (response.code() == 200) {
             when (response.body()!!.code) {
-                0 -> {
-                    loginInfo.value = "登陆成功"
+                LOGIN_SUCCESS -> {
+                    loginInfo.value = mapOf("code" to "0", "msg" to "登录成功")
                     userInfo = MutableLiveData<UserDto>().also {
                         it.value = response.body()
                     }
                 }
                 else -> {
-                    loginInfo.value = response.body()!!.msg
+                    loginInfo.value = mapOf("code" to response.body()!!.code.toString(), "msg" to response.body()!!.msg)
                 }
             }
         }

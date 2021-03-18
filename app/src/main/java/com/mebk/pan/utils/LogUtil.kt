@@ -6,7 +6,9 @@ class LogUtil {
     companion object {
 
         fun <T> err(clazz: Class<T>, err: String) {
-            Log.e(clazz.name, "err:$err ")
+            if (Configure.CONFIGURE_DEBUG) {
+                Log.e(clazz.name, "err:$err ")
+            }
         }
 
     }
