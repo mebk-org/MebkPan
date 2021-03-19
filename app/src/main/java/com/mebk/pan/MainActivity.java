@@ -1,38 +1,51 @@
 package com.mebk.pan;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mebk.pan.aa.FragAdapter;
 import com.mebk.pan.home.Main_farment_IMG;
 import com.mebk.pan.home.Main_fragment_File;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-    FrameLayout frameLayout;
-    Toolbar toolbar;
-
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    BottomNavigationView navView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //将ToolBar对象设置为当前Activity的ActionBar
-        List<Fragment> fragments=new ArrayList<Fragment>();
-        fragments.add(new Main_fragment_File());
-        fragments.add(new Main_farment_IMG());
-        FragAdapter adapter = new FragAdapter(getSupportFragmentManager(), fragments);
+        navView=findViewById(R.id.nav_view);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_fragment_file, R.id.nav_fragment_img)
+                .build();
 
-        //设定适配器
-        ViewPager vp = (ViewPager)findViewById(R.id.viewpager);
-        vp.setAdapter(adapter);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }

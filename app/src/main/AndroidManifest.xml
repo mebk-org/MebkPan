@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mebk.pan">
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -11,9 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MebkPan">
-        <activity android:name=".LoginActivity">
-
-        </activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:logo="@mipmap/communist">
@@ -24,5 +21,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
