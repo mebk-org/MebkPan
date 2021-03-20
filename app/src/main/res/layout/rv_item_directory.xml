@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="64dp">
 
     <ImageView
         android:id="@+id/rv_item_directory_thumbnail_iv"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:scaleType="center"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,15 +19,16 @@
     <TextView
         android:id="@+id/rv_item_directory_filename_tv"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:gravity="center|start"
-        android:maxLines="3"
+        android:maxLines="2"
         android:textColor="@color/gray"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/rv_item_directory_time_tv"
         app:layout_constraintEnd_toStartOf="@+id/rv_item_directory_choose_iv"
         app:layout_constraintStart_toEndOf="@+id/rv_item_directory_thumbnail_iv"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,14 +38,12 @@
         android:id="@+id/rv_item_directory_time_tv"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:gravity="center|start"
         android:textColor="@color/gray_8f"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/rv_item_directory_bottom_view"
         app:layout_constraintStart_toStartOf="@+id/rv_item_directory_filename_tv"
-        app:layout_constraintTop_toBottomOf="@+id/rv_item_directory_filename_tv"
         tools:text="2021-03-19 15:02" />
 
     <TextView
