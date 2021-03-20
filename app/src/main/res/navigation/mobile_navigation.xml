@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_fragment_file"
-        android:name="com.mebk.pan.home.Main_fragment_File"
+        android:name="com.mebk.pan.home.FragmentDirectory"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home_file" />
+        tools:layout="@layout/fragment_directory" />
 
     <fragment
         android:id="@+id/nav_fragment_img"
