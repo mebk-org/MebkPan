@@ -1,5 +1,6 @@
 package com.mebk.pan
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -33,24 +34,50 @@ class LoginActivity : AppCompatActivity() {
             loginActivity_pwd_textInputLayout.error = null
         }
 
-        loginActivity_login_iv.setOnClickListener {
-            if (TextUtils.isEmpty(loginActivity_username_et.text.toString())) {
-                loginActivity_username_textInputLayout.error = "请输入邮箱"
-                errAnimation(loginActivity_username_textInputLayout)
-            } else if (TextUtils.isEmpty(loginActivity_pwd_et.text.toString())) {
-                loginActivity_pwd_textInputLayout.error = "请输入密码"
-                errAnimation(loginActivity_pwd_textInputLayout)
-            } else {
-                //通过viewModel执行登录
-                viewModel.login(loginActivity_username_et.text.toString(),
-                        loginActivity_pwd_et.text.toString(),
-                        "")
+        loginActivity_login_btn.setOnClickListener {
+
+            when {
+                TextUtils.isEmpty(loginActivity_username_et.text.toString()) -> {
+                    loginActivity_username_textInputLayout.error = "请输入邮箱"
+                    errAnimation(loginActivity_username_textInputLayout)
+                }
+                TextUtils.isEmpty(loginActivity_pwd_et.text.toString()) -> {
+                    loginActivity_pwd_textInputLayout.error = "请输入密码"
+                    errAnimation(loginActivity_pwd_textInputLayout)
+                }
+                else -> {
+                    loginActivity_login_btn.setBackgroundColor(resources.getColor(R.color.communism_clink, null))
+                    loginActivity_login_btn.isClickable = false
+                    loginActivity_login_btn.text = "登录中，请稍后"
+
+                    //通过viewModel执行登录
+                    viewModel.login(loginActivity_username_et.text.toString(),
+                            loginActivity_pwd_et.text.toString(),
+                            "")
+                }
             }
         }
 
         //使用vm观察是否登录成功
         viewModel.loginInfo.observe(this, Observer {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            when (it["code"]) {
+                "0" -> {
+                    Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show()
+                    //TODO 传递用户信息
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
+                else -> {
+                    loginActivity_login_btn.isClickable = true
+                    loginActivity_login_btn.setBackgroundColor(resources.getColor(R.color.communism, null))
+                    loginActivity_login_btn.text = resources.getString(R.string.login)
+
+                    Toast.makeText(this, it["msg"], Toast.LENGTH_LONG).show()
+                    loginActivity_username_textInputLayout.error = it["msg"]
+
+                    errAnimation(loginActivity_username_textInputLayout)
+                }
+            }
         })
 
 

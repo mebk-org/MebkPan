@@ -40,7 +40,7 @@ public class Main_farment_IMG extends Fragment {
      */
     public Main_farment_IMG() {
     }
-
+  
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
