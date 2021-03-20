@@ -4,5 +4,5 @@ import android.app.Application
 import com.mebk.pan.net.Repository
 
 class MyApplication: Application() {
-    val repository by lazy { Repository() }
+    val repository by lazy { Repository(applicationContext ) }
 }

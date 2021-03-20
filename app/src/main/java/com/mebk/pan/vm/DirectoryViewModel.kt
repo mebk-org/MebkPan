@@ -13,7 +13,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val application = getApplication<MyApplication>()
 
-    private lateinit var directoryInfo: MutableLiveData<List<DirectoryDto.Object>>
+    var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>().also {}
+
     private var requestInfo = MutableLiveData<String>().also {
         it.value = "获取失败"
     }
@@ -23,12 +24,10 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         if (response.code() == 200) {
             requestInfo.value = "获取成功"
             if (response.body()!!.code == 0) {
-                directoryInfo = MutableLiveData<List<DirectoryDto.Object>>().also {
-                    it.value = response.body()!!.data.objects
-                }
-            } else {
-                requestInfo.value = response.body()!!.msg
+                directoryInfo.value = response.body()!!.data.objects as MutableList
             }
+        } else {
+            requestInfo.value = response.body()!!.msg
         }
     }
 }

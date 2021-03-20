@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class FragAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> mFragments;
+    private List<Fragment> mFragments,arr;
 
     public FragAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);

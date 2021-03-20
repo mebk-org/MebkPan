@@ -1,5 +1,7 @@
 package com.mebk.pan.net
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.JsonObject
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.UserDto
@@ -10,8 +12,8 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
 
-class Repository() {
-    private var retrofitClient = RetrofitClient()
+class Repository(val context: Context) {
+    private var retrofitClient = RetrofitClient(context)
     private var retrofit = retrofitClient.initRetrofit()
 
 
@@ -25,16 +27,26 @@ class Repository() {
                 .loginApi(requestBody)
         LogUtil.err(this::class.java, response.body().toString())
 
-        if (response.code() == 200 && response.code() == 0) {
-            val cookieMap = response.headers().toMultimap()
-            retrofitClient.cookies = cookieMap["set-cookie"]!!
+        if (response.code() == 200 && response.body()!!.code == 0) {
+
+            val sharedPref = context.getSharedPreferences("userSP", Context.MODE_PRIVATE)
+            var set = hashSetOf("")
+            with(sharedPref.edit()) {
+                set.clear()
+                for (cookie in response.headers().toMultimap().get("set-cookie")!!) {
+                    LogUtil.err(this::class.java, cookie)
+                    set.add(cookie)
+                }
+                putStringSet("cookie", set)
+                commit()
+            }
         }
 
         return response
     }
 
     //获取网盘文件
-    suspend fun getDirectory():Response<DirectoryDto>{
+    suspend fun getDirectory(): Response<DirectoryDto> {
         val response = retrofit.create(WebService::class.java)
                 .getDirectoryApi()
         LogUtil.err(this::class.java, response.body().toString())
