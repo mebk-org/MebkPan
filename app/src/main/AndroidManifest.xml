@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mebk.pan">
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -24,5 +23,7 @@
 
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
