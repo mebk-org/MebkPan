@@ -1,9 +1,12 @@
 package com.mebk.pan.utils
 
+import java.text.DecimalFormat
+
 class ToolUtils {
     companion object {
 
         fun sizeChange(size: Int): String {
+            val df = DecimalFormat("#.00")
             when {
                 size < 1024 -> {
                     // 单位B
@@ -11,18 +14,18 @@ class ToolUtils {
                 }
                 size < 1024 * 1024 -> {
                     //单位kb
-                    val kb=size/1024f
-                    return "$kb KB"
+                    val kb = size / 1024f
+                    return "${df.format(kb)} KB"
                 }
                 size < 1024 * 1024 * 1024 -> {
                     //单位mb
-                    val mb=size/1024f/1024f
-                    return "$mb MB"
+                    val mb = size / 1024f / 1024f
+                    return "${df.format(mb)} MB"
                 }
                 else -> {
                     //单位gb
-                    val gb=size/1024f/1024f/1024f
-                    return "$gb GB"
+                    val gb = size / 1024f / 1024f / 1024f
+                    return "${df.format(gb)} GB"
                 }
             }
         }
