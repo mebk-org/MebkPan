@@ -28,7 +28,7 @@ class FragmentDirectory : Fragment() {
 
         rv = view.findViewById(R.id.fragment_directory_rv)
         sr = view.findViewById(R.id.fragment_directory_sr)
-
+        sr.setProgressViewEndTarget(true, 300)
         viewModel.directory()
 
         sr.isRefreshing = true
@@ -46,7 +46,7 @@ class FragmentDirectory : Fragment() {
 
 
         sr.setOnRefreshListener {
-            val refreshDto = DirectoryDto.Object("2021-03-21 11:29:40", "0", "正在刷新...", "", "", 0, "refresh")
+            val refreshDto = DirectoryDto.Object(viewModel.lastRefreshTime.value!!, "0", "正在刷新...", "", "", 0, "refresh")
             list.add(0, refreshDto)
             adapter?.notifyItemInserted(0)
             sr.isRefreshing = true

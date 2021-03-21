@@ -8,6 +8,7 @@ import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.utils.HttpConfigure
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
+import com.mebk.pan.utils.SharePreferenceUtils
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -29,7 +30,7 @@ class Repository(val context: Context) {
 
         if (response.code() == 200 && response.body()!!.code == 0) {
 
-            val sharedPref = context.getSharedPreferences("userSP", Context.MODE_PRIVATE)
+            val sharedPref = SharePreferenceUtils.getSharePreference(context)
             var set = hashSetOf("")
             with(sharedPref.edit()) {
                 set.clear()
@@ -37,7 +38,7 @@ class Repository(val context: Context) {
                     LogUtil.err(this::class.java, cookie)
                     set.add(cookie)
                 }
-                putStringSet("cookie", set)
+                putStringSet(SharePreferenceUtils.SP_KEY_COOKIE, set)
                 commit()
             }
         }
