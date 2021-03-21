@@ -5,6 +5,7 @@ import java.text.DecimalFormat
 class ToolUtils {
     companion object {
 
+        //kb转换
         fun sizeChange(size: Int): String {
             val df = DecimalFormat("#.00")
             when {

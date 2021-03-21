@@ -17,4 +17,5 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="last_refresh_time">上次刷新时间</string>
 </resources>

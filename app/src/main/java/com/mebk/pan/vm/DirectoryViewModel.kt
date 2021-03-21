@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.utils.LogUtil
 import kotlinx.coroutines.launch
 
 class DirectoryViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,4 +31,5 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             requestInfo.value = response.body()!!.msg
         }
     }
+
 }
