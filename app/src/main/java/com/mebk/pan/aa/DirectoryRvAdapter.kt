@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.ToolUtils
 
 class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryDto.Object>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -70,14 +70,18 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         when (holder) {
             is DirectoryViewHolder -> {
 
+//                LogUtil.err(this.javaClass, list[position].size.toString())
                 holder.filenameTv.text = list[position].name
                 Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
                 holder.timeTv.text = list[position].date
-                holder.sizeTv.text = ToolUtils.sizeChange(list[position].size)
                 holder.itemView.tag = list[position]
+                if ("dir" != list[position].type) {
+                    holder.sizeTv.text = ToolUtils.sizeChange(list[position].size)
+                }else{
+                    holder.sizeTv.visibility=GONE
+                }
             }
             is RefreshViewHolder -> {
-                LogUtil.err(this.javaClass, list[position].name)
                 holder.refreshMsgTv.text = list[position].name
                 holder.lastTimeTv.text = list[position].date
             }
