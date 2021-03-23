@@ -6,7 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.SharePreferenceUtils
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DirectoryViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,6 +22,9 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     private var requestInfo = MutableLiveData<String>().also {
         it.value = "获取失败"
     }
+    var lastRefreshTime = MutableLiveData<String>().also {
+        it.value = getLastRefreshTime()
+    }
 
     fun directory() = viewModelScope.launch {
         val response = application.repository.getDirectory()
@@ -25,9 +32,24 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             requestInfo.value = "获取成功"
             if (response.body()!!.code == 0) {
                 directoryInfo.value = response.body()!!.data.objects as MutableList
+                //获取文件时也要更新刷新时间
+                lastRefreshTime.value = getLastRefreshTime()
             }
         } else {
             requestInfo.value = response.body()!!.msg
         }
     }
+
+    private fun getLastRefreshTime(): String {
+        val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+        //获取当前时间
+        val date = simpleDateFormat.format(Date(System.currentTimeMillis()))
+        with(sp.edit()) {
+            putString(com.mebk.pan.utils.SharePreferenceUtils.SP_KEY_REFRESH_TIME, date)
+            commit()
+        }
+        return date
+    }
+
 }

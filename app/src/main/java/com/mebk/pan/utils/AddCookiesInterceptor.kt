@@ -9,8 +9,8 @@ class AddCookiesInterceptor(var context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         LogUtil.err(this::class.java, "添加cookie")
         var builder = chain.request().newBuilder()
-        val sharedPreferences = context.getSharedPreferences("userSP", Context.MODE_PRIVATE)
-        val set = sharedPreferences.getStringSet("cookie", mutableSetOf())
+        val sharedPreferences = SharePreferenceUtils.getSharePreference(context)
+        val set = sharedPreferences.getStringSet(SharePreferenceUtils.SP_KEY_COOKIE, mutableSetOf())
 
         set?.let {
             if (set.size != 0) {
