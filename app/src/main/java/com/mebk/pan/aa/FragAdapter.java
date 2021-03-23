@@ -1,34 +1,40 @@
 package com.mebk.pan.aa;
 
-import org.jetbrains.annotations.NotNull;
+import com.mebk.pan.MainActivity;
+import com.mebk.pan.R;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
-public class FragAdapter extends FragmentPagerAdapter {
+public class FragAdapter  extends FragmentStateAdapter {
 
     private List<Fragment> mFragments;
 
-    public FragAdapter(FragmentManager fm, List<Fragment> fragments) {
-        super(fm);
-        // TODO Auto-generated constructor stub
-        mFragments=fragments;
+    public FragAdapter(@NonNull FragmentActivity fragmentActivity, List<Fragment> fragments) {
+        super(fragmentActivity);
+        this.mFragments = fragments;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Fragment getItem(int arg0) {
-        // TODO Auto-generated method stub
-        return mFragments.get(arg0);
+    public Fragment createFragment(int position) {
+        return mFragments.get(position);
     }
 
     @Override
-    public int getCount() {
-        // TODO Auto-generated method stub
+    public int getItemCount() {
+
         return mFragments.size();
     }
-
 }
