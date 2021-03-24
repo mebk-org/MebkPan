@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class Main_fragment_File extends Fragment {
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         AtomicReference<View> view= new AtomicReference<>(inflater.inflate(R.layout.fragment_home_file, container, false));

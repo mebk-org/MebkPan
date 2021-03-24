@@ -22,12 +22,15 @@ public class DummyContent {
      * A map of sample (dummy) items, by ID.
      */
     public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
-
+    /**
+     * frament_img内的item数量控制
+     */
     private static final int COUNT = 25;
 
     static {
         // Add some sample items.
-        for (int i = 1; i <= COUNT+1; i++) {
+        for (int i = 1; i <= COUNT; i++) {
+            //往里面添加内容
             addItem(createDummyItem(i));
         }
     }

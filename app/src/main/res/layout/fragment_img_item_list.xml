@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/list"
+    android:name="com.mebk.pan.home.Main_farment_IMG"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutManager="LinearLayoutManager"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:context=".home.Main_farment_IMG"
+    tools:listitem="@layout/fragment_img_item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" />

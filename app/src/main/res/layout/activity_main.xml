@@ -7,8 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
@@ -49,7 +47,20 @@
             android:layout_above="@id/div_tab_bar"
             />
 
-
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_create_document"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/rg_tab_bar"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|center|end"
+            android:layout_margin="30dp"
+            android:clickable="true"
+            android:scrollbarSize="30dp"
+            android:src="@drawable/ic_baseline_arrow_upward_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
     </RelativeLayout>
     <include
         layout="@layout/fragment_main_menu"

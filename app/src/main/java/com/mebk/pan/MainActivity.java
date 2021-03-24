@@ -18,15 +18,18 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mebk.pan.aa.FragAdapter;
+import com.mebk.pan.ab.TransFormer;
 import com.mebk.pan.home.Main_farment_IMG;
 import com.mebk.pan.home.Main_fragment_File;
 
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             @Override
             public void onPageSelected(int position) {
-                //获取页面id
+                //获取页面id并传下去
                 msetRb(position);
                 super.onPageSelected(position);
             }
@@ -76,18 +79,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+    /**
+     *创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.setings,menu); //通过getMenuInflater()方法得到MenuInflater对象，再调用它的inflate()方法就可以给当前活动创建菜单了，第一个参数：用于指定我们通过哪一个资源文件来创建菜单；第二个参数：用于指定我们的菜单项将添加到哪一个Menu对象当中。
+        return true; // true：允许创建的菜单显示出来，false：创建的菜单将无法显示。
+    }
 
+    /**
+     *菜单的点击事件
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.list_item:
+                Toast.makeText(this, "你点击了 添加！", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
     private void inti() {
         radioButton_file=findViewById(R.id.rb_file);
         radioButton_file.setOnClickListener(this);
         radioButton_img=findViewById(R.id.rb_img);
         radioButton_img.setOnClickListener(this);
+
     }
 
+    /**
+     * 得到position并进行处理
+     * @param position
+     */
     private void msetRb(int position) {
         switch (position)
         {
             case 0:
+                //点亮图标
                 radioButton_file.setChecked(true);
                 break;
             case  1:
@@ -100,32 +133,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case  R.id.rb_file :
-                    v_pager.setCurrentItem(0);
+                v_pager.setCurrentItem(0);
             break;
             case  R.id.rb_img :
                 v_pager.setCurrentItem(1);
+                break;
         }
     }
-
-    class TransFormer implements ViewPager2.PageTransformer {
-
-        @Override
-        public void transformPage(@NonNull View page, float position) {
-
-            if (position >= -1.0f && position <= 0.0f) {
-                //控制左侧滑入或者滑出的缩放比例
-                page.setScaleX(1 + position * 0.1f);
-                page.setScaleY(1 + position * 0.2f);
-            } else if (position > 0.0f && position < 1.0f) {
-                //控制右侧滑入或者滑出的缩放比例
-                page.setScaleX(1 - position * 0.1f);
-                page.setScaleY(1 - position * 0.2f);
-            } else {
-                //控制其他View缩放比例
-                page.setScaleX(0.9f);
-                page.setScaleY(0.8f);
-            }
-        }
-    }
-
 }
