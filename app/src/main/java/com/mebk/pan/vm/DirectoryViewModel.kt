@@ -1,6 +1,7 @@
 package com.mebk.pan.vm
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -17,12 +18,14 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val application = getApplication<MyApplication>()
 
+    var directoryList = mutableListOf<DirectoryDto.Object>()
+
     var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>().also {}
 
     private var requestInfo = MutableLiveData<String>().also {
         it.value = "获取失败"
     }
-    var lastRefreshTime = MutableLiveData<String>().also {
+    var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
 
@@ -31,15 +34,18 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         if (response.code() == 200) {
             requestInfo.value = "获取成功"
             if (response.body()!!.code == 0) {
-                directoryInfo.value = response.body()!!.data.objects as MutableList
+                directoryList = response.body()!!.data.objects as MutableList
+                directoryInfo.value = directoryList
+
                 //获取文件时也要更新刷新时间
-                lastRefreshTime.value = getLastRefreshTime()
+                lastRefreshTimeInfo.value = getLastRefreshTime()
             }
         } else {
             requestInfo.value = response.body()!!.msg
         }
     }
 
+    //获取刷新时间
     private fun getLastRefreshTime(): String {
         val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)

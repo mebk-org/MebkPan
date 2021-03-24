@@ -55,4 +55,12 @@ class Repository(val context: Context) {
         return response
     }
 
+    //获取文件夹下内容
+    suspend fun getInternalFile(path: String): Response<DirectoryDto> {
+        val response = retrofit.create(WebService::class.java)
+                .getInternalFile(HttpConfigure.internalFile(path))
+        LogUtil.err(this::class.java, response.body().toString())
+
+        return response
+    }
 }

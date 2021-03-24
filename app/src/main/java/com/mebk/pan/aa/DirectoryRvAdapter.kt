@@ -26,7 +26,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         private const val TYPE_REFRESH = 1
     }
 
-    private fun setOnClickListener(clickListener: ((Int) -> Unit)) {
+    fun setOnClickListener(clickListener: ((Int) -> Unit)) {
         this.clickListener = clickListener
     }
 
@@ -74,11 +74,11 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
                 holder.filenameTv.text = list[position].name
                 Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
                 holder.timeTv.text = list[position].date
-                holder.itemView.tag = list[position]
+                holder.itemView.tag = position
                 if ("dir" != list[position].type) {
                     holder.sizeTv.text = ToolUtils.sizeChange(list[position].size)
-                }else{
-                    holder.sizeTv.visibility=GONE
+                } else {
+                    holder.sizeTv.visibility = GONE
                 }
             }
             is RefreshViewHolder -> {
