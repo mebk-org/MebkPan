@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -49,7 +50,6 @@ class FragmentInternalFile : Fragment() {
         rv.adapter = adapter
 
         adapter!!.setOnClickListener {
-//            LogUtil.err(this.javaClass, "name=${viewModel.flieInfo.value!![it].name},path=${viewModel.flieInfo.value!![it].path}")
             viewModel.internalFile(viewModel.flieInfo.value!![it].name, viewModel.flieInfo.value!![it].path)
         }
 
@@ -63,6 +63,21 @@ class FragmentInternalFile : Fragment() {
             sr.isRefreshing = false
         })
 
+        //拦截返回事件
+        val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+
+            if (!viewModel.back()) {
+                //todo
+                LogUtil.err(this.javaClass, "拦截")
+            } else {
+                LogUtil.err(this.javaClass, "不拦截")
+            }
+        }
+
+        viewModel.stackSize.observe(viewLifecycleOwner, Observer {
+            LogUtil.err(this.javaClass, "stack size=$it")
+            callBack.isEnabled = it > 1
+        })
 
         return view
     }
