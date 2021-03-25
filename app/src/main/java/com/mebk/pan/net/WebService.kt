@@ -5,10 +5,7 @@ import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.utils.HttpConfigure
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 
 
 interface WebService {
@@ -21,4 +18,7 @@ interface WebService {
     @GET(HttpConfigure.API_DIRECTORY)
     suspend fun getDirectoryApi(): Response<DirectoryDto>
 
+    //获取文件夹下内容
+    @GET("{path}")
+    suspend fun getInternalFile(@Path("path") path: String): Response<DirectoryDto>
 }
