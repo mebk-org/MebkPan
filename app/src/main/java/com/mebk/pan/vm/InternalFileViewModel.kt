@@ -18,11 +18,15 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
 
     //获取文件夹下内容
     fun internalFile(name: String, path: String = "/") = viewModelScope.launch {
+        val url = if (path != "/") {
+            "$path/$name"
+        } else {
+            path + name
+        }
 
-        val path = path + name
-        LogUtil.err(this.javaClass, path)
+        LogUtil.err(this.javaClass, url)
 
-        val response = application.repository.getInternalFile(path)
+        val response = application.repository.getInternalFile(url)
         if (response.code() == 200) {
             requestInfo.value = "获取成功"
             if (response.body()!!.code == 0) {

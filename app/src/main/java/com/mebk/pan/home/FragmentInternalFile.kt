@@ -40,7 +40,7 @@ class FragmentInternalFile : Fragment() {
             findNavController().navigate(R.id.action_fragment_internal_file_to_fragment_directory)
         } else {
             sr.isRefreshing = true
-            viewModel.internalFile(name!!, path!!)
+            viewModel.internalFile(name!!)
         }
 
 
@@ -48,10 +48,15 @@ class FragmentInternalFile : Fragment() {
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
 
+        adapter!!.setOnClickListener {
+//            LogUtil.err(this.javaClass, "name=${viewModel.flieInfo.value!![it].name},path=${viewModel.flieInfo.value!![it].path}")
+            viewModel.internalFile(viewModel.flieInfo.value!![it].name, viewModel.flieInfo.value!![it].path)
+        }
+
 
 
         viewModel.flieInfo.observe(viewLifecycleOwner, Observer {
-            LogUtil.err(this.javaClass,"observe")
+            LogUtil.err(this.javaClass, "observe")
             list.clear()
             list.addAll(it)
             adapter?.notifyDataSetChanged()
