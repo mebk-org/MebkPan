@@ -53,7 +53,7 @@ class FragmentDirectory : Fragment() {
             list.add(0, refreshDto)
             adapter?.notifyItemInserted(0)
             sr.isRefreshing = true
-            viewModel.directory()
+            viewModel.directory(true)
         }
 
         adapter?.setOnClickListener {

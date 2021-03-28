@@ -9,11 +9,11 @@ import com.mebk.pan.database.daos.UserDao
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.database.entity.User
 
-@Database(entities = arrayOf(User::class), version = 1)
+@Database(entities = [User::class,File::class], version = 1)
 abstract class DataBase() : RoomDatabase() {
 
     abstract fun userDao(): UserDao
-//    abstract fun fileDao(): FileDao
+    abstract fun fileDao(): FileDao
 
     companion object {
         //通过单例模式获取实例

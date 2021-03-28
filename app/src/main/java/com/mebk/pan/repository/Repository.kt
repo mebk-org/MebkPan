@@ -1,6 +1,7 @@
 package com.mebk.pan.repository
 
 import android.content.Context
+import android.text.TextUtils
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
@@ -27,13 +28,12 @@ class Repository(val context: Context) {
 
 
     suspend fun getUserCookie(uid: String): List<User> {
-
         return database.userDao().getUserCookie(uid)
     }
 
-//    suspend fun getFile(): List<File> {
-//        return database.fileDao().getFile()
-//    }
+    suspend fun getFile(): List<File> {
+        return database.fileDao().getFile()
+    }
 
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Response<UserDto> {
         val jsonObj = JsonObject()
@@ -76,21 +76,21 @@ class Repository(val context: Context) {
                 .getDirectoryApi()
         LogUtil.err(this::class.java, response.body().toString())
 
-//        if (response.code() == 200 && response.body()!!.code == 0) {
-//            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-//
-//            for (file in response.body()!!.data.objects) {
-//                with(database.fileDao()) { insertFile(File(
-//                            file.id,
-//                            file.name,
-//                            file.path,
-//                            file.pic,
-//                            file.size,
-//                            file.type,
-//                            format.parse(file.date).time))
-//                }
-//            }
-//        }
+        if (response.code() == 200 && response.body()!!.code == 0) {
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+
+            for (file in response.body()!!.data.objects) {
+                with(database.fileDao()) { insertFile(File(
+                            file.id,
+                            file.name,
+                            file.path,
+                            file.pic,
+                            file.size,
+                            file.type,
+                            format.parse(file.date).time))
+                }
+            }
+        }
 
 
         return response
