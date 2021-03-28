@@ -6,8 +6,19 @@ import android.content.SharedPreferences
 class SharePreferenceUtils {
 
     companion object {
+        /**
+         * 文件名
+         * */
         const val SP_USER = "userSP"
+
+        /*
+        * key
+        * */
         const val SP_KEY_COOKIE = "cookies"
+
+        const val SP_KEY_LOGIN = "login"
+
+        const val SP_KEY_UID = "uid"
 
         //上次刷新时间
         const val SP_KEY_REFRESH_TIME = "refreshTime"

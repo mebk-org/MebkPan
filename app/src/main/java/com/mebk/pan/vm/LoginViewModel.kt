@@ -19,6 +19,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var loginInfo = MutableLiveData<Map<String, String>>().also {
     }
 
+
     fun login(username: String, pwd: String, captchaCode: String) = viewModelScope.launch {
         val response = application.repository.getUser(username, pwd, captchaCode)
         if (response.code() == 200) {

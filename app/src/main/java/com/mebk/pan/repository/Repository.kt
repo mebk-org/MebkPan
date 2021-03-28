@@ -1,10 +1,15 @@
-package com.mebk.pan.net
+package com.mebk.pan.repository
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.text.TextUtils
 import com.google.gson.JsonObject
+import com.mebk.pan.application.MyApplication
+import com.mebk.pan.database.DataBase
+import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.UserDto
+import com.mebk.pan.net.WebService
 import com.mebk.pan.utils.HttpConfigure
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
@@ -12,11 +17,23 @@ import com.mebk.pan.utils.SharePreferenceUtils
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Repository(val context: Context) {
     private var retrofitClient = RetrofitClient(context)
     private var retrofit = retrofitClient.initRetrofit()
 
+    private var database = DataBase.getDatabase(context)
+
+
+    suspend fun getUserCookie(uid: String): List<User> {
+        return database.userDao().getUserCookie(uid)
+    }
+
+    suspend fun getFile(): List<File> {
+        return database.fileDao().getFile()
+    }
 
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Response<UserDto> {
         val jsonObj = JsonObject()
@@ -30,15 +47,22 @@ class Repository(val context: Context) {
 
         if (response.code() == 200 && response.body()!!.code == 0) {
 
+            MyApplication.isLogin = true
+            with(MyApplication.cookieList) {
+                add(response.headers().toMultimap()["set-cookie"]?.get(0)!!)
+                add(response.headers().toMultimap()["set-cookie"]?.get(1)!!)
+            }
+
+            database.userDao().insertUser(User(response.body()!!.data.id,
+                    response.body()!!.data.nickname,
+                    response.headers().toMultimap()["set-cookie"]?.get(0),
+                    response.headers().toMultimap()["set-cookie"]?.get(1)
+            ))
+
             val sharedPref = SharePreferenceUtils.getSharePreference(context)
-            var set = hashSetOf("")
             with(sharedPref.edit()) {
-                set.clear()
-                for (cookie in response.headers().toMultimap().get("set-cookie")!!) {
-                    LogUtil.err(this::class.java, cookie)
-                    set.add(cookie)
-                }
-                putStringSet(SharePreferenceUtils.SP_KEY_COOKIE, set)
+                putBoolean(SharePreferenceUtils.SP_KEY_LOGIN, true)
+                putString(SharePreferenceUtils.SP_KEY_UID, response.body()!!.data.id)
                 commit()
             }
         }
@@ -51,6 +75,23 @@ class Repository(val context: Context) {
         val response = retrofit.create(WebService::class.java)
                 .getDirectoryApi()
         LogUtil.err(this::class.java, response.body().toString())
+
+        if (response.code() == 200 && response.body()!!.code == 0) {
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+
+            for (file in response.body()!!.data.objects) {
+                with(database.fileDao()) { insertFile(File(
+                            file.id,
+                            file.name,
+                            file.path,
+                            file.pic,
+                            file.size,
+                            file.type,
+                            format.parse(file.date).time))
+                }
+            }
+        }
+
 
         return response
     }

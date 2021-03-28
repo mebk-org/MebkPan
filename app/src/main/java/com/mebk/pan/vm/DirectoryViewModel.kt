@@ -29,19 +29,18 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         it.value = getLastRefreshTime()
     }
 
-    fun directory() = viewModelScope.launch {
-        val response = application.repository.getDirectory()
-        if (response.code() == 200) {
-            requestInfo.value = "获取成功"
-            if (response.body()!!.code == 0) {
-                directoryList = response.body()!!.data.objects as MutableList
-                directoryInfo.value = directoryList
-
-                //获取文件时也要更新刷新时间
-                lastRefreshTimeInfo.value = getLastRefreshTime()
+    fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
+        if (MyApplication.isLogin && !isRefresh) {
+            //从本地数据库读取
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+            val localFileList = application.repository.getFile()
+            for (file in localFileList) {
+                directoryList.add(DirectoryDto.Object(format.format(Date(file.date)), file.id, file.name, file.path, file.pic, file.size, file.type))
             }
+            directoryInfo.value = directoryList
         } else {
-            requestInfo.value = response.body()!!.msg
+            //从网络获取
+            getNetFile()
         }
     }
 
@@ -58,4 +57,21 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         return date
     }
 
+    //获取网络文件
+    private fun getNetFile() = viewModelScope.launch {
+        LogUtil.err(this::class.java, "获取文件")
+        val response = application.repository.getDirectory()
+        if (response.code() == 200) {
+            requestInfo.value = "获取成功"
+            if (response.body()!!.code == 0) {
+                directoryList = response.body()!!.data.objects as MutableList
+                directoryInfo.value = directoryList
+
+                //获取文件时也要更新刷新时间
+                lastRefreshTimeInfo.value = getLastRefreshTime()
+            }
+        } else {
+            requestInfo.value = response.body()!!.msg
+        }
+    }
 }
