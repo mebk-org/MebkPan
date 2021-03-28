@@ -19,7 +19,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 public class FragAdapter  extends FragmentStateAdapter {
 
-    private List<Fragment> mFragments;
+    private List<Fragment> mFragments,arr;
 
     public FragAdapter(@NonNull FragmentActivity fragmentActivity, List<Fragment> fragments) {
         super(fragmentActivity);

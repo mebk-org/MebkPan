@@ -3,19 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_fragment_file">
+    app:startDestination="@+id/fragment_directory">
 
     <fragment
-        android:id="@+id/nav_fragment_file"
-        android:name="com.mebk.pan.home.Main_fragment_File"
+        android:id="@+id/fragment_directory"
+        android:name="com.mebk.pan.home.FragmentDirectory"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home_file" />
+        tools:layout="@layout/fragment_directory" >
+        <action
+            android:id="@+id/action_fragment_directory_to_fragment_internal_file"
+            app:destination="@id/fragment_internal_file" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_fragment_img"
         android:name="com.mebk.pan.home.Main_farment_IMG"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_home_file" />
+    <fragment
+        android:id="@+id/fragment_internal_file"
+        android:name="com.mebk.pan.home.FragmentInternalFile"
+        android:label="FragmentInternalFile" >
+        <argument
+            android:name="path"
+            app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_fragment_internal_file_to_fragment_directory"
+            app:destination="@id/fragment_directory" />
+    </fragment>
 
 
 </navigation>

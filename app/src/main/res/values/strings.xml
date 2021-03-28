@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MebkPan</string>
-    <string name="login">登录</string>
+    <string name="login">开始使用</string>
 
     <!--    左侧菜单栏-->
     <string name="Settings">设置</string>
@@ -21,4 +21,5 @@
     <string name="text_img">相册</string>
 <!--    右上角菜单栏-->
     <string name="list_item">下载列表</string>
+    <string name="last_refresh_time">上次刷新时间</string>
 </resources>
