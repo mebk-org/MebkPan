@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.UserDto
@@ -15,6 +16,8 @@ import com.mebk.pan.utils.SharePreferenceUtils
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Repository(val context: Context) {
     private var retrofitClient = RetrofitClient(context)
@@ -24,9 +27,13 @@ class Repository(val context: Context) {
 
 
     suspend fun getUserCookie(uid: String): List<User> {
+
         return database.userDao().getUserCookie(uid)
     }
 
+//    suspend fun getFile(): List<File> {
+//        return database.fileDao().getFile()
+//    }
 
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Response<UserDto> {
         val jsonObj = JsonObject()
@@ -68,6 +75,23 @@ class Repository(val context: Context) {
         val response = retrofit.create(WebService::class.java)
                 .getDirectoryApi()
         LogUtil.err(this::class.java, response.body().toString())
+
+//        if (response.code() == 200 && response.body()!!.code == 0) {
+//            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+//
+//            for (file in response.body()!!.data.objects) {
+//                with(database.fileDao()) { insertFile(File(
+//                            file.id,
+//                            file.name,
+//                            file.path,
+//                            file.pic,
+//                            file.size,
+//                            file.type,
+//                            format.parse(file.date).time))
+//                }
+//            }
+//        }
+
 
         return response
     }

@@ -18,11 +18,12 @@ class StartActivity : AppCompatActivity(), WaitingAnimationEndInterface {
         setContentView(R.layout.activity_start)
         timeBtn = findViewById(R.id.start_activity_time_btn)
         timeBtn.startAnimation()
+        startViewModel.getCookie(SharePreferenceUtils.getSharePreference(applicationContext).getString(SharePreferenceUtils.SP_KEY_UID, "")!!)
+
     }
 
     override fun waitingEnd(isEnd: Boolean) {
         if (MyApplication.isLogin) {
-            startViewModel.getCookie(SharePreferenceUtils.getSharePreference(applicationContext).getString(SharePreferenceUtils.SP_KEY_UID, "")!!)
             startActivity(Intent(this, MainActivity::class.java))
         } else {
             startActivity(Intent(this, LoginActivity::class.java))

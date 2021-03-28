@@ -30,6 +30,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun directory() = viewModelScope.launch {
+        LogUtil.err(this::class.java,"获取文件")
         val response = application.repository.getDirectory()
         if (response.code() == 200) {
             requestInfo.value = "获取成功"
