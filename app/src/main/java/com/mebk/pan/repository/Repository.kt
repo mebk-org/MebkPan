@@ -32,7 +32,7 @@ class Repository(val context: Context) {
     }
 
     suspend fun getFile(): List<File> {
-        LogUtil.err(this.javaClass,"从本地读取")
+        LogUtil.err(this.javaClass, "从本地读取")
         return database.fileDao().getFile()
     }
 
@@ -50,14 +50,15 @@ class Repository(val context: Context) {
 
             MyApplication.isLogin = true
             with(MyApplication.cookieList) {
-                add(response.headers().toMultimap()["set-cookie"]?.get(0)!!)
-                add(response.headers().toMultimap()["set-cookie"]?.get(1)!!)
+                for (cookie in response.headers().toMultimap()["set-cookie"]!!) {
+                    add(cookie)
+                }
             }
 
             database.userDao().insertUser(User(response.body()!!.data.id,
                     response.body()!!.data.nickname,
                     response.headers().toMultimap()["set-cookie"]?.get(0),
-                    response.headers().toMultimap()["set-cookie"]?.get(1)
+                    if (response.headers().toMultimap()["set-cookie"]?.size!! > 1) response.headers().toMultimap()["set-cookie"]?.get(1) else ""
             ))
 
             val sharedPref = SharePreferenceUtils.getSharePreference(context)
@@ -81,7 +82,8 @@ class Repository(val context: Context) {
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
 
             for (file in response.body()!!.data.objects) {
-                with(database.fileDao()) { insertFile(File(
+                with(database.fileDao()) {
+                    insertFile(File(
                             file.id,
                             file.name,
                             file.path,
