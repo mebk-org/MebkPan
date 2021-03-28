@@ -32,6 +32,7 @@ class Repository(val context: Context) {
     }
 
     suspend fun getFile(): List<File> {
+        LogUtil.err(this.javaClass,"从本地读取")
         return database.fileDao().getFile()
     }
 
