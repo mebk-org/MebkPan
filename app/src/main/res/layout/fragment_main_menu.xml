@@ -5,23 +5,9 @@
     app:menu="@menu/menu"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
-        <ImageView
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:src="@drawable/abc_vector_test"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingClass"
-            android:contentDescription="TODO" />
-
-    </RelativeLayout>
     <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:menu="@menu/menu"
-        xmlns:android="http://schemas.android.com/apk/res/android" />
+        app:headerLayout="@layout/nav_headerlayout"
+    app:menu="@menu/menu" xmlns:android="http://schemas.android.com/apk/res/android" />
 </androidx.constraintlayout.widget.ConstraintLayout>
