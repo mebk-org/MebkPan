@@ -1,6 +1,7 @@
 package com.mebk.pan.vm
 
 import android.app.Application
+import android.text.TextUtils
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,8 +17,12 @@ class StartViewModel(application: Application) : AndroidViewModel(application) {
         LogUtil.err(this::class.java,user.toString())
         with(MyApplication.cookieList){
             add(user[0].cookie1!!)
-            add(user[0].cookie2!!)
+            if (!TextUtils.isEmpty(user[0].cookie2)){
+                add(user[0].cookie2!!)
+            }
         }
+
+
     }
 
 

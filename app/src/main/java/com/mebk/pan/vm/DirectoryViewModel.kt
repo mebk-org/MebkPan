@@ -1,7 +1,7 @@
 package com.mebk.pan.vm
 
 import android.app.Application
-import android.util.Log
+import android.text.TextUtils
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -30,7 +30,9 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
-        if (MyApplication.isLogin && !isRefresh) {
+        val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
+
+        if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
             val localFileList = application.repository.getFile()
@@ -47,11 +49,18 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     //获取刷新时间
     private fun getLastRefreshTime(): String {
         val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
+        return sp.getString(SharePreferenceUtils.SP_KEY_REFRESH_TIME, "") ?: return ""
+    }
+
+
+    //更新刷新时间
+    private fun setLastRefreshTime(): String {
+        val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         //获取当前时间
         val date = simpleDateFormat.format(Date(System.currentTimeMillis()))
         with(sp.edit()) {
-            putString(com.mebk.pan.utils.SharePreferenceUtils.SP_KEY_REFRESH_TIME, date)
+            putString(SharePreferenceUtils.SP_KEY_REFRESH_TIME, date)
             commit()
         }
         return date
@@ -68,7 +77,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
                 directoryInfo.value = directoryList
 
                 //获取文件时也要更新刷新时间
-                lastRefreshTimeInfo.value = getLastRefreshTime()
+                lastRefreshTimeInfo.value = setLastRefreshTime()
             }
         } else {
             requestInfo.value = response.body()!!.msg
