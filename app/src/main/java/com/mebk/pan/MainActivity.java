@@ -56,13 +56,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         list.add(new Main_farment_IMG());
         FragAdapter adapter = new FragAdapter(this, list);
         v_pager.setAdapter(adapter);
+
         inti();
+
         //动画
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
         compositePageTransformer.addTransformer(new MarginPageTransformer(10));
         compositePageTransformer.addTransformer(new TransFormer());
         v_pager.setPageTransformer(compositePageTransformer);
-//检测当前页面
+
+        //检测当前页面
         v_pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

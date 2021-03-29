@@ -25,6 +25,13 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
 
+        force = SpringForce(0f).apply {
+            //设置阻尼，阻尼越大，表示弹簧振动衰减越快
+            dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+            //设置物体刚度，相当于弹簧常量
+            stiffness = SpringForce.STIFFNESS_LOW
+        }
+
         loginActivity_username_et.addTextChangedListener {
             animation?.cancel()
             loginActivity_username_textInputLayout.error = null
@@ -85,12 +92,7 @@ class LoginActivity : AppCompatActivity() {
 
     //登录出错时动画
     private fun errAnimation(view: View) {
-        force = SpringForce(0f).apply {
-            //设置阻尼，阻尼越大，表示弹簧振动衰减越快
-            dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-            //设置物体刚度，相当于弹簧常量
-            stiffness = SpringForce.STIFFNESS_LOW
-        }
+
         //2d旋转动画
         animation = SpringAnimation(view, SpringAnimation.ROTATION).setSpring(force)
 
