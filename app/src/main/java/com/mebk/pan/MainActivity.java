@@ -34,40 +34,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        v_pager = findViewById(R.id.v_pager);
-        list = new ArrayList<>();
-        list.add(new FragmentDirectory());
-        list.add(new Main_farment_IMG());
-        FragAdapter adapter = new FragAdapter(this, list);
-        v_pager.setAdapter(adapter);
-
-        inti();
-
-        //动画
-        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(10));
-        compositePageTransformer.addTransformer(new TransFormer());
-        v_pager.setPageTransformer(compositePageTransformer);
-
-        //检测当前页面
-        v_pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                //获取页面id并传下去
-                msetRb(position);
-                super.onPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
-        });
+//        v_pager = findViewById(R.id.v_pager);
+//        list = new ArrayList<>();
+//        list.add(new FragmentDirectory());
+//        list.add(new Main_farment_IMG());
+//        FragAdapter adapter = new FragAdapter(this, list);
+//        v_pager.setAdapter(adapter);
+//
+//        inti();
+//
+//        //动画
+//        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+//        compositePageTransformer.addTransformer(new MarginPageTransformer(10));
+//        compositePageTransformer.addTransformer(new TransFormer());
+//        v_pager.setPageTransformer(compositePageTransformer);
+//
+//        //检测当前页面
+//        v_pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                //获取页面id并传下去
+//                msetRb(position);
+//                super.onPageSelected(position);
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//                super.onPageScrollStateChanged(state);
+//            }
+//        });
 
     }
 

@@ -7,12 +7,10 @@ import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.dtos.DownloadClientDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.net.WebService
-import com.mebk.pan.utils.HttpConfigure
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.SharePreferenceUtils
+import com.mebk.pan.utils.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -35,6 +33,7 @@ class Repository(val context: Context) {
         return database.fileDao().getFile()
     }
 
+    //获取用户信息
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Response<UserDto> {
         val jsonObj = JsonObject()
         jsonObj.addProperty("username", username)
@@ -101,7 +100,16 @@ class Repository(val context: Context) {
     //获取文件夹下内容
     suspend fun getInternalFile(path: String): Response<DirectoryDto> {
         val response = retrofit.create(WebService::class.java)
-                .getInternalFile(HttpConfigure.internalFile(path))
+                .getInternalFile(ToolUtils.splitUrl(HttpConfigure.API_DIRECTORY, path))
+        LogUtil.err(this::class.java, response.body().toString())
+
+        return response
+    }
+
+    //获取下载链接
+    suspend fun getDownloadClient(id: String): Response<DownloadClientDto> {
+        val response = retrofit.create(WebService::class.java)
+                .getDownloadFileClient(ToolUtils.splitUrl(HttpConfigure.API_DOWNLOAD_CLIENT, id))
         LogUtil.err(this::class.java, response.body().toString())
 
         return response
