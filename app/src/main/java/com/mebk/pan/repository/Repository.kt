@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.FileUpdateDownloadClient
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.DownloadClientDto
@@ -31,6 +32,10 @@ class Repository(val context: Context) {
     suspend fun getFile(): List<File> {
         LogUtil.err(this.javaClass, "从本地读取")
         return database.fileDao().getFile()
+    }
+
+    suspend fun updateDownloadClient(file: FileUpdateDownloadClient) {
+        database.fileDao().updateDownloadClient(file)
     }
 
     //获取用户信息
@@ -88,7 +93,8 @@ class Repository(val context: Context) {
                             file.pic,
                             file.size,
                             file.type,
-                            format.parse(file.date).time))
+                            format.parse(file.date).time,
+                            ""))
                 }
             }
         }
@@ -112,6 +118,12 @@ class Repository(val context: Context) {
                 .getDownloadFileClient(ToolUtils.splitUrl(HttpConfigure.API_DOWNLOAD_CLIENT, id))
         LogUtil.err(this::class.java, response.body().toString())
 
+        if (response.code() == 200 && response.body()!!.code == 0) {
+            updateDownloadClient(FileUpdateDownloadClient(id, response.body()!!.data))
+        }
+
         return response
     }
+
+
 }
