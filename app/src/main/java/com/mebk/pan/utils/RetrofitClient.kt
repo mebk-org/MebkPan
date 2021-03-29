@@ -8,13 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitClient(val context: Context) {
     private lateinit var retrofit: Retrofit
-    var cookies = listOf("")
-
-
-    fun addCookies(cookies: List<String>) {
-        this.cookies = cookies
-        LogUtil.err(this::class.java, "cookie = ${cookies.toString()}")
-    }
 
     fun initRetrofit(): Retrofit {
 

@@ -20,7 +20,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     var directoryList = mutableListOf<DirectoryDto.Object>()
 
-    var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>().also {}
+    var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
 
     private var requestInfo = MutableLiveData<String>().also {
         it.value = "获取失败"
@@ -30,8 +30,6 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
-        val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
-
         if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)

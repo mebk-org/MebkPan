@@ -17,7 +17,7 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
     val requestInfo = MutableLiveData<String>().also { it.value = "获取失败" }
     var fileList = mutableListOf<DirectoryDto.Object>()
 
-    var flieInfo = MutableLiveData<MutableList<DirectoryDto.Object>>().also {}
+    var flieInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
 
     private val fileStack = Stack<Pair<String, MutableList<DirectoryDto.Object>>>()
     var stackSize = MutableLiveData<Int>().also {

@@ -8,7 +8,7 @@ import okhttp3.Response
 class AddCookiesInterceptor(var context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        var builder = chain.request().newBuilder()
+        val builder = chain.request().newBuilder()
         if (MyApplication.isLogin) {
             LogUtil.err(this.javaClass, "添加cookie list.size=${MyApplication.cookieList.size}")
             for (cookie in MyApplication.cookieList) {
