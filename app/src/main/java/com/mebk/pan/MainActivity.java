@@ -10,10 +10,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mebk.pan.aa.FragAdapter;
 import com.mebk.pan.ab.TransFormer;
 import com.mebk.pan.home.FragmentDirectory;
@@ -22,14 +26,14 @@ import com.mebk.pan.home.Main_farment_IMG;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     //几个代表页面的常量
     private ViewPager2 v_pager;
     RadioGroup radioGroup;
     RadioButton radioButton_file;
     RadioButton radioButton_img;
     List<Fragment> list;
-
+    BottomNavigationView navView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
+        navView=findViewById(R.id.nav_view);
+
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(navView, navController);
+
+
     }
 
     /**
@@ -97,13 +107,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    private void inti() {
-        radioButton_file = findViewById(R.id.rb_file);
-        radioButton_file.setOnClickListener(this);
-        radioButton_img = findViewById(R.id.rb_img);
-        radioButton_img.setOnClickListener(this);
-
-    }
+//    private void inti() {
+//        radioButton_file = findViewById(R.id.rb_file);
+//        radioButton_file.setOnClickListener(this);
+//        radioButton_img = findViewById(R.id.rb_img);
+//        radioButton_img.setOnClickListener(this);
+//
+//    }
 
     /**
      * 得到position并进行处理
@@ -121,15 +131,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.rb_file:
-                v_pager.setCurrentItem(0);
-                break;
-            case R.id.rb_img:
-                v_pager.setCurrentItem(1);
-                break;
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.rb_file:
+//                v_pager.setCurrentItem(0);
+//                break;
+//            case R.id.rb_img:
+//                v_pager.setCurrentItem(1);
+//                break;
+//        }
+//    }
 }

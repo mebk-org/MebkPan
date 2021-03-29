@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class DownloadViewModel(application: Application) : AndroidViewModel(application) {
     private val application = getApplication<MyApplication>()
-    private val downloadClientInfo = MediatorLiveData<String>()
+    val downloadClientInfo = MediatorLiveData<String>()
 
     fun download(id: String) = viewModelScope.launch {
         val response = application.repository.getDownloadClient(id)
@@ -21,8 +21,6 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
             downloadClientInfo.value = "获取下载链接失败，请重试"
         }
     }
-
-
 
 
 }

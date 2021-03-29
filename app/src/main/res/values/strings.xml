@@ -19,7 +19,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="text_file">文件</string>
     <string name="text_img">相册</string>
-<!--    右上角菜单栏-->
+    <!--    右上角菜单栏-->
     <string name="list_item">下载列表</string>
     <string name="last_refresh_time">上次刷新时间</string>
 </resources>
