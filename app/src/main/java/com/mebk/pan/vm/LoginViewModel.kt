@@ -11,13 +11,11 @@ import kotlinx.coroutines.launch
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val LOGIN_SUCCESS = 0
-        const val LOGIN_FAILED = 40001
     }
 
     private val application = getApplication<MyApplication>()
     private lateinit var userInfo: MutableLiveData<UserDto>
-    var loginInfo = MutableLiveData<Map<String, String>>().also {
-    }
+    var loginInfo = MutableLiveData<Map<String, String>>()
 
 
     fun login(username: String, pwd: String, captchaCode: String) = viewModelScope.launch {

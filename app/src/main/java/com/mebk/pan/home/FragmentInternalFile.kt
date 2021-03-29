@@ -23,7 +23,7 @@ import com.mebk.pan.vm.InternalFileViewModel
 class FragmentInternalFile : Fragment() {
     private lateinit var rv: RecyclerView
     private lateinit var sr: SwipeRefreshLayout
-    val viewModel by viewModels<InternalFileViewModel>()
+    private val viewModel by viewModels<InternalFileViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_internal_file, null)
@@ -31,7 +31,7 @@ class FragmentInternalFile : Fragment() {
         rv = view.findViewById(R.id.fragment_internal_file_rv)
         sr = view.findViewById(R.id.fragment_internal_file_sr)
         sr.setProgressViewEndTarget(true, 300)
-        var list: MutableList<DirectoryDto.Object> = mutableListOf()
+        val list: MutableList<DirectoryDto.Object> = mutableListOf()
 
         val path = arguments?.getString("path", "")
         val name = arguments?.getString("name", "")
@@ -45,7 +45,7 @@ class FragmentInternalFile : Fragment() {
         }
 
 
-        var adapter = context?.let { DirectoryRvAdapter(it, list) }
+        val adapter = context?.let { DirectoryRvAdapter(it, list) }
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
 
@@ -59,7 +59,7 @@ class FragmentInternalFile : Fragment() {
             LogUtil.err(this.javaClass, "observe")
             list.clear()
             list.addAll(it)
-            adapter?.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
             sr.isRefreshing = false
         })
 
