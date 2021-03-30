@@ -14,6 +14,7 @@ import com.mebk.pan.net.WebService
 import com.mebk.pan.utils.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
@@ -127,5 +128,11 @@ class Repository(val context: Context) {
         return response
     }
 
+
+    //下载文件
+    suspend fun downloadFile(url: String): ResponseBody {
+        return retrofit.create(WebService::class.java)
+                .downloadFile(url)
+    }
 
 }

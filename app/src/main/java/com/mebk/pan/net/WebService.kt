@@ -5,6 +5,7 @@ import com.mebk.pan.dtos.DownloadClientDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.utils.HttpConfigure
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -26,4 +27,9 @@ interface WebService {
     //获取下载链接
     @PUT("{path}")
     suspend fun getDownloadFileClient(@Path("path") path: String): Response<DownloadClientDto>
+
+    //下载文件
+    @Streaming
+    @GET
+    suspend fun downloadFile(@Url url: String): ResponseBody
 }

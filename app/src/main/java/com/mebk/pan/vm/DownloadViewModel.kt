@@ -1,16 +1,13 @@
 package com.mebk.pan.vm
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.mebk.pan.application.MyApplication
 import kotlinx.coroutines.launch
 
 class DownloadViewModel(application: Application) : AndroidViewModel(application) {
     private val application = getApplication<MyApplication>()
-    val downloadClientInfo = MediatorLiveData<String>()
+    val downloadClientInfo = MutableLiveData<String>()
 
     fun download(id: String) = viewModelScope.launch {
         val response = application.repository.getDownloadClient(id)
