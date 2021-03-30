@@ -41,7 +41,7 @@ class FragmentDirectory : Fragment() {
         rv.adapter = adapter
 
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
-            LogUtil.err(this::class.java,"更新列表")
+            LogUtil.err(this::class.java, "更新列表")
             list.clear()
             list.addAll(it)
             adapter?.notifyDataSetChanged()
@@ -57,26 +57,36 @@ class FragmentDirectory : Fragment() {
             viewModel.directory(true)
         }
 
-        adapter?.setOnClickListener {
-            if (sr.isRefreshing) {
-                Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
-            } else {
-                val bundle = Bundle()
-                bundle.putString("path", viewModel.directoryInfo.value!![it].path)
-                when (viewModel.directoryInfo.value!![it].type) {
-                    "dir" -> {
-                        bundle.putString("name", viewModel.directoryInfo.value!![it].name)
-                        findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+        adapter?.let { directoryRvAdapter ->
+            directoryRvAdapter.setOnClickListener {
+                if (sr.isRefreshing) {
+                    Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
+                } else {
+                    val bundle = Bundle()
+                    bundle.putString("path", viewModel.directoryInfo.value!![it].path)
+                    when (viewModel.directoryInfo.value!![it].type) {
+                        "dir" -> {
+                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
+                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+                        }
+                        else -> {
+                            bundle.putString("id", viewModel.directoryInfo.value!![it].id)
+                            findNavController().navigate(R.id.action_fragment_directory_to_downloadFragment, bundle)
+                        }
                     }
-                    else -> {
-                        bundle.putString("id", viewModel.directoryInfo.value!![it].id)
-                        findNavController().navigate(R.id.action_fragment_directory_to_downloadFragment, bundle)
-                    }
-                }
 
+                }
+            }
+            directoryRvAdapter.setOnLongClickListener {
+                if (sr.isRefreshing) {
+                    Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
+                } else {
+                    val bundle = Bundle()
+                    bundle.putString("id", viewModel.directoryInfo.value!![it].id)
+                    findNavController().navigate(R.id.action_fragment_directory_to_fragmentFileInfo, bundle)
+                }
             }
         }
-
 
         return view
     }

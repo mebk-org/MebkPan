@@ -2,11 +2,11 @@ package com.mebk.pan.home
 
 import android.os.Bundle
 import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -14,10 +14,13 @@ import com.mebk.pan.R
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.vm.DownloadViewModel
 
-private const val ARG_PATH = "path"
-private const val ARG_ID = "id"
 
 class DownloadFragment : Fragment() {
+    companion object {
+        private const val ARG_PATH = "path"
+        private const val ARG_ID = "id"
+    }
+
     private var path: String? = null
     private var id: String? = null
     private val downloadViewModel by viewModels<DownloadViewModel>()
