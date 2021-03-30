@@ -13,6 +13,7 @@ data class File(
         @ColumnInfo val size: Int,
         @ColumnInfo val type: String,
         @ColumnInfo val date: Long,
+        @ColumnInfo(name="download_client") val downloadClient: String,
 )
 
 

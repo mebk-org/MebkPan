@@ -5,17 +5,19 @@ import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.FileUpdateDownloadClient
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.dtos.DownloadClientDto
+import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.net.WebService
-import com.mebk.pan.utils.HttpConfigure
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.SharePreferenceUtils
+import com.mebk.pan.utils.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,6 +37,11 @@ class Repository(val context: Context) {
         return database.fileDao().getFile()
     }
 
+    suspend fun updateDownloadClient(file: FileUpdateDownloadClient) {
+        database.fileDao().updateDownloadClient(file)
+    }
+
+    //获取用户信息
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Response<UserDto> {
         val jsonObj = JsonObject()
         jsonObj.addProperty("username", username)
@@ -54,6 +61,7 @@ class Repository(val context: Context) {
                 }
             }
 
+            database.userDao().clear()
             database.userDao().insertUser(User(response.body()!!.data.id,
                     response.body()!!.data.nickname,
                     response.headers().toMultimap()["set-cookie"]?.get(0),
@@ -80,6 +88,7 @@ class Repository(val context: Context) {
         if (response.code() == 200 && response.body()!!.code == 0) {
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
 
+            database.fileDao().clear()
             for (file in response.body()!!.data.objects) {
                 with(database.fileDao()) {
                     insertFile(File(
@@ -89,7 +98,8 @@ class Repository(val context: Context) {
                             file.pic,
                             file.size,
                             file.type,
-                            format.parse(file.date).time))
+                            format.parse(file.date).time,
+                            ""))
                 }
             }
         }
@@ -101,7 +111,37 @@ class Repository(val context: Context) {
     //获取文件夹下内容
     suspend fun getInternalFile(path: String): Response<DirectoryDto> {
         val response = retrofit.create(WebService::class.java)
-                .getInternalFile(HttpConfigure.internalFile(path))
+                .getInternalFile(ToolUtils.splitUrl(HttpConfigure.API_DIRECTORY, path))
+        LogUtil.err(this::class.java, response.body().toString())
+
+        return response
+    }
+
+    //获取下载链接
+    suspend fun getDownloadClient(id: String): Response<DownloadClientDto> {
+        val response = retrofit.create(WebService::class.java)
+                .getDownloadFileClient(ToolUtils.splitUrl(HttpConfigure.API_DOWNLOAD_CLIENT, id))
+        LogUtil.err(this::class.java, response.body().toString())
+
+        if (response.code() == 200 && response.body()!!.code == 0) {
+            updateDownloadClient(FileUpdateDownloadClient(id, response.body()!!.data))
+        }
+
+        return response
+    }
+
+
+    //下载文件
+    suspend fun downloadFile(url: String): ResponseBody {
+        return retrofit.create(WebService::class.java)
+                .downloadFile(url)
+    }
+
+
+    //获取文件信息
+    suspend fun getFileInfo(id: String, isFolder: Boolean, traceRoot: Boolean = false): Response<FileInfoDto> {
+        val response = retrofit.create(WebService::class.java)
+                .getFileInfo(ToolUtils.splitUrl(HttpConfigure.API_FILE_INFO, id), traceRoot, isFolder)
         LogUtil.err(this::class.java, response.body().toString())
 
         return response

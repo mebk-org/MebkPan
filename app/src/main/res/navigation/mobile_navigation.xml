@@ -13,6 +13,20 @@
         <action
             android:id="@+id/action_fragment_directory_to_fragment_internal_file"
             app:destination="@id/fragment_internal_file" />
+        <action
+            android:id="@+id/action_fragment_directory_to_downloadFragment"
+            app:destination="@id/downloadFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_fragment_directory_to_fragment_internal_file2"
+            app:destination="@id/fragment_internal_file" />
+        <action
+            android:id="@+id/action_fragment_directory_to_fragmentFileInfo"
+            app:destination="@id/fragmentFileInfo" />
+        <argument
+            android:name="id"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -23,6 +37,7 @@
     <fragment
         android:id="@+id/fragment_internal_file"
         android:name="com.mebk.pan.home.FragmentInternalFile"
+        tools:layout="@layout/fragment_internal_file"
         android:label="FragmentInternalFile" >
         <argument
             android:name="path"
@@ -33,6 +48,42 @@
         <action
             android:id="@+id/action_fragment_internal_file_to_fragment_directory"
             app:destination="@id/fragment_directory" />
+        <action
+            android:id="@+id/action_fragment_internal_file_to_fragment_directory2"
+            app:destination="@id/fragment_directory" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="com.mebk.pan.home.FragmentDownload"
+        android:label="fragment_download"
+        tools:layout="@layout/fragment_download" >
+        <action
+            android:id="@+id/action_downloadFragment_to_fragment_directory"
+            app:destination="@id/fragment_directory" />
+        <argument
+            android:name="path"
+            app:argType="string" />
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_file_info"
+        android:id="@+id/fragmentFileInfo"
+        android:name="com.mebk.pan.home.FragmentFileInfo"
+        android:label="FragmentFileInfo" >
+        <action
+            android:id="@+id/action_fragmentFileInfo_to_fragment_directory"
+            app:destination="@id/fragment_directory" />
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </fragment>
 
 

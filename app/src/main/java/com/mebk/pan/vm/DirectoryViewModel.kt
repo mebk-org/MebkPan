@@ -34,6 +34,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             //从本地数据库读取
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
             val localFileList = application.repository.getFile()
+            directoryList.clear()
             for (file in localFileList) {
                 directoryList.add(DirectoryDto.Object(format.format(Date(file.date)), file.id, file.name, file.path, file.pic, file.size, file.type))
             }
