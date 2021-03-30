@@ -81,9 +81,13 @@ class FragmentDirectory : Fragment() {
                 if (sr.isRefreshing) {
                     Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
                 } else {
-                    val bundle = Bundle()
-                    bundle.putString("id", viewModel.directoryInfo.value!![it].id)
-                    findNavController().navigate(R.id.action_fragment_directory_to_fragmentFileInfo, bundle)
+                    Bundle().apply {
+                        putString("id", viewModel.directoryInfo.value!![it].id)
+                        putString("type", viewModel.directoryInfo.value!![it].type)
+                        putString("name", viewModel.directoryInfo.value!![it].name)
+                        findNavController().navigate(R.id.action_fragment_directory_to_fragmentFileInfo, this)
+                    }
+
                 }
             }
         }

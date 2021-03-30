@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/downloadFragment"
-        android:name="com.mebk.pan.home.DownloadFragment"
+        android:name="com.mebk.pan.home.FragmentDownload"
         android:label="fragment_download"
         tools:layout="@layout/fragment_download" >
         <action
@@ -75,6 +75,15 @@
         <action
             android:id="@+id/action_fragmentFileInfo_to_fragment_directory"
             app:destination="@id/fragment_directory" />
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </fragment>
 
 

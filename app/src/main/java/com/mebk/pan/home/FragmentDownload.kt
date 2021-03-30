@@ -15,7 +15,7 @@ import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.vm.DownloadViewModel
 
 
-class DownloadFragment : Fragment() {
+class FragmentDownload : Fragment() {
     companion object {
         private const val ARG_PATH = "path"
         private const val ARG_ID = "id"

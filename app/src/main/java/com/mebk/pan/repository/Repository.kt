@@ -9,6 +9,7 @@ import com.mebk.pan.database.entity.FileUpdateDownloadClient
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.DownloadClientDto
+import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.net.WebService
 import com.mebk.pan.utils.*
@@ -16,6 +17,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -135,4 +137,13 @@ class Repository(val context: Context) {
                 .downloadFile(url)
     }
 
+
+    //获取文件信息
+    suspend fun getFileInfo(id: String, isFolder: Boolean, traceRoot: Boolean = false): Response<FileInfoDto> {
+        val response = retrofit.create(WebService::class.java)
+                .getFileInfo(ToolUtils.splitUrl(HttpConfigure.API_FILE_INFO, id), traceRoot, isFolder)
+        LogUtil.err(this::class.java, response.body().toString())
+
+        return response
+    }
 }
