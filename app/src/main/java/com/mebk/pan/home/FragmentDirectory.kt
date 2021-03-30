@@ -41,6 +41,7 @@ class FragmentDirectory : Fragment() {
         rv.adapter = adapter
 
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
+            LogUtil.err(this::class.java,"更新列表")
             list.clear()
             list.addAll(it)
             adapter?.notifyDataSetChanged()

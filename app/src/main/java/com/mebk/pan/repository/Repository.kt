@@ -58,6 +58,7 @@ class Repository(val context: Context) {
                 }
             }
 
+            database.userDao().clear()
             database.userDao().insertUser(User(response.body()!!.data.id,
                     response.body()!!.data.nickname,
                     response.headers().toMultimap()["set-cookie"]?.get(0),
@@ -84,6 +85,7 @@ class Repository(val context: Context) {
         if (response.code() == 200 && response.body()!!.code == 0) {
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
 
+            database.fileDao().clear()
             for (file in response.body()!!.data.objects) {
                 with(database.fileDao()) {
                     insertFile(File(
