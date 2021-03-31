@@ -1,25 +1,21 @@
 package com.mebk.pan.dtos
 
 data class UserDto(
-        val code: Int,
-        val data: Data,
-        val msg: String
-) {
-    data class Data(
-            val anonymous: Boolean,
-            val avatar: String,
-            val created_at: Int,
-            val group: Group,
-            val id: String,
-            val nickname: String,
-            val policy: Policy,
-            val preferred_theme: String,
-            val score: Int,
-            val status: Int,
-            val tags: List<Any>,
-            val user_name: String
-    )
 
+
+        val anonymous: Boolean,
+        val avatar: String,
+        val created_at: Int,
+        val group: Group,
+        val id: String,
+        val nickname: String,
+        val policy: Policy,
+        val preferred_theme: String,
+        val score: Int,
+        val status: Int,
+        val tags: List<Any>,
+        val user_name: String
+) {
     data class Group(
             val allowArchiveDownload: Boolean,
             val allowRemoteDownload: Boolean,

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.SharePreferenceUtils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -67,19 +68,19 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     //获取网络文件
     private fun getNetFile() = viewModelScope.launch {
-        LogUtil.err(this::class.java, "获取文件")
-        val response = application.repository.getDirectory()
-        if (response.code() == 200) {
-            requestInfo.value = "获取成功"
-            if (response.body()!!.code == 0) {
-                directoryList = response.body()!!.data.objects as MutableList
-                directoryInfo.value = directoryList
 
-                //获取文件时也要更新刷新时间
-                lastRefreshTimeInfo.value = setLastRefreshTime()
-            }
+        val pair = application.repository.getDirectory()
+        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+            requestInfo.value = "获取成功"
+            directoryList = pair.second!!.objects as MutableList
+            directoryInfo.value = directoryList
+
+            //获取文件时也要更新刷新时间
+            lastRefreshTimeInfo.value = setLastRefreshTime()
+
         } else {
-            requestInfo.value = response.body()!!.msg
+            LogUtil.err(this@DirectoryViewModel.javaClass, pair.first)
+            requestInfo.value = pair.first
         }
     }
 }

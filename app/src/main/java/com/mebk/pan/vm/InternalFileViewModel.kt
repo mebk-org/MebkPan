@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -17,7 +18,7 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
     val requestInfo = MutableLiveData<String>().also { it.value = "获取失败" }
     var fileList = mutableListOf<DirectoryDto.Object>()
 
-    var flieInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
+    var fileInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
 
     private val fileStack = Stack<Pair<String, MutableList<DirectoryDto.Object>>>()
     var stackSize = MutableLiveData<Int>().also {
@@ -34,18 +35,17 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
 
         LogUtil.err(this.javaClass, url)
 
-        val response = application.repository.getInternalFile(url)
-        if (response.code() == 200) {
+        val pair = application.repository.getInternalFile(url)
+        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
-            if (response.body()!!.code == 0) {
-                LogUtil.err(this.javaClass, response.body().toString())
-                fileList = response.body()!!.data.objects as MutableList<DirectoryDto.Object>
-                flieInfo.value = fileList
-                fileStack.push(Pair(name, fileList.toMutableList()))
-                stackSize.value = fileStack.size
-            }
+            LogUtil.err(this.javaClass, pair.second.toString())
+            fileList = pair.second!!.objects as MutableList<DirectoryDto.Object>
+            fileInfo.value = fileList
+            fileStack.push(Pair(name, fileList.toMutableList()))
+            stackSize.value = fileStack.size
+
         } else {
-            requestInfo.value = response.body()!!.msg
+            requestInfo.value = pair.first
         }
     }
 
@@ -59,7 +59,7 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
             fileStack.pop()
             stackSize.value = fileStack.size
             fileList = fileStack.peek().second
-            flieInfo.value = fileList
+            fileInfo.value = fileList
             false
         } else {
             if (!fileStack.empty()) {

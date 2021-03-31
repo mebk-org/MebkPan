@@ -9,6 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitClient(val context: Context) {
     private lateinit var retrofit: Retrofit
 
+    companion object {
+        const val REQUEST_SUCCESS = "SUCCESS"
+    }
+
     fun initRetrofit(): Retrofit {
 
         //日志拦截器

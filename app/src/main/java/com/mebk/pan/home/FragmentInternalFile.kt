@@ -59,10 +59,10 @@ class FragmentInternalFile : Fragment() {
         rv.adapter = adapter
 
         adapter!!.setOnClickListener {
-            viewModel.internalFile(viewModel.flieInfo.value!![it].name, viewModel.flieInfo.value!![it].path)
+            viewModel.internalFile(viewModel.fileInfo.value!![it].name, viewModel.fileInfo.value!![it].path)
         }
 
-        viewModel.flieInfo.observe(viewLifecycleOwner, Observer {
+        viewModel.fileInfo.observe(viewLifecycleOwner, Observer {
             LogUtil.err(this.javaClass, "observe")
             list.clear()
             list.addAll(it)
