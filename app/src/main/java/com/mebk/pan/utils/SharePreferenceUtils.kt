@@ -20,6 +20,13 @@ class SharePreferenceUtils {
 
         const val SP_KEY_UID = "uid"
 
+        //上次登陆时间
+        const val SP_KEY_LOGIN_TIME = "login_time"
+
+        //cookie有效期
+        const val SP_KEY_COOKIE_VALID = "cookie_valid"
+
+
         //上次刷新时间
         const val SP_KEY_REFRESH_TIME = "refreshTime"
 

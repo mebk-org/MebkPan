@@ -6,20 +6,19 @@ import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.NIOUtils
+import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
-import retrofit2.Response
 
 class FileInfoViewModel(application: Application) : AndroidViewModel(application) {
     private val application = getApplication<MyApplication>()
     val downloadClientInfo = MutableLiveData<String>()
-    val fileInfo = MutableLiveData<FileInfoDto.Data>()
+    val fileInfo = MutableLiveData<FileInfoDto>()
 
     fun getDownloadClient(id: String) = viewModelScope.launch {
-        val response = application.repository.getDownloadClient(id)
+        val pair = application.repository.getDownloadClient(id)
 
-        if (response.code() == 200 && response.body()!!.code == 0) {
-            downloadClientInfo.value = response.body()!!.data
+        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+            downloadClientInfo.value = pair.second
         } else {
             downloadClientInfo.value = "获取下载链接失败，请重试"
         }
@@ -39,9 +38,9 @@ class FileInfoViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getFileInfo(id: String, type: String) = viewModelScope.launch {
-        val response = application.repository.getFileInfo(id, type == "dir")
-        if (response.code() == 200 && response.body()!!.code == 0) {
-            fileInfo.value = response.body()!!.data
+        val pair = application.repository.getFileInfo(id, type == "dir")
+        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+            fileInfo.value = pair.second!!
         }
     }
 

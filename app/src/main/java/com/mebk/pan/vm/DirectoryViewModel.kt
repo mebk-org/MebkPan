@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.SharePreferenceUtils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -22,9 +23,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
 
-    private var requestInfo = MutableLiveData<String>().also {
-        it.value = "获取失败"
-    }
+    var requestInfo = MutableLiveData<String>()
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
@@ -67,19 +66,25 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     //获取网络文件
     private fun getNetFile() = viewModelScope.launch {
-        LogUtil.err(this::class.java, "获取文件")
-        val response = application.repository.getDirectory()
-        if (response.code() == 200) {
-            requestInfo.value = "获取成功"
-            if (response.body()!!.code == 0) {
-                directoryList = response.body()!!.data.objects as MutableList
+
+        val pair = application.repository.getDirectory()
+        when (pair.first) {
+            RetrofitClient.REQUEST_SUCCESS -> {
+                requestInfo.value = RetrofitClient.REQUEST_SUCCESS
+                directoryList = pair.second!!.objects as MutableList
                 directoryInfo.value = directoryList
 
                 //获取文件时也要更新刷新时间
                 lastRefreshTimeInfo.value = setLastRefreshTime()
+
             }
-        } else {
-            requestInfo.value = response.body()!!.msg
+            RetrofitClient.REQUEST_TIMEOUT -> {
+                requestInfo.value = "链接超时，请重试"
+            }
+            else -> {
+                LogUtil.err(this@DirectoryViewModel.javaClass, pair.first)
+                requestInfo.value = pair.first
+            }
         }
     }
 }
