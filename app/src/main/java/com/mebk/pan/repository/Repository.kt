@@ -9,7 +9,6 @@ import com.mebk.pan.database.entity.File
 import com.mebk.pan.database.entity.FileUpdateDownloadClient
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.dtos.DownloadClientDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.net.WebService
@@ -17,9 +16,9 @@ import com.mebk.pan.utils.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import java.net.SocketTimeoutException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.max
 
 
 class Repository(val context: Context) {
@@ -40,6 +39,7 @@ class Repository(val context: Context) {
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient) {
         database.fileDao().updateDownloadClient(file)
     }
+
 
     //获取用户信息
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Pair<String, UserDto?> {
@@ -95,6 +95,8 @@ class Repository(val context: Context) {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
         } catch (e: Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -136,6 +138,8 @@ class Repository(val context: Context) {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
         } catch (e: Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -159,6 +163,8 @@ class Repository(val context: Context) {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -184,6 +190,8 @@ class Repository(val context: Context) {
                     pair = Pair(body()?.msg!!, "")
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, "")
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), "")
         }
@@ -214,6 +222,8 @@ class Repository(val context: Context) {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }

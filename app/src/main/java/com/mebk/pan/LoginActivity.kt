@@ -67,8 +67,8 @@ class LoginActivity : AppCompatActivity() {
 
         //使用vm观察是否登录成功
         viewModel.loginInfo.observe(this, Observer {
-            when (it["code"]) {
-                "0" -> {
+            when (it) {
+                LoginViewModel.LOGIN_SUCCESS -> {
                     Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show()
                     //TODO 传递用户信息
                     startActivity(Intent(this, MainActivity::class.java))
@@ -79,8 +79,8 @@ class LoginActivity : AppCompatActivity() {
                     loginActivity_login_btn.setBackgroundColor(resources.getColor(R.color.communism, null))
                     loginActivity_login_btn.text = resources.getString(R.string.login)
 
-                    Toast.makeText(this, it["msg"], Toast.LENGTH_LONG).show()
-                    loginActivity_username_textInputLayout.error = it["msg"]
+                    Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                    loginActivity_username_textInputLayout.error = it
 
                     errAnimation(loginActivity_username_textInputLayout)
                 }

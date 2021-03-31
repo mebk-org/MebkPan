@@ -23,9 +23,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
 
-    private var requestInfo = MutableLiveData<String>().also {
-        it.value = "获取失败"
-    }
+    var requestInfo = MutableLiveData<String>()
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
@@ -70,17 +68,23 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     private fun getNetFile() = viewModelScope.launch {
 
         val pair = application.repository.getDirectory()
-        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
-            requestInfo.value = "获取成功"
-            directoryList = pair.second!!.objects as MutableList
-            directoryInfo.value = directoryList
+        when (pair.first) {
+            RetrofitClient.REQUEST_SUCCESS -> {
+                requestInfo.value = RetrofitClient.REQUEST_SUCCESS
+                directoryList = pair.second!!.objects as MutableList
+                directoryInfo.value = directoryList
 
-            //获取文件时也要更新刷新时间
-            lastRefreshTimeInfo.value = setLastRefreshTime()
+                //获取文件时也要更新刷新时间
+                lastRefreshTimeInfo.value = setLastRefreshTime()
 
-        } else {
-            LogUtil.err(this@DirectoryViewModel.javaClass, pair.first)
-            requestInfo.value = pair.first
+            }
+            RetrofitClient.REQUEST_TIMEOUT -> {
+                requestInfo.value = "链接超时，请重试"
+            }
+            else -> {
+                LogUtil.err(this@DirectoryViewModel.javaClass, pair.first)
+                requestInfo.value = pair.first
+            }
         }
     }
 }

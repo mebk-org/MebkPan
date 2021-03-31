@@ -17,6 +17,7 @@ import com.mebk.pan.R
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.vm.DirectoryViewModel
 import kotlinx.android.synthetic.main.fragment_directory.*
 
@@ -46,6 +47,15 @@ class FragmentDirectory : Fragment() {
             list.addAll(it)
             adapter?.notifyDataSetChanged()
             sr.isRefreshing = false
+        })
+
+        viewModel.requestInfo.observe(viewLifecycleOwner, Observer {
+            if (it != RetrofitClient.REQUEST_SUCCESS) {
+                Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+                sr.isRefreshing = false
+                list.removeAt(0)
+                adapter?.notifyItemRemoved(0)
+            }
         })
 
 
