@@ -1,6 +1,7 @@
 package com.mebk.pan.repository
 
 import android.content.Context
+import android.os.SystemClock
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
@@ -18,6 +19,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.max
 
 
 class Repository(val context: Context) {
@@ -59,6 +61,18 @@ class Repository(val context: Context) {
                             add(cookie)
                         }
                     }
+                    var valid: Long = 0
+                    for (maxAge in response.headers().toMultimap()["nel"]!!) {
+                        if (maxAge.contains("max_age")) {
+                            val endPos = maxAge.length - 1
+                            val startPos = maxAge.lastIndexOf(":")
+                            if (startPos != -1) {
+                                valid = maxAge.substring(startPos + 1, endPos).toLong()
+                            }
+                        }
+                    }
+
+
                     body()?.data?.let {
 
                         database.userDao().clear()
@@ -71,6 +85,8 @@ class Repository(val context: Context) {
                         with(sharedPref.edit()) {
                             putBoolean(SharePreferenceUtils.SP_KEY_LOGIN, true)
                             putString(SharePreferenceUtils.SP_KEY_UID, it.id)
+                            putLong(SharePreferenceUtils.SP_KEY_LOGIN_TIME, SystemClock.uptimeMillis())
+                            putLong(SharePreferenceUtils.SP_KEY_COOKIE_VALID, valid)
                             commit()
                         }
                     }
