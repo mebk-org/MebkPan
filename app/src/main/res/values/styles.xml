@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionOverflowMenuStyle">@style/ToolBarStyle</item> <!--注意添加!-->
+    </style>
+
+    <!-- ToolBar -->
+    <style name="ToolBarStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <!--menu按钮颜色-->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <!--字体颜色-->
+        <item name="android:textColor">@color/white</item>
+        <!--  修改字体大小-->
+        <item name="android:textSize">14sp</item>
+        <!--设置menu在 ... 下方-->
+        <item name="overlapAnchor">false</item>
+        <!--menu背景色-->
+        <item name="android:popupBackground">@color/colorPrimary</item>
+    </style>
 
     <style name="TextInputLayoutStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/royalblue</item>
