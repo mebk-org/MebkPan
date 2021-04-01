@@ -5,27 +5,27 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:id="@+id/appbarlayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        tools:ignore="MissingConstraints">-->
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/white"
-        android:theme="@style/ToolBarStyle"
-        app:layout_scrollFlags="scroll"
-        >
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@mipmap/communist"
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?android:attr/actionBarSize"-->
+<!--        android:background="@color/white"-->
+<!--        android:theme="@style/ToolBarStyle"-->
+<!--        app:layout_scrollFlags="scroll"-->
+<!--        >-->
+<!--        <ImageView-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:background="@mipmap/communist"-->
 
-            android:src="@drawable/circle_images"/>
-    </androidx.appcompat.widget.Toolbar>
+<!--            android:src="@drawable/circle_images"/>-->
+<!--    </androidx.appcompat.widget.Toolbar>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
@@ -107,7 +107,7 @@
 
         </com.google.android.material.tabs.TabLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
     <include
         layout="@layout/fragment_main_menu"
         android:layout_width="match_parent"

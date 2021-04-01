@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mebk.pan.R
 import com.mebk.pan.aa.DirectoryRvAdapter
@@ -44,7 +45,7 @@ class FragmentDirectory : Fragment() {
         val adapter = context?.let { DirectoryRvAdapter(it, list) }
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
-
+        (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
             LogUtil.err(this::class.java, "更新列表")
             list.clear()
@@ -66,6 +67,7 @@ class FragmentDirectory : Fragment() {
         sr.setOnRefreshListener {
             val refreshDto = DirectoryDto.Object(viewModel.lastRefreshTimeInfo.value!!, "0", "正在刷新...", "", "", 0, "refresh")
             list.add(0, refreshDto)
+            rv.scrollToPosition(0)
             adapter?.notifyItemInserted(0)
             sr.isRefreshing = true
             viewModel.directory(true)
@@ -110,8 +112,14 @@ class FragmentDirectory : Fragment() {
         val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             mainViewModel.changeFileOperator()
         }
+
         mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
             callBack.isEnabled = it
+
+            adapter?.isFileOperator = it
+            adapter?.notifyItemRangeChanged(0, list.size)
+
+
         })
 
         return view
