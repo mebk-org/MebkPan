@@ -7,16 +7,14 @@
     android:layout_height="match_parent"
     android:background="#FFF2F2F2">
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/white"
+        android:background="@color/red"
         android:theme="@style/ToolBarStyle"
         app:layout_scrollFlags="scroll"
         >
