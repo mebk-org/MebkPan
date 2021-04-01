@@ -56,9 +56,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         mainViewModel.isFileOperator().observe(this, item -> {
-            Log.e(TAG, "onCreate: " + item);
             fileOperatorAnimation(item);
-
         });
 
 //
@@ -168,5 +166,7 @@ public class MainActivity extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(rootLayout);
         constraintSet.applyTo(rootLayout);
     }
+
+
 
 }
