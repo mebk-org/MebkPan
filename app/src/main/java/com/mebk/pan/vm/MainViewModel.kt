@@ -15,6 +15,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
     fun changeFileOperator() {
         isFileOperator.value = !(isFileOperator.value)!!
+        checkList.clear()
+        checkInfo.value = checkList
     }
 
     fun addCheck(file: DirectoryDto.Object) {
