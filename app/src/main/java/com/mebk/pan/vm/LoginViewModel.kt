@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.UserDto
+import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 loginInfo.value = RetrofitClient.REQUEST_TIMEOUT
             }
             else -> {
+                LogUtil.err(this@LoginViewModel::class.java, response.first)
                 loginInfo.value = "未知错误，请联系管理员"
             }
         }

@@ -42,8 +42,10 @@ class StartActivity : AppCompatActivity(), WaitingAnimationEndInterface {
     override fun waitingEnd(isEnd: Boolean) {
         if (MyApplication.isLogin && isValid) {
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         } else {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 }

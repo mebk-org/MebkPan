@@ -1,84 +1,98 @@
 package com.mebk.pan;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.transition.Scene;
+import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.mebk.pan.aa.ExpandableListviewAdapter;
+import com.mebk.pan.utils.LogUtil;
+import com.mebk.pan.vm.MainViewModel;
 
 import java.util.List;
+import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity {
-
-    //数据
-    private String[] data = {
-           "我的分享","离线下载","容量配额","任务队列"
-    };
-    //左侧菜单栏
-    private ExpandableListView expand_list_id;
-    ListView listView;
+    private static final String TAG = "MainActivity";
     //几个代表页面的常量
-
+    private ViewPager2 v_pager;
+    RadioGroup radioGroup;
     RadioButton radioButton_file;
     RadioButton radioButton_img;
+    List<Fragment> list;
     BottomNavigationView navView;
-    ImageView imageView;
-    DrawerLayout drawer_layout;
+    private ConstraintLayout rootLayout;
+    private MainViewModel mainViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       //组件初始化
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
-        views();
+
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+//        v_pager = findViewById(R.id.v_pager);
+//        list = new ArrayList<>();
+//        list.add(new FragmentDirectory());
+//        list.add(new Main_farment_IMG());
+//        FragAdapter adapter = new FragAdapter(this, list);
+//        v_pager.setAdapter(adapter);
+//
+        initView();
+
+        mainViewModel.isFileOperator().observe(this, item -> {
+            Log.e(TAG, "onCreate: " + item);
+            fileOperatorAnimation(item);
+
+        });
+
+//
+//        //动画
+//        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+//        compositePageTransformer.addTransformer(new MarginPageTransformer(10));
+//        compositePageTransformer.addTransformer(new TransFormer());
+//        v_pager.setPageTransformer(compositePageTransformer);
+//
+//        //检测当前页面
+//        v_pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                //获取页面id并传下去
+//                msetRb(position);
+//                super.onPageSelected(position);
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//                super.onPageScrollStateChanged(state);
+//            }
+//        });
+
+        navView = findViewById(R.id.nav_view);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
-        ExpandableListviewAdapter adapter = new ExpandableListviewAdapter();
-        expand_list_id.setAdapter(adapter);
-        //默认展开第一个数组
-        expand_list_id.expandGroup(0);
-
-        ArrayAdapter<String> list_adapter = new ArrayAdapter<String>(this ,
-                android.R.layout.simple_list_item_1, data );//适配器
-        listView.setAdapter(list_adapter);//添加适配器
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                drawer_layout.open();
-            }
-        });
-    }
-
-    private void views() {
-        navView=findViewById(R.id.nav_view);
-        drawer_layout=findViewById(R.id.drawer_layout);
-        expand_list_id =findViewById(R.id.expand_list_id_dynamic);
-        listView = findViewById(R.id.list_item_main);//获取组件对象
-        imageView=findViewById(R.id.header_title);
     }
 
     /**
@@ -106,6 +120,16 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private void initView() {
+//        radioButton_file = findViewById(R.id.rb_file);
+//        radioButton_file.setOnClickListener(this);
+//        radioButton_img = findViewById(R.id.rb_img);
+//        radioButton_img.setOnClickListener(this);
+        navView = findViewById(R.id.nav_view);
+        rootLayout = findViewById(R.id.container);
+    }
+
     /**
      * 得到position并进行处理
      *
@@ -120,6 +144,29 @@ public class MainActivity extends AppCompatActivity {
             case 1:
                 radioButton_img.setChecked(true);
         }
+    }
+
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.rb_file:
+//                v_pager.setCurrentItem(0);
+//                break;
+//            case R.id.rb_img:
+//                v_pager.setCurrentItem(1);
+//                break;
+//        }
+//    }
+
+    private void fileOperatorAnimation(boolean isFileOperator) {
+        ConstraintSet constraintSet = new ConstraintSet();
+        if (isFileOperator) {
+            constraintSet.load(this, R.layout.layout_file_opreator);
+        } else {
+            constraintSet.load(this, R.layout.activity_main);
+        }
+        TransitionManager.beginDelayedTransition(rootLayout);
+        constraintSet.applyTo(rootLayout);
     }
 
 }
