@@ -132,8 +132,7 @@ class FragmentDirectory : Fragment() {
             mainViewModel.changeFileOperator()
         }
 
-        mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer
-        {
+        mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
             callBack.isEnabled = it
 
             adapter?.isFileOperator = it

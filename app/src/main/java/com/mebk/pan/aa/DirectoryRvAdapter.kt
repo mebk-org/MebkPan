@@ -2,6 +2,7 @@ package com.mebk.pan.aa
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.ToolUtils
 
 class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryDto.Object>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,7 +23,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     var isFileOperator = false
     private lateinit var clickMoreImageViewListener: ((Int) -> Unit)
     private lateinit var clickCheckBoxListener: ((Int, Boolean) -> Unit)
-
 
     companion object {
         //文件
@@ -62,7 +63,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
+        LogUtil.err(this.javaClass, "onCreateViewHolder")
         return when (viewType) {
             TYPE_DIRECTORY -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.rv_item_directory, parent, false)
@@ -94,6 +95,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        LogUtil.err(this.javaClass, "onBindViewHolder")
         when (holder) {
             is DirectoryViewHolder -> {
 
@@ -110,7 +112,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
 
                 holder.check.visibility = if (isFileOperator) VISIBLE else INVISIBLE
                 holder.moreIv.visibility = if (!isFileOperator) VISIBLE else INVISIBLE
-
+                holder.check.isChecked = false
                 holder.moreIv.setOnClickListener {
                     clickMoreImageViewListener(position)
                 }
@@ -153,4 +155,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         }
 
     }
+
+
 }
