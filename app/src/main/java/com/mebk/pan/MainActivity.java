@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
-
-
     /**
      * 得到position并进行处理
      *
