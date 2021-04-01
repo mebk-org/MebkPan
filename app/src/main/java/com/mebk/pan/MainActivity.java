@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,23 +23,29 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //几个代表页面的常量
-    private ViewPager2 v_pager;
-    RadioGroup radioGroup;
     RadioButton radioButton_file;
     RadioButton radioButton_img;
-    List<Fragment> list;
     BottomNavigationView navView;
+    ImageView imageView;
+    DrawerLayout drawer_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         navView=findViewById(R.id.nav_view);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
+        drawer_layout=findViewById(R.id.drawer_layout);
 
+        imageView=findViewById(R.id.header_title);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer_layout.open();
+            }
+        });
     }
 
     /**
