@@ -4,8 +4,9 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
+import android.view.View.*
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +18,12 @@ import com.mebk.pan.utils.ToolUtils
 class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryDto.Object>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var clickListener: ((Int) -> Unit)
     private lateinit var clickOnLongListener: ((Int) -> Unit)
+    var isFileOperator = false
+    private lateinit var clickMoreImageViewListener: ((Int) -> Unit)
+    private lateinit var clickCheckBoxListener: ((Int, Boolean) -> Unit)
+
 
     companion object {
-
         //文件
         private const val TYPE_DIRECTORY = 0
 
@@ -35,19 +39,26 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         this.clickOnLongListener = clickOnLongListener
     }
 
+    fun setOnClickMoreImageViewListener(clickMoreImageViewListener: ((Int) -> Unit)) {
+        this.clickMoreImageViewListener = clickMoreImageViewListener
+    }
+
+    fun setOnClickCheckBoxListener(clickCheckBoxListener: ((Int, Boolean) -> Unit)){
+        this.clickCheckBoxListener = clickCheckBoxListener
+    }
+
     class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val thumbnailIv: ImageView = itemView.findViewById(R.id.rv_item_directory_thumbnail_iv)
-        internal val chooseIv: ImageView = itemView.findViewById(R.id.rv_item_directory_choose_iv)
+        internal val check: CheckBox = itemView.findViewById(R.id.rv_item_directory_choose)
         internal val filenameTv: TextView = itemView.findViewById(R.id.rv_item_directory_filename_tv)
         internal val timeTv: TextView = itemView.findViewById(R.id.rv_item_directory_time_tv)
         internal val sizeTv: TextView = itemView.findViewById(R.id.rv_item_directory_size_tv)
-
+        internal val moreIv: ImageView = itemView.findViewById(R.id.rv_item_directory_more_iv)
     }
 
     class RefreshViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val refreshMsgTv: TextView = itemView.findViewById(R.id.rv_item_directory_refresh_msg_tv)
         internal val lastTimeTv: TextView = itemView.findViewById(R.id.rv_item_directory_lastTime_tv)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -81,16 +92,28 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         when (holder) {
             is DirectoryViewHolder -> {
 
-//                LogUtil.err(this.javaClass, list[position].size.toString())
                 holder.filenameTv.text = list[position].name
                 Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
                 holder.timeTv.text = list[position].date
                 holder.itemView.tag = position
+
                 if ("dir" != list[position].type) {
                     holder.sizeTv.text = ToolUtils.sizeChange(list[position].size)
                 } else {
                     holder.sizeTv.visibility = GONE
                 }
+
+                holder.check.visibility = if (isFileOperator) VISIBLE else INVISIBLE
+                holder.moreIv.visibility = if (!isFileOperator) VISIBLE else INVISIBLE
+
+                holder.moreIv.setOnClickListener {
+                    clickMoreImageViewListener(position)
+                }
+
+                holder.check.setOnCheckedChangeListener { buttonView, isChecked ->
+                    clickCheckBoxListener(position, isChecked)
+                }
+
             }
             is RefreshViewHolder -> {
                 holder.refreshMsgTv.text = list[position].name
