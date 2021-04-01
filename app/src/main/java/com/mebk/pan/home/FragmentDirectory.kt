@@ -77,7 +77,10 @@ class FragmentDirectory : Fragment() {
             directoryRvAdapter.setOnClickListener {
                 if (sr.isRefreshing) {
                     Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
-                } else {
+                    return@setOnClickListener
+                }
+
+                if (!adapter.isFileOperator) {
                     val bundle = Bundle()
                     bundle.putString("path", viewModel.directoryInfo.value!![it].path)
                     when (viewModel.directoryInfo.value!![it].type) {
@@ -87,10 +90,11 @@ class FragmentDirectory : Fragment() {
                         }
                         else -> {
                             bundle.putString("id", viewModel.directoryInfo.value!![it].id)
-                            findNavController().navigate(R.id.action_fragment_directory_to_downloadFragment, bundle)
+                            bundle.putString("type", viewModel.directoryInfo.value!![it].type)
+                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
+                            findNavController().navigate(R.id.action_fragment_directory_to_fragmentFileInfo, bundle)
                         }
                     }
-
                 }
             }
             directoryRvAdapter.setOnLongClickListener {
@@ -110,7 +114,6 @@ class FragmentDirectory : Fragment() {
             directoryRvAdapter.setOnClickMoreImageViewListener {
                 if (sr.isRefreshing) Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
                 else mainViewModel.changeFileOperator()
-
             }
 
             directoryRvAdapter.setOnClickCheckBoxListener { position, isCheck ->
@@ -129,7 +132,8 @@ class FragmentDirectory : Fragment() {
             mainViewModel.changeFileOperator()
         }
 
-        mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
+        mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer
+        {
             callBack.isEnabled = it
 
             adapter?.isFileOperator = it
