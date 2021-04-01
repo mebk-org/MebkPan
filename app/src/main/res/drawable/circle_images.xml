@@ -10,7 +10,7 @@
             <!-- oval_outer[边线] ，使用时改成父控件颜色即可-->
             <stroke
                 android:width="10dp"
-                android:color="#fafafa" /><!--这里与头像后背景色一致-->
+                android:color="#009688" /><!--这里与头像后背景色一致-->
             <!-- oval_inner_size[大小(除去边线)] ，也是最终裸露出来的圆形图像区域-->
             <size
                 android:height="50dp"
