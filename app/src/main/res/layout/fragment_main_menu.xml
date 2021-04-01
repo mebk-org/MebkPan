@@ -5,13 +5,10 @@
     app:menu="@menu/menu"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#009688"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:background="@color/Dark_green"
         app:headerLayout="@layout/nav_headerlayout"
-        app:menu="@menu/menu"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+    app:menu="@menu/menu" xmlns:android="http://schemas.android.com/apk/res/android" />
 </androidx.constraintlayout.widget.ConstraintLayout>
