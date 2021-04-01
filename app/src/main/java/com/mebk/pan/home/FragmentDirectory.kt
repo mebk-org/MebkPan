@@ -17,6 +17,7 @@ import com.mebk.pan.R
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.vm.DirectoryViewModel
 import kotlinx.android.synthetic.main.fragment_directory.*
 
@@ -27,7 +28,7 @@ class FragmentDirectory : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_directory, container, false)
-        var list: MutableList<DirectoryDto.Object> = mutableListOf()
+        val list: MutableList<DirectoryDto.Object> = mutableListOf()
 
         rv = view.findViewById(R.id.fragment_directory_rv)
         sr = view.findViewById(R.id.fragment_directory_sr)
@@ -36,15 +37,25 @@ class FragmentDirectory : Fragment() {
 
         sr.isRefreshing = true
 
-        var adapter = context?.let { DirectoryRvAdapter(it, list) }
+        val adapter = context?.let { DirectoryRvAdapter(it, list) }
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
 
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
+            LogUtil.err(this::class.java, "更新列表")
             list.clear()
             list.addAll(it)
             adapter?.notifyDataSetChanged()
             sr.isRefreshing = false
+        })
+
+        viewModel.requestInfo.observe(viewLifecycleOwner, Observer {
+            if (it != RetrofitClient.REQUEST_SUCCESS) {
+                Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+                sr.isRefreshing = false
+                list.removeAt(0)
+                adapter?.notifyItemRemoved(0)
+            }
         })
 
 
@@ -56,19 +67,40 @@ class FragmentDirectory : Fragment() {
             viewModel.directory(true)
         }
 
-        adapter?.setOnClickListener {
-            if (sr.isRefreshing) {
-                Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
-            } else {
-                val bundle = Bundle()
-                with(bundle) {
-                    putString("name", viewModel.directoryInfo.value!![it].name)
-                    putString("path", viewModel.directoryInfo.value!![it].path)
+        adapter?.let { directoryRvAdapter ->
+            directoryRvAdapter.setOnClickListener {
+                if (sr.isRefreshing) {
+                    Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
+                } else {
+                    val bundle = Bundle()
+                    bundle.putString("path", viewModel.directoryInfo.value!![it].path)
+                    when (viewModel.directoryInfo.value!![it].type) {
+                        "dir" -> {
+                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
+                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+                        }
+                        else -> {
+                            bundle.putString("id", viewModel.directoryInfo.value!![it].id)
+                            findNavController().navigate(R.id.action_fragment_directory_to_downloadFragment, bundle)
+                        }
+                    }
+
                 }
-                findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+            }
+            directoryRvAdapter.setOnLongClickListener {
+                if (sr.isRefreshing) {
+                    Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
+                } else {
+                    Bundle().apply {
+                        putString("id", viewModel.directoryInfo.value!![it].id)
+                        putString("type", viewModel.directoryInfo.value!![it].type)
+                        putString("name", viewModel.directoryInfo.value!![it].name)
+                        findNavController().navigate(R.id.action_fragment_directory_to_fragmentFileInfo, this)
+                    }
+
+                }
             }
         }
-
 
         return view
     }

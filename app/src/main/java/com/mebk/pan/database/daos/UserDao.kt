@@ -1,7 +1,6 @@
 package com.mebk.pan.database.daos
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.mebk.pan.database.entity.User

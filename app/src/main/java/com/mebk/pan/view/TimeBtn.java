@@ -42,8 +42,8 @@ public class TimeBtn extends View {
         this.context = context;
         textPaint = new Paint();
         circlePaint = new Paint();
-        textPaint.setColor(context.getResources().getColor(R.color.half_white));
-        circlePaint.setColor(context.getResources().getColor(R.color.half_white));
+        textPaint.setColor(context.getResources().getColor(R.color.darkgray,null));
+        circlePaint.setColor(context.getResources().getColor(R.color.darkgray,null));
         circlePaint.setStrokeWidth(6);
         circlePaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);

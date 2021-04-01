@@ -16,6 +16,7 @@ import com.mebk.pan.utils.ToolUtils
 
 class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryDto.Object>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var clickListener: ((Int) -> Unit)
+    private lateinit var clickOnLongListener: ((Int) -> Unit)
 
     companion object {
 
@@ -28,6 +29,10 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
 
     fun setOnClickListener(clickListener: ((Int) -> Unit)) {
         this.clickListener = clickListener
+    }
+
+    fun setOnLongClickListener(clickOnLongListener: (Int) -> Unit) {
+        this.clickOnLongListener = clickOnLongListener
     }
 
     class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -53,6 +58,12 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
                 view.setOnClickListener {
                     clickListener(view.tag as Int)
                 }
+
+                view.setOnLongClickListener {
+                    clickOnLongListener(view.tag as Int)
+                    true
+                }
+
                 DirectoryViewHolder(view)
             }
             else -> {

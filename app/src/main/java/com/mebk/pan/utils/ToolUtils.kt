@@ -31,5 +31,18 @@ class ToolUtils {
             }
         }
 
+
+        /**
+         * 拼接url
+         * @param url Array<out String> 需要拼接的字符串
+         * @return String 拼接结果为s=[0]+[1]+...
+         */
+        fun splitUrl(vararg url: String): String {
+            var path = ""
+            for (s in url) {
+                path += s
+            }
+            return path
+        }
     }
 }

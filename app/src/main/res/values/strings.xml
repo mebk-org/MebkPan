@@ -19,7 +19,14 @@
     <string name="title_notifications">Notifications</string>
     <string name="text_file">文件</string>
     <string name="text_img">相册</string>
-<!--    右上角菜单栏-->
+    <!--    右上角菜单栏-->
     <string name="list_item">下载列表</string>
     <string name="last_refresh_time">上次刷新时间</string>
+    <string name="size">文件大小:</string>
+    <string name="policy">存储策略:</string>
+    <string name="dir">文件路径:</string>
+    <string name="create_time">创建时间:</string>
+    <string name="alert_time">修改时间:</string>
+    <string name="download_client">正在获取下载链接...</string>
+    <string name="loading">正在获取...</string>
 </resources>

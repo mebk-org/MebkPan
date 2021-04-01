@@ -5,15 +5,14 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class RetrofitClient(val context: Context) {
     private lateinit var retrofit: Retrofit
-    var cookies = listOf("")
 
-
-    fun addCookies(cookies: List<String>) {
-        this.cookies = cookies
-        LogUtil.err(this::class.java, "cookie = ${cookies.toString()}")
+    companion object {
+        const val REQUEST_SUCCESS = "SUCCESS"
+        const val REQUEST_TIMEOUT = "TIMEOUT"
     }
 
     fun initRetrofit(): Retrofit {
@@ -25,6 +24,7 @@ class RetrofitClient(val context: Context) {
         val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(AddCookiesInterceptor(context))
                 .addInterceptor(httpLoggingInterceptor)
+                .connectTimeout(180,TimeUnit.MILLISECONDS)
                 .build()
 
 

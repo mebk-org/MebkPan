@@ -25,6 +25,13 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
 
+        force = SpringForce(0f).apply {
+            //设置阻尼，阻尼越大，表示弹簧振动衰减越快
+            dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
+            //设置物体刚度，相当于弹簧常量
+            stiffness = SpringForce.STIFFNESS_LOW
+        }
+
         loginActivity_username_et.addTextChangedListener {
             animation?.cancel()
             loginActivity_username_textInputLayout.error = null
@@ -60,8 +67,8 @@ class LoginActivity : AppCompatActivity() {
 
         //使用vm观察是否登录成功
         viewModel.loginInfo.observe(this, Observer {
-            when (it["code"]) {
-                "0" -> {
+            when (it) {
+                LoginViewModel.LOGIN_SUCCESS -> {
                     Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show()
                     //TODO 传递用户信息
                     startActivity(Intent(this, MainActivity::class.java))
@@ -72,8 +79,8 @@ class LoginActivity : AppCompatActivity() {
                     loginActivity_login_btn.setBackgroundColor(resources.getColor(R.color.communism, null))
                     loginActivity_login_btn.text = resources.getString(R.string.login)
 
-                    Toast.makeText(this, it["msg"], Toast.LENGTH_LONG).show()
-                    loginActivity_username_textInputLayout.error = it["msg"]
+                    Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                    loginActivity_username_textInputLayout.error = it
 
                     errAnimation(loginActivity_username_textInputLayout)
                 }
@@ -85,12 +92,7 @@ class LoginActivity : AppCompatActivity() {
 
     //登录出错时动画
     private fun errAnimation(view: View) {
-        force = SpringForce(0f).apply {
-            //设置阻尼，阻尼越大，表示弹簧振动衰减越快
-            dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-            //设置物体刚度，相当于弹簧常量
-            stiffness = SpringForce.STIFFNESS_LOW
-        }
+
         //2d旋转动画
         animation = SpringAnimation(view, SpringAnimation.ROTATION).setSpring(force)
 

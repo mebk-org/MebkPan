@@ -6,33 +6,33 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.UserDto
+import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
-        const val LOGIN_SUCCESS = 0
-        const val LOGIN_FAILED = 40001
+        const val LOGIN_SUCCESS = "登录成功"
     }
 
     private val application = getApplication<MyApplication>()
     private lateinit var userInfo: MutableLiveData<UserDto>
-    var loginInfo = MutableLiveData<Map<String, String>>().also {
-    }
+    var loginInfo = MutableLiveData<String>()
 
 
     fun login(username: String, pwd: String, captchaCode: String) = viewModelScope.launch {
         val response = application.repository.getUser(username, pwd, captchaCode)
-        if (response.code() == 200) {
-            when (response.body()!!.code) {
-                LOGIN_SUCCESS -> {
-                    loginInfo.value = mapOf("code" to "0", "msg" to "登录成功")
-                    userInfo = MutableLiveData<UserDto>().also {
-                        it.value = response.body()
-                    }
+        when (response.first) {
+            RetrofitClient.REQUEST_SUCCESS -> {
+                loginInfo.value = LOGIN_SUCCESS
+                userInfo = MutableLiveData<UserDto>().also {
+                    it.value = response.second
                 }
-                else -> {
-                    loginInfo.value = mapOf("code" to response.body()!!.code.toString(), "msg" to response.body()!!.msg)
-                }
+            }
+            RetrofitClient.REQUEST_TIMEOUT -> {
+                loginInfo.value = RetrofitClient.REQUEST_TIMEOUT
+            }
+            else -> {
+                loginInfo.value = "未知错误，请联系管理员"
             }
         }
     }

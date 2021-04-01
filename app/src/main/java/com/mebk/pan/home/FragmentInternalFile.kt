@@ -23,7 +23,17 @@ import com.mebk.pan.vm.InternalFileViewModel
 class FragmentInternalFile : Fragment() {
     private lateinit var rv: RecyclerView
     private lateinit var sr: SwipeRefreshLayout
-    val viewModel by viewModels<InternalFileViewModel>()
+    private val viewModel by viewModels<InternalFileViewModel>()
+    private var path: String? = null
+    private var name: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            path = it.getString("path")
+            name = it.getString("name")
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_internal_file, null)
@@ -31,10 +41,9 @@ class FragmentInternalFile : Fragment() {
         rv = view.findViewById(R.id.fragment_internal_file_rv)
         sr = view.findViewById(R.id.fragment_internal_file_sr)
         sr.setProgressViewEndTarget(true, 300)
-        var list: MutableList<DirectoryDto.Object> = mutableListOf()
+        val list: MutableList<DirectoryDto.Object> = mutableListOf()
 
-        val path = arguments?.getString("path", "")
-        val name = arguments?.getString("name", "")
+
 
         if (TextUtils.isEmpty(name) || (TextUtils.isEmpty(path))) {
             Toast.makeText(activity, "打开失败，请尝试刷新后重新获取", Toast.LENGTH_SHORT).show()
@@ -45,21 +54,19 @@ class FragmentInternalFile : Fragment() {
         }
 
 
-        var adapter = context?.let { DirectoryRvAdapter(it, list) }
+        val adapter = context?.let { DirectoryRvAdapter(it, list) }
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
 
         adapter!!.setOnClickListener {
-            viewModel.internalFile(viewModel.flieInfo.value!![it].name, viewModel.flieInfo.value!![it].path)
+            viewModel.internalFile(viewModel.fileInfo.value!![it].name, viewModel.fileInfo.value!![it].path)
         }
 
-
-
-        viewModel.flieInfo.observe(viewLifecycleOwner, Observer {
+        viewModel.fileInfo.observe(viewLifecycleOwner, Observer {
             LogUtil.err(this.javaClass, "observe")
             list.clear()
             list.addAll(it)
-            adapter?.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
             sr.isRefreshing = false
         })
 
