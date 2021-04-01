@@ -19,6 +19,9 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     private lateinit var clickListener: ((Int) -> Unit)
     private lateinit var clickOnLongListener: ((Int) -> Unit)
     var isFileOperator = false
+    private lateinit var clickMoreImageViewListener: ((Int) -> Unit)
+    private lateinit var clickCheckBoxListener: ((Int, Boolean) -> Unit)
+
 
     companion object {
         //文件
@@ -34,6 +37,14 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
 
     fun setOnLongClickListener(clickOnLongListener: (Int) -> Unit) {
         this.clickOnLongListener = clickOnLongListener
+    }
+
+    fun setOnClickMoreImageViewListener(clickMoreImageViewListener: ((Int) -> Unit)) {
+        this.clickMoreImageViewListener = clickMoreImageViewListener
+    }
+
+    fun setOnClickCheckBoxListener(clickCheckBoxListener: ((Int, Boolean) -> Unit)){
+        this.clickCheckBoxListener = clickCheckBoxListener
     }
 
     class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -94,6 +105,15 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
 
                 holder.check.visibility = if (isFileOperator) VISIBLE else INVISIBLE
                 holder.moreIv.visibility = if (!isFileOperator) VISIBLE else INVISIBLE
+
+                holder.moreIv.setOnClickListener {
+                    clickMoreImageViewListener(position)
+                }
+
+                holder.check.setOnCheckedChangeListener { buttonView, isChecked ->
+                    clickCheckBoxListener(position, isChecked)
+                }
+
             }
             is RefreshViewHolder -> {
                 holder.refreshMsgTv.text = list[position].name
