@@ -21,9 +21,11 @@ import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.mebk.pan.dtos.DirectoryDto;
 import com.mebk.pan.utils.LogUtil;
 import com.mebk.pan.vm.MainViewModel;
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Observable;
 
@@ -57,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel.isFileOperator().observe(this, item -> {
             fileOperatorAnimation(item);
+        });
+
+        mainViewModel.getCheckInfo().observe(this, item -> {
+            for (DirectoryDto.Object obj : item) {
+                Log.e(TAG, "onCreate: " + obj.toString());
+            }
         });
 
 //
@@ -166,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(rootLayout);
         constraintSet.applyTo(rootLayout);
     }
-
 
 
 }

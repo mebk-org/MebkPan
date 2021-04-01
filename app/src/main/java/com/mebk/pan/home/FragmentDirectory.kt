@@ -106,6 +106,22 @@ class FragmentDirectory : Fragment() {
                     mainViewModel.changeFileOperator()
                 }
             }
+
+            directoryRvAdapter.setOnClickMoreImageViewListener {
+                if (sr.isRefreshing) Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
+                else mainViewModel.changeFileOperator()
+
+            }
+
+            directoryRvAdapter.setOnClickCheckBoxListener { position, isCheck ->
+                if (sr.isRefreshing) {
+                    Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
+                } else {
+                    if (isCheck) viewModel.directoryInfo.value?.get(position)?.let { mainViewModel.addCheck(it) }
+                    else viewModel.directoryInfo.value?.get(position)?.let { mainViewModel.removeCheck(it) }
+                }
+            }
+
         }
 
         //拦截返回事件
@@ -118,7 +134,6 @@ class FragmentDirectory : Fragment() {
 
             adapter?.isFileOperator = it
             adapter?.notifyItemRangeChanged(0, list.size)
-
 
         })
 
