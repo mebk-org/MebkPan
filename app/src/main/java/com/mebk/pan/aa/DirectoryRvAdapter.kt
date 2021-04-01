@@ -43,7 +43,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         this.clickMoreImageViewListener = clickMoreImageViewListener
     }
 
-    fun setOnClickCheckBoxListener(clickCheckBoxListener: ((Int, Boolean) -> Unit)){
+    fun setOnClickCheckBoxListener(clickCheckBoxListener: ((Int, Boolean) -> Unit)) {
         this.clickCheckBoxListener = clickCheckBoxListener
     }
 
@@ -67,7 +67,12 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             TYPE_DIRECTORY -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.rv_item_directory, parent, false)
                 view.setOnClickListener {
-                    clickListener(view.tag as Int)
+                    if (isFileOperator) {
+                        val checkBox = view.findViewById<CheckBox>(R.id.rv_item_directory_choose)
+                        checkBox.isChecked = !checkBox.isChecked
+                    } else {
+                        clickListener(view.tag as Int)
+                    }
                 }
 
                 view.setOnLongClickListener {
