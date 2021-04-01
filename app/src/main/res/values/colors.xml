@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!--    主题色-->
-    <color name="Dark_blue">#3F51B5></color><!--深蓝-->
-    <color name="Sea_blue">#2196f3></color><!--海蓝-->
-    <color name="purple">#673AB7></color><!--紫色-->
-    <color name="red">#E91E63></color><!--红色-->
-    <color name="Orange">#FF5722></color><!--橙色-->
-    <color name="yellow">#FFC107></color><!--黄色-->
-    <color name="Light_green">#8BC34A></color><!--淡绿色-->
-    <color name="Dark_green">#009688></color><!--深绿-->
-    <color name="gray">#607D8B></color><!--灰色-->
-    <color name="brown">#795548></color><!--褐色-->
-    <color name="Orange_red">#f44336></color><!--橙红色-->
+    <color name="Dark_blue">#FF3F51B5</color><!--深蓝63, 81, 181-->
+    <color name="Sea_blue">#2196f3</color><!--海蓝-->
+    <color name="purple">#673AB7</color><!--紫色-->
+    <color name="red">#E91E63</color><!--红色-->
+    <color name="Orange">#FF5722</color><!--橙色-->
+    <color name="yellow">#FFC107</color><!--黄色-->
+    <color name="Light_green">#8BC34A</color><!--淡绿色-->
+    <color name="Dark_green">#009688</color><!--深绿-->
+    <color name="gray">#607D8B</color><!--灰色-->
+    <color name="brown">#795548</color><!--褐色-->
+    <color name="Orange_red">#f44336</color><!--橙红色-->
 
     <color name="purple_200">#FC8686</color>
     <color name="purple_500">#FF6200EE</color>
