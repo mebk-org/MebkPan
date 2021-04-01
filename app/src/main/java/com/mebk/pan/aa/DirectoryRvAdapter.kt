@@ -63,7 +63,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        LogUtil.err(this.javaClass, "onCreateViewHolder")
         return when (viewType) {
             TYPE_DIRECTORY -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.rv_item_directory, parent, false)
@@ -95,7 +94,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        LogUtil.err(this.javaClass, "onBindViewHolder")
         when (holder) {
             is DirectoryViewHolder -> {
 
@@ -140,6 +138,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             name.endsWith(".doc") || name.endsWith(".docx") -> context.resources.getDrawable(R.drawable.file_word, null)
             name.endsWith(".xls") || name.endsWith(".xlsx") -> context.resources.getDrawable(R.drawable.file_excel, null)
             name.endsWith(".pdf") -> context.resources.getDrawable(R.drawable.file_pdf, null)
+            name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".gif") -> context.resources.getDrawable(R.drawable.file_image, null)
             name.endsWith(".m4a") || name.endsWith(".mp3") || name.endsWith(".aac") || name.endsWith(".wma") -> context.resources.getDrawable(R.drawable.file_music, null)
             name.endsWith(".mp4") || name.endsWith(".flv") || name.endsWith(".avi") || name.endsWith(".wmp") -> context.resources.getDrawable(R.drawable.file_play, null)
             name.endsWith(".bin") -> context.resources.getDrawable(R.drawable.file_binary, null)
