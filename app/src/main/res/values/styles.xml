@@ -18,6 +18,7 @@
     <style name="TextInputLayoutStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/royalblue</item>
     </style>
+
     <style name="tab_menu_item">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -27,4 +28,5 @@
         <item name="android:paddingTop">3dp</item>
         <item name="android:textSize">18sp</item>
     </style>
+
 </resources>

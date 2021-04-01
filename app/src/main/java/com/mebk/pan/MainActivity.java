@@ -1,32 +1,34 @@
 package com.mebk.pan;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.transition.Scene;
+import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.mebk.pan.aa.FragAdapter;
-import com.mebk.pan.ab.TransFormer;
-import com.mebk.pan.home.FragmentDirectory;
-import com.mebk.pan.home.Main_farment_IMG;
+import com.mebk.pan.utils.LogUtil;
+import com.mebk.pan.vm.MainViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     //几个代表页面的常量
     private ViewPager2 v_pager;
     RadioGroup radioGroup;
@@ -34,10 +36,16 @@ public class MainActivity extends AppCompatActivity {
     RadioButton radioButton_img;
     List<Fragment> list;
     BottomNavigationView navView;
+    private ConstraintLayout rootLayout;
+    private MainViewModel mainViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
 //        v_pager = findViewById(R.id.v_pager);
 //        list = new ArrayList<>();
 //        list.add(new FragmentDirectory());
@@ -45,7 +53,14 @@ public class MainActivity extends AppCompatActivity {
 //        FragAdapter adapter = new FragAdapter(this, list);
 //        v_pager.setAdapter(adapter);
 //
-//        inti();
+        initView();
+
+        mainViewModel.isFileOperator().observe(this, item -> {
+            Log.e(TAG, "onCreate: " + item);
+            fileOperatorAnimation(item);
+
+        });
+
 //
 //        //动画
 //        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
@@ -73,11 +88,10 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        navView=findViewById(R.id.nav_view);
+        navView = findViewById(R.id.nav_view);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
-
 
     }
 
@@ -107,13 +121,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-//    private void inti() {
+    private void initView() {
 //        radioButton_file = findViewById(R.id.rb_file);
 //        radioButton_file.setOnClickListener(this);
 //        radioButton_img = findViewById(R.id.rb_img);
 //        radioButton_img.setOnClickListener(this);
-//
-//    }
+        navView = findViewById(R.id.nav_view);
+        rootLayout = findViewById(R.id.container);
+    }
 
     /**
      * 得到position并进行处理
@@ -142,4 +157,16 @@ public class MainActivity extends AppCompatActivity {
 //                break;
 //        }
 //    }
+
+    private void fileOperatorAnimation(boolean isFileOperator) {
+        ConstraintSet constraintSet = new ConstraintSet();
+        if (isFileOperator) {
+            constraintSet.load(this, R.layout.layout_file_opreator);
+        } else {
+            constraintSet.load(this, R.layout.activity_main);
+        }
+        TransitionManager.beginDelayedTransition(rootLayout);
+        constraintSet.applyTo(rootLayout);
+    }
+
 }

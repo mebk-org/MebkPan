@@ -2,6 +2,7 @@ package com.mebk.pan.vm
 
 import android.app.Application
 import android.text.TextUtils
+import androidx.activity.addCallback
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -87,4 +88,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
+
+
+
+
 }
