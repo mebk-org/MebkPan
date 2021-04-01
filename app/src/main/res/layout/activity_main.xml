@@ -4,38 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFF2F2F2"
+    >
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="#009688"
-            android:theme="@style/ToolBarStyle"
-            app:layout_scrollFlags="scroll">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        app:layout_scrollFlags="scroll"
+        android:background="@color/Dark_green"
+        >
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/header_title"
+            android:background="@mipmap/communist"
+            android:src="@drawable/circle_images"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_android_settings"
+            tools:ignore="RtlHardcoded" />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_android_save"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right"
+            tools:ignore="RtlHardcoded" />
+    </androidx.appcompat.widget.Toolbar>
 
-            <ImageView
-                android:id="@+id/img_open_life"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@mipmap/communist"
-                android:src="@drawable/circle_images" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="right"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/ic_main_file"
-                tools:ignore="RtlHardcoded" />
-        </androidx.appcompat.widget.Toolbar>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -59,30 +64,29 @@
             android:layout_gravity="bottom|center|end"
             android:layout_margin="16dp"
             android:clickable="true"
-            android:src="@drawable/f_file_add_file"
+            android:src="@drawable/ic_baseline_addfile"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            android:focusable="true" />
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/nav_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
-                app:labelVisibilityMode="labeled"
-                android:theme="@style/Theme.MebkPan.PopupOverlay"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:menu="@menu/activity_bottom_menu" />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:itemIconTint="@color/bottom_nav_color_state"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/activity_bottom_menu" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
     <include
         layout="@layout/fragment_main_menu"
-        android:id="@+id/fragment_file_file"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        />
+        android:layout_gravity="start" />
 </androidx.drawerlayout.widget.DrawerLayout>
