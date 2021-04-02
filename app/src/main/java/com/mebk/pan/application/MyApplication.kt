@@ -2,6 +2,7 @@ package com.mebk.pan.application
 
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
 import com.mebk.pan.repository.Repository
 import com.mebk.pan.utils.SharePreferenceUtils
 import com.umeng.analytics.MobclickAgent
@@ -13,11 +14,23 @@ class MyApplication : Application() {
     companion object {
         var isLogin = false
         val cookieList = mutableListOf<String>()
+        var path: String? = ""
     }
 
     override fun onCreate() {
         super.onCreate()
-        isLogin = SharePreferenceUtils.getSharePreference(this).getBoolean(SharePreferenceUtils.SP_KEY_LOGIN, false)
+        with(SharePreferenceUtils.getSharePreference(this)) {
+            isLogin = getBoolean(SharePreferenceUtils.SP_KEY_LOGIN, false)
+            path = getString(SharePreferenceUtils.SP_KEY_DOWNLOAD_DIR_KEY, "")
+            if (TextUtils.isEmpty(path)) {
+                with(edit()) {
+                    putString(SharePreferenceUtils.SP_KEY_DOWNLOAD_DIR_KEY, this@MyApplication.getExternalFilesDir(null)!!.path+"/")
+                    commit()
+                }
+                path = this@MyApplication.getExternalFilesDir(null)!!.path + "/"
+            }
+
+        }
 
 
         /**
