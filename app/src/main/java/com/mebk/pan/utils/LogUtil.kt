@@ -7,7 +7,7 @@ class LogUtil {
 
         fun <T> err(clazz: Class<T>, err: String) {
             if (Configure.CONFIGURE_DEBUG) {
-                Log.e(clazz.name, "err:$err ")
+                Log.e(clazz.name, "err:=$err ")
             }
         }
 
