@@ -8,7 +8,7 @@ class ToolUtils {
     companion object {
 
         //kb转换
-        fun sizeChange(size: Int): String {
+        fun sizeChange(size: Long): String {
             val df = DecimalFormat("#.00")
             when {
                 size < 1024 -> {

@@ -10,7 +10,7 @@ data class File(
         @ColumnInfo val name: String,
         @ColumnInfo val path: String,
         @ColumnInfo val pic: String,
-        @ColumnInfo val size: Int,
+        @ColumnInfo val size: Long,
         @ColumnInfo val type: String,
         @ColumnInfo val date: Long,
         @ColumnInfo(name="download_client") val downloadClient: String,
