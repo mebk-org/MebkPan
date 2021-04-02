@@ -64,7 +64,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             downloadList[pos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
             downloadListInfo.value = downloadList
 
-            writeFile(file.client!!, file.file.name)
+            writeFile(file.client!!, file.file.name, pos)
 
             downloadList[pos].state = RetrofitClient.DOWNLOAD_STATE_DONE
             downloadListInfo.value = downloadList
@@ -73,14 +73,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    private fun writeFile(client: String, name: String) = viewModelScope.launch {
+    private suspend fun writeFile(client: String, name: String, pos: Int) = viewModelScope.launch {
         val responseBody = application.repository.downloadFile(client)
         val nio = NIOUtils(MyApplication.path!! + name)
         with(responseBody.byteStream()) {
-            val byteArray = kotlin.ByteArray(4096)
+            val byteArray = ByteArray(65535)
+            var lastProgress = 0
+            var current = 0
             try {
-                while (read(byteArray, 0, 4096) != -1) {
+                while (true) {
+                    val len = read(byteArray)
+
+                    if (len < 0) break
+                    current += len
                     nio.write(byteArray)
+                    if ((current - lastProgress) / (downloadList[pos].file.size.toFloat()) > 0.01) {
+                        LogUtil.err(FileInfoViewModel::class.java, "已下载=${current},进度=${current / downloadList[pos].file.size.toFloat()}")
+                        lastProgress = current
+                    }
+
                 }
             } catch (e: IOException) {
                 LogUtil.err(FileInfoViewModel::class.java, e.toString())

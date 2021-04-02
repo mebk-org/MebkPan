@@ -8,6 +8,6 @@ data class FileInfoDto(
         val path: String,
         val policy: String,
         val query_date: String,
-        val size: Int,
+        val size: Long,
         val updated_at: String
 )
