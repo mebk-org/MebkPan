@@ -1,5 +1,7 @@
 package com.mebk.pan.utils
 
+import android.graphics.drawable.Drawable
+import com.mebk.pan.R
 import java.text.DecimalFormat
 
 class ToolUtils {
@@ -43,6 +45,30 @@ class ToolUtils {
                 path += s
             }
             return path
+        }
+
+        /**
+         * 根据文件类型与文件名选择缩略图
+         *
+         * @param type String
+         * @param name String
+         * @return Drawable
+         */
+        fun chooseDirectoryThumbnail(type: String, name: String): Int {
+            return when {
+                type == "dir" -> R.drawable.directory_32
+                name.endsWith(".zip") || name.endsWith(".rar") || name.endsWith(".7z") -> R.drawable.file_zip
+                name.endsWith(".txt") -> R.drawable.file_txt
+                name.endsWith(".doc") || name.endsWith(".docx") -> R.drawable.file_word
+                name.endsWith(".xls") || name.endsWith(".xlsx") -> R.drawable.file_excel
+                name.endsWith(".pdf") -> R.drawable.file_pdf
+                name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".gif") -> R.drawable.file_image
+                name.endsWith(".m4a") || name.endsWith(".mp3") || name.endsWith(".aac") || name.endsWith(".wma") -> R.drawable.file_music
+                name.endsWith(".mp4") || name.endsWith(".flv") || name.endsWith(".avi") || name.endsWith(".wmp") -> R.drawable.file_play
+                name.endsWith(".bin") -> R.drawable.file_binary
+                name.endsWith(".bat") || name.endsWith(".sh") -> R.drawable.file_code
+                else -> R.drawable.file_32
+            }
         }
     }
 }

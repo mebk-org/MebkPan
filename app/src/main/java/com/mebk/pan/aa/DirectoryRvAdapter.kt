@@ -98,7 +98,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             is DirectoryViewHolder -> {
 
                 holder.filenameTv.text = list[position].name
-                Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
+                Glide.with(context).load(ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
                 holder.timeTv.text = list[position].date
                 holder.itemView.tag = position
 
@@ -126,24 +126,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             }
             else -> {
             }
-        }
-    }
-
-    //根据文件类型与文件名选择缩略图
-    private fun chooseDirectoryThumbnail(type: String, name: String): Drawable {
-        return when {
-            type == "dir" -> context.resources.getDrawable(R.drawable.directory_32, null)
-            name.endsWith(".zip") || name.endsWith(".rar") || name.endsWith(".7z") -> context.resources.getDrawable(R.drawable.file_zip, null)
-            name.endsWith(".txt") -> context.resources.getDrawable(R.drawable.file_txt, null)
-            name.endsWith(".doc") || name.endsWith(".docx") -> context.resources.getDrawable(R.drawable.file_word, null)
-            name.endsWith(".xls") || name.endsWith(".xlsx") -> context.resources.getDrawable(R.drawable.file_excel, null)
-            name.endsWith(".pdf") -> context.resources.getDrawable(R.drawable.file_pdf, null)
-            name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".gif") -> context.resources.getDrawable(R.drawable.file_image, null)
-            name.endsWith(".m4a") || name.endsWith(".mp3") || name.endsWith(".aac") || name.endsWith(".wma") -> context.resources.getDrawable(R.drawable.file_music, null)
-            name.endsWith(".mp4") || name.endsWith(".flv") || name.endsWith(".avi") || name.endsWith(".wmp") -> context.resources.getDrawable(R.drawable.file_play, null)
-            name.endsWith(".bin") -> context.resources.getDrawable(R.drawable.file_binary, null)
-            name.endsWith(".bat") || name.endsWith(".sh") -> context.resources.getDrawable(R.drawable.file_code, null)
-            else -> context.resources.getDrawable(R.drawable.file_32, null)
         }
     }
 
