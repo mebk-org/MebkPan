@@ -22,6 +22,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun login(username: String, pwd: String, captchaCode: String) = viewModelScope.launch {
         val response = application.repository.getUser(username, pwd, captchaCode)
+
         when (response.first) {
             RetrofitClient.REQUEST_SUCCESS -> {
                 loginInfo.value = LOGIN_SUCCESS

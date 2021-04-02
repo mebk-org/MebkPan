@@ -21,6 +21,8 @@ import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.mebk.pan.dtos.DirectoryDto;
 import com.mebk.pan.utils.LogUtil;
 import com.mebk.pan.vm.MainViewModel;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
+    private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         initView();
+
+        onClick();
 
         mainViewModel.isFileOperator().observe(this, item -> {
             fileOperatorAnimation(item);
@@ -61,11 +67,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        navView = findViewById(R.id.nav_view);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
+    }
+
+    private void onClick() {
+        downloadItem.view.setOnClickListener(v -> {
+            mainViewModel.download();
+        });
     }
 
     /**
@@ -97,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         navView = findViewById(R.id.nav_view);
         rootLayout = findViewById(R.id.container);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+
+        downloadItem = tabLayout.getTabAt(0);
+        shareItem = tabLayout.getTabAt(1);
+        deleteItem = tabLayout.getTabAt(2);
+        moreItem = tabLayout.getTabAt(3);
+        navView = findViewById(R.id.nav_view);
     }
 
     /**
@@ -126,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(rootLayout);
         constraintSet.applyTo(rootLayout);
     }
-
-
 
 
 }

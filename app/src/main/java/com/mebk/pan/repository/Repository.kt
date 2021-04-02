@@ -63,13 +63,20 @@ class Repository(val context: Context) {
                     }
                     var valid: Long = 0
                     for (maxAge in response.headers().toMultimap()["nel"]!!) {
+                        LogUtil.err(this@Repository.javaClass, "max_age=${maxAge}")
                         if (maxAge.contains("max_age")) {
-                            val endPos = maxAge.length - 1
-                            val startPos = maxAge.lastIndexOf(":")
+
+                            //查找max_age位置
+                            val rangeStartPos = maxAge.indexOf("max_age")
+                            val rangeEndPos = maxAge.indexOf(",", rangeStartPos)
+
+                            val endPos = if (rangeEndPos == -1) maxAge.length - 1 else rangeEndPos
+                            val startPos = maxAge.indexOf(":", rangeStartPos)
                             if (startPos != -1) {
                                 valid = maxAge.substring(startPos + 1, endPos).toLong()
                             }
                         }
+                        LogUtil.err(this@Repository.javaClass, "valid=${valid}")
                     }
 
 
