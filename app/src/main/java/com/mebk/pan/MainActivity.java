@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -28,53 +31,26 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //几个代表页面的常量
-    private ViewPager2 v_pager;
-    RadioGroup radioGroup;
+    Toolbar toolbar;
+    DrawerLayout drawerLayout;
+    ImageView toolbar_imageView;
     RadioButton radioButton_file;
     RadioButton radioButton_img;
-    List<Fragment> list;
     BottomNavigationView navView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        v_pager = findViewById(R.id.v_pager);
-//        list = new ArrayList<>();
-//        list.add(new FragmentDirectory());
-//        list.add(new Main_farment_IMG());
-//        FragAdapter adapter = new FragAdapter(this, list);
-//        v_pager.setAdapter(adapter);
-//
-//        inti();
-//
-//        //动画
-//        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-//        compositePageTransformer.addTransformer(new MarginPageTransformer(10));
-//        compositePageTransformer.addTransformer(new TransFormer());
-//        v_pager.setPageTransformer(compositePageTransformer);
-//
-//        //检测当前页面
-//        v_pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                //获取页面id并传下去
-//                msetRb(position);
-//                super.onPageSelected(position);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//                super.onPageScrollStateChanged(state);
-//            }
-//        });
 
+        drawerLayout=findViewById(R.id.drawer_layout);
+        toolbar_imageView=findViewById(R.id.img_open_life);
         navView=findViewById(R.id.nav_view);
-
+        toolbar_imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.open();
+            }
+        });
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
@@ -107,13 +83,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-//    private void inti() {
-//        radioButton_file = findViewById(R.id.rb_file);
-//        radioButton_file.setOnClickListener(this);
-//        radioButton_img = findViewById(R.id.rb_img);
-//        radioButton_img.setOnClickListener(this);
-//
-//    }
 
     /**
      * 得到position并进行处理
@@ -131,15 +100,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.rb_file:
-//                v_pager.setCurrentItem(0);
-//                break;
-//            case R.id.rb_img:
-//                v_pager.setCurrentItem(1);
-//                break;
-//        }
-//    }
 }
