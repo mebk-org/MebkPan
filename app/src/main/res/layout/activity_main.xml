@@ -23,7 +23,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@mipmap/communist"
-
+            android:id="@+id/img_open_life"
             android:src="@drawable/circle_images"/>
     </androidx.appcompat.widget.Toolbar>
 
@@ -51,6 +51,7 @@
             android:layout_gravity="bottom|center|end"
             android:layout_margin="16dp"
             android:clickable="true"
+            android:src="@drawable/f_file_add_file"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
             app:layout_constraintRight_toRightOf="parent" />
 
@@ -71,6 +72,7 @@
     </com.google.android.material.appbar.AppBarLayout>
     <include
         layout="@layout/fragment_main_menu"
+        android:id="@+id/fragment_file_file"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start" />
