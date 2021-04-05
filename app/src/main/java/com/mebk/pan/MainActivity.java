@@ -1,15 +1,20 @@
 package com.mebk.pan;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -18,11 +23,21 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.mebk.pan.aa.ExpandableListviewAdapter;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    //数据
+    private String[] data = {
+           "我的分享","离线下载","容量配额","任务队列"
+    };
+    //左侧菜单栏
+    private ExpandableListView expand_list_id;
+    ListView listView;
     //几个代表页面的常量
+
     RadioButton radioButton_file;
     RadioButton radioButton_img;
     BottomNavigationView navView;
@@ -32,20 +47,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        navView=findViewById(R.id.nav_view);
+       //组件初始化
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+        views();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
-        drawer_layout=findViewById(R.id.drawer_layout);
+        ExpandableListviewAdapter adapter = new ExpandableListviewAdapter();
+        expand_list_id.setAdapter(adapter);
+        //默认展开第一个数组
+        expand_list_id.expandGroup(0);
 
-        imageView=findViewById(R.id.header_title);
+        ArrayAdapter<String> list_adapter = new ArrayAdapter<String>(this ,
+                android.R.layout.simple_list_item_1, data );//适配器
+        listView.setAdapter(list_adapter);//添加适配器
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 drawer_layout.open();
             }
         });
+    }
+
+    private void views() {
+        navView=findViewById(R.id.nav_view);
+        drawer_layout=findViewById(R.id.drawer_layout);
+        expand_list_id =findViewById(R.id.expand_list_id_dynamic);
+        listView = findViewById(R.id.list_item_main);//获取组件对象
+        imageView=findViewById(R.id.header_title);
     }
 
     /**
