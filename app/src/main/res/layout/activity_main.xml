@@ -17,13 +17,15 @@
         android:layout_height="?android:attr/actionBarSize"
         app:layout_scrollFlags="scroll"
         android:background="@color/Dark_green"
+        android:id="@+id/toolbar_main"
         >
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:id="@+id/header_title"
-            android:background="@mipmap/communist"
-            android:src="@drawable/circle_images"/>
+            android:src="@drawable/ic_baseline_menu_main"
+
+            />
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -45,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
@@ -59,15 +61,17 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_create_document"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
             android:layout_gravity="bottom|center|end"
             android:layout_margin="16dp"
+            android:background="#4DD0E1"
             android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_baseline_addfile"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
             app:layout_constraintRight_toRightOf="parent"
-            android:focusable="true" />
+            android:contentDescription="TODO" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
