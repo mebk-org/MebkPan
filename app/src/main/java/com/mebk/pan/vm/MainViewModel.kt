@@ -71,7 +71,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     .putString(DOWNLOAD_KEY_OUTPUT_FILE_NAME, file.file.name)
                     .putLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, file.file.size)
                     .build()
-//            writeFile(, , pos)
             val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                     .setInputData(dataBuilder)
                     .build()
@@ -79,36 +78,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             downloadList[pos].state = RetrofitClient.DOWNLOAD_STATE_DONE
             downloadListInfo.value = downloadList
             ++pos
-        }
-    }
-
-
-    private suspend fun writeFile(client: String, name: String, pos: Int) = viewModelScope.launch {
-        val responseBody = application.repository.downloadFile(client)
-        val nio = NIOUtils(MyApplication.path!! + name)
-        with(responseBody.byteStream()) {
-            val byteArray = ByteArray(65535)
-            var lastProgress = 0
-            var current = 0
-            try {
-                while (true) {
-                    val len = read(byteArray)
-
-                    if (len < 0) break
-                    current += len
-//                    nio.write(byteArray)
-                    if ((current - lastProgress) / (downloadList[pos].file.size.toFloat()) > 0.01) {
-                        LogUtil.err(FileInfoViewModel::class.java, "已下载=${current},进度=${current / downloadList[pos].file.size.toFloat()}")
-                        lastProgress = current
-                    }
-
-                }
-            } catch (e: IOException) {
-                LogUtil.err(FileInfoViewModel::class.java, e.toString())
-            }
-
-            LogUtil.err(FileInfoViewModel::class.java, "下载完成")
-            nio.close()
         }
     }
 

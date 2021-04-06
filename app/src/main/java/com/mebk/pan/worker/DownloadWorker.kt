@@ -48,11 +48,12 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                     LogUtil.err(this@DownloadWorker.javaClass, "len=${len}")
 
                     current += len
+                    //应保证写入的字节与接收到的字节大小一致
                     nio.write(byteArray, len)
                     progress = current.toFloat() / size
-                    LogUtil.err(this@DownloadWorker.javaClass, "已下载=${current},进度=${progress},变化=${progress - lastProgress}")
                     if (progress - lastProgress > 0.01F) {
                         lastProgress = progress
+                        LogUtil.err(this@DownloadWorker.javaClass, "已下载=${current},进度=${progress}")
                         setProgress(workDataOf(DOWNLOAD_KEY_PROGRESS to lastProgress))
                     }
 
