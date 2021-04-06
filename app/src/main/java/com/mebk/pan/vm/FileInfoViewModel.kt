@@ -30,7 +30,7 @@ class FileInfoViewModel(application: Application) : AndroidViewModel(application
         with(responseBody.byteStream()) {
             val byteArray = ByteArray(4096)
             while (read(byteArray, 0, 4096) != -1) {
-                nio.write(byteArray)
+                nio.write(byteArray,4096)
             }
             LogUtil.err(FileInfoViewModel::class.java, "下载完成")
             nio.close()
