@@ -36,10 +36,10 @@ class NIOUtils(val path: String) {
      * @param bytes ByteArray
      * @return Boolean
      */
-    suspend fun write(bytes: ByteArray): Boolean = withContext(Dispatchers.IO) {
+    suspend fun write(bytes: ByteArray, size: Int): Boolean = withContext(Dispatchers.IO) {
         byteBuffer?.let {
             it.clear()
-            it.put(bytes)
+            it.put(bytes, 0, size)
             fileChannel
         }?.let {
             if (byteBuffer!!.position() != 0) {

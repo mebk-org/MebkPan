@@ -40,7 +40,7 @@ class RetrofitClient(val context: Context) {
 
         //日志拦截器
         val httpLoggingInterceptor = HttpLoggingInterceptor()
-                .setLevel(if (Configure.CONFIGURE_DEBUG) (HttpLoggingInterceptor.Level.BODY) else (HttpLoggingInterceptor.Level.NONE))
+                .setLevel(if(CONFIGURE_DEBUG) (HttpLoggingInterceptor.Level.BODY) else (HttpLoggingInterceptor.Level.NONE))
 
         val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(AddCookiesInterceptor(context))
