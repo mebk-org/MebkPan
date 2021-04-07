@@ -14,6 +14,7 @@ import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.net.WebService
 import com.mebk.pan.utils.*
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -28,31 +29,48 @@ class Repository(val context: Context) {
 
     private var database = DataBase.getDatabase(context)
 
-    suspend fun getUserCookie(uid: String): List<User> {
-        return database.userDao().getUserCookie(uid)
-    }
-
-    suspend fun getFile(): List<File> {
-        LogUtil.err(this.javaClass, "从本地读取")
-        return database.fileDao().getFile()
-    }
-
-    suspend fun updateDownloadClient(file: FileUpdateDownloadClient) {
-        database.fileDao().updateDownloadClient(file)
-    }
-
-    //存储下载列表
-    suspend fun addDownloadInfo(file: DownloadInfo) {
-        database.downloadInfoDao().insertDownloadFile(file)
-    }
-
-    //更新下载列表
-    suspend fun updateDownloadInfo(file: DownloadInfo) {
-        database.downloadInfoDao().updateDownloadFile(file)
-    }
+    /**
+     *从本地获取cookie
+     */
+    suspend fun getUserCookie(uid: String): List<User> = database.userDao().getUserCookie(uid)
 
 
-    //获取用户信息
+    /**
+     * 从本地获取文件
+     */
+    suspend fun getFile(): List<File> = database.fileDao().getFile()
+
+
+    /**
+     * 更新本地下载链接
+     */
+    suspend fun updateDownloadClient(file: FileUpdateDownloadClient) = database.fileDao().updateDownloadClient(file)
+
+
+    /**
+     * 存储下载列表
+     */
+    suspend fun addDownloadInfo(file: DownloadInfo) = database.downloadInfoDao().insertDownloadFile(file)
+
+
+    /**
+     * 更新下载列表
+     */
+    suspend fun updateDownloadInfo(file: DownloadInfo) = database.downloadInfoDao().updateDownloadFile(file)
+
+    /**
+     * 获取历史下载记录
+     */
+    fun getHistoryDownload(): Flow<List<DownloadInfo>> = database.downloadInfoDao().getDownloadInfo()
+
+
+    /**
+     * 登录
+     * @param username String 用户名
+     * @param pwd String 密码
+     * @param captchaCode String 验证码
+     * @return Pair<String, UserDto?> 用户信息 pair.first!=REQUEST_SUCCESS 登录失败
+     */
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Pair<String, UserDto?> {
         val jsonObj = JsonObject()
         jsonObj.addProperty("username", username)
@@ -123,7 +141,10 @@ class Repository(val context: Context) {
     }
 
 
-    //获取网盘文件
+    /**
+     * 获取网盘文件
+     * @return Pair<String, DirectoryDto?> 网盘文件信息
+     */
     suspend fun getDirectory(): Pair<String, DirectoryDto?> {
         var pair: Pair<String, DirectoryDto?>
         try {
@@ -165,7 +186,12 @@ class Repository(val context: Context) {
     }
 
 
-    //获取文件夹下内容
+    /**
+     * 获取文件夹下内容
+     *
+     * @param path String 文件夹所在路径
+     * @return Pair<String, DirectoryDto?> 文件信息
+     */
     suspend fun getInternalFile(path: String): Pair<String, DirectoryDto?> {
         var pair = Pair<String, DirectoryDto?>("", null)
         try {
@@ -191,7 +217,12 @@ class Repository(val context: Context) {
         return pair
     }
 
-    //获取下载链接
+    /**
+     * 获取下载链接
+     *
+     * @param id String 代下载文件id
+     * @return Pair<String, String> 文件下载链接
+     */
     suspend fun getDownloadClient(id: String): Pair<String, String> {
         var pair = Pair<String, String>("", "")
         try {
@@ -219,13 +250,26 @@ class Repository(val context: Context) {
 
 
     //下载文件
+    /**
+     * 下载文件
+     *
+     * @param url String 文件下载路径
+     * @return ResponseBody 字节流
+     */
     suspend fun downloadFile(url: String): ResponseBody {
         return retrofit.create(WebService::class.java)
                 .downloadFile(url)
     }
 
 
-    //获取文件信息
+    /**
+     * 获取文件详细信息
+     *
+     * @param id String 文件id
+     * @param isFolder Boolean 是否为文件夹
+     * @param traceRoot Boolean
+     * @return Pair<String, FileInfoDto?> 文件信息
+     */
     suspend fun getFileInfo(id: String, isFolder: Boolean, traceRoot: Boolean = false): Pair<String, FileInfoDto?> {
         var pair = Pair<String, FileInfoDto?>("", null)
         try {

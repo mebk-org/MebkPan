@@ -39,6 +39,7 @@ class HistoryDownloadRvAdapter(val list: List<DownloadInfo>, val context: Contex
                         sizeTv.text = "0 Mb/s"
                     } else {
                         sizeTv.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
                     }
 
 

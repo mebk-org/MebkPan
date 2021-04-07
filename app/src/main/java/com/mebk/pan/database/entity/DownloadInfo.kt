@@ -3,11 +3,13 @@ package com.mebk.pan.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 /**
  * 下载信息 (包含历史下载)
  */
 @Entity(tableName = "download_info_table")
+@Serializable
 data class DownloadInfo(
         @PrimaryKey val id: String,
 

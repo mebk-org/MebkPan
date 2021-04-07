@@ -11,9 +11,7 @@ class AddCookiesInterceptor(var context: Context) : Interceptor {
 
         val builder = chain.request().newBuilder()
         if (MyApplication.isLogin) {
-            LogUtil.err(this.javaClass, "添加cookie list.size=${MyApplication.cookieList.size}")
             for (cookie in MyApplication.cookieList) {
-                LogUtil.err(this.javaClass, "cookie=$cookie")
                 builder.addHeader("Cookie", cookie)
             }
         }

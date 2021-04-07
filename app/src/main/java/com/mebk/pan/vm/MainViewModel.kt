@@ -14,9 +14,10 @@ import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-
 
     private val application = application as MyApplication
     private val workManager = WorkManager.getInstance(application)
@@ -25,6 +26,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
     var downloadListInfo = MutableLiveData<MutableList<DownloadInfo>>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
+    val downloadWorkInfo = workManager.getWorkInfosByTagLiveData(DOWNLOAD_TAG)
     private val channel = Channel<DownloadInfo>()
 
 
@@ -76,20 +78,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             file.client = pair.second
             file.state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
-            channel.send(file)
             application.repository.updateDownloadInfo(file)
+            channel.send(file)
         }
     }
 
     private suspend fun downloadFile() = viewModelScope.launch {
         for (file in channel) {
             val dataBuilder = Data.Builder()
-                    .putString(DOWNLOAD_KEY_INPUT_FILE_CLIENT, file.client!!)
-                    .putString(DOWNLOAD_KEY_OUTPUT_FILE_NAME, file.name)
-                    .putLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, file.size)
+                    .putString(DOWNLOAD_KEY_OUTPUT_FILE, Json.encodeToString(file))
                     .build()
             val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                     .setInputData(dataBuilder)
+                    .addTag(DOWNLOAD_TAG)
                     .build()
             workManager.enqueue(downloadRequest)
         }
