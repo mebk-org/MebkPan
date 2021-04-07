@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,8 @@ import com.mebk.pan.R
 import com.mebk.pan.aa.HistoryDownloadRvAdapter
 import com.mebk.pan.database.entity.DownloadInfo
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.vm.DownloadViewModel
+import com.mebk.pan.vm.HistoryDownloadViewModel
 import com.mebk.pan.vm.MainViewModel
 
 class FragmentHistoryDownload : Fragment() {
@@ -20,6 +23,7 @@ class FragmentHistoryDownload : Fragment() {
     private lateinit var adapter: HistoryDownloadRvAdapter
     private var listview = mutableListOf<DownloadInfo>()
     private val mainViewModel by activityViewModels<MainViewModel>()
+    private val downloadVewModel by viewModels<HistoryDownloadViewModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_histroy_download, container, false)
 
@@ -29,11 +33,12 @@ class FragmentHistoryDownload : Fragment() {
         rv.adapter = adapter
 
         mainViewModel.downloadListInfo.observe(viewLifecycleOwner, Observer {
+
+        })
+
+        downloadVewModel.downloadInfo.observe(viewLifecycleOwner, Observer {
             listview.clear()
             listview.addAll(it)
-            for (n in it) {
-                LogUtil.err(this.javaClass, "file=${n.toString()}")
-            }
             adapter.notifyDataSetChanged()
         })
 
