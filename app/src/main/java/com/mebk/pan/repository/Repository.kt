@@ -5,6 +5,7 @@ import android.os.SystemClock
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
+import com.mebk.pan.database.entity.DownloadInfo
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.database.entity.FileUpdateDownloadClient
 import com.mebk.pan.database.entity.User
@@ -40,6 +41,16 @@ class Repository(val context: Context) {
         database.fileDao().updateDownloadClient(file)
     }
 
+    //存储下载列表
+    suspend fun addDownloadInfo(file: DownloadInfo) {
+        database.downloadInfoDao().insertDownloadFile(file)
+    }
+
+    //更新下载列表
+    suspend fun updateDownloadInfo(file: DownloadInfo) {
+        database.downloadInfoDao().updateDownloadFile(file)
+    }
+
 
     //获取用户信息
     suspend fun getUser(username: String, pwd: String, captchaCode: String): Pair<String, UserDto?> {
@@ -47,7 +58,7 @@ class Repository(val context: Context) {
         jsonObj.addProperty("username", username)
         jsonObj.addProperty("Password", pwd)
         jsonObj.addProperty("captchaCode", captchaCode)
-        val requestBody = RequestBody.create(MediaType.parse(HttpConfigure.CONTENT_TYPE_JSON), jsonObj.toString())
+        val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
         var pair: Pair<String, UserDto?>
         try {
             val response = retrofit.create(WebService::class.java)
@@ -159,7 +170,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, DirectoryDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getInternalFile(ToolUtils.splitUrl(HttpConfigure.API_DIRECTORY, path))
+                    .getInternalFile(ToolUtils.splitUrl(API_DIRECTORY, path))
             LogUtil.err(this::class.java, response.toString())
             with(response) {
                 if (body()?.code == 0) {
@@ -185,7 +196,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, String>("", "")
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getDownloadFileClient(ToolUtils.splitUrl(HttpConfigure.API_DOWNLOAD_CLIENT, id))
+                    .getDownloadFileClient(ToolUtils.splitUrl(API_DOWNLOAD_CLIENT, id))
             LogUtil.err(this::class.java, response.toString())
             with(response) {
                 if (body()?.code == 0) {
@@ -219,7 +230,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, FileInfoDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getFileInfo(ToolUtils.splitUrl(HttpConfigure.API_FILE_INFO, id), traceRoot, isFolder)
+                    .getFileInfo(ToolUtils.splitUrl(API_FILE_INFO, id), traceRoot, isFolder)
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
