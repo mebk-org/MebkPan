@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
-import com.mebk.pan.bean.DownloadPrepareBean
+import com.mebk.pan.database.entity.DownloadInfo
 import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.ToolUtils
 
-class HistoryDownloadRvAdapter(val list: List<DownloadPrepareBean>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HistoryDownloadRvAdapter(val list: List<DownloadInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -28,8 +28,8 @@ class HistoryDownloadRvAdapter(val list: List<DownloadPrepareBean>, val context:
         when (holder) {
             is WaitingViewHolder -> {
                 with(holder) {
-                    Glide.with(context).load(ToolUtils.chooseDirectoryThumbnail(list[position].file.type, list[position].file.name)).into(thumbnailIv)
-                    filenameTv.text = list[position].file.name
+                    Glide.with(context).load(ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name)).into(thumbnailIv)
+                    filenameTv.text = list[position].name
                     holder.itemView.tag = position
                     stateTv.text = RetrofitClient.checkDownloadState(list[position].state!!)
                     if (list[position].state == RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {

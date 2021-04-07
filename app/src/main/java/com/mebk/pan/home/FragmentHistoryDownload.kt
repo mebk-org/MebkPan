@@ -8,19 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mebk.pan.R
 import com.mebk.pan.aa.HistoryDownloadRvAdapter
-import com.mebk.pan.bean.DownloadPrepareBean
+import com.mebk.pan.database.entity.DownloadInfo
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.vm.MainViewModel
-import kotlinx.android.synthetic.main.fragment_directory.*
 
 class FragmentHistoryDownload : Fragment() {
     private lateinit var rv: RecyclerView
     private lateinit var adapter: HistoryDownloadRvAdapter
-    private var listview = mutableListOf<DownloadPrepareBean>()
+    private var listview = mutableListOf<DownloadInfo>()
     private val mainViewModel by activityViewModels<MainViewModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_histroy_download, container, false)
