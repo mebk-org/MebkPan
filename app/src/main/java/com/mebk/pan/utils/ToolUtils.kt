@@ -3,6 +3,8 @@ package com.mebk.pan.utils
 import android.graphics.drawable.Drawable
 import com.mebk.pan.R
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ToolUtils {
     companion object {
@@ -70,5 +72,20 @@ class ToolUtils {
                 else -> R.drawable.file_32
             }
         }
+
+        /**
+         * utc时间转成local时间
+         * @param utcTime
+         * @return
+         */
+        fun utcToLocal(utcTime: String): Date {
+            val sdf = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z",Locale.ENGLISH)
+            sdf.timeZone = TimeZone.getTimeZone("GMT")
+            val utcDate = sdf.parse(utcTime)
+            sdf.timeZone = TimeZone.getDefault()
+            val localTime = sdf.format(utcDate.time)
+            return sdf.parse(localTime)
+        }
+
     }
 }

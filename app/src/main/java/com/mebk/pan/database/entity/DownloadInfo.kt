@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 /**
  * 下载信息 (包含历史下载)
  */
+
 @Entity(tableName = "download_info_table")
-@Serializable
 data class DownloadInfo(
         @PrimaryKey val id: String,
 
@@ -28,5 +28,5 @@ data class DownloadInfo(
 
         @ColumnInfo var state: Int,
 
-        )
+)
 

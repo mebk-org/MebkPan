@@ -12,5 +12,4 @@ class HistoryDownloadViewModel(application: Application) : AndroidViewModel(appl
     private val myApplication= application as MyApplication
     val downloadInfo = myApplication.repository.getHistoryDownload().asLiveData()
 
-
 }

@@ -90,24 +90,30 @@ class Repository(val context: Context) {
                             add(cookie)
                         }
                     }
-                    var valid: Long = 0
-                    for (maxAge in response.headers().toMultimap()["nel"]!!) {
-                        LogUtil.err(this@Repository.javaClass, "max_age=${maxAge}")
-                        if (maxAge.contains("max_age")) {
-
-                            //查找max_age位置
-                            val rangeStartPos = maxAge.indexOf("max_age")
-                            val rangeEndPos = maxAge.indexOf(",", rangeStartPos)
-
-                            val endPos = if (rangeEndPos == -1) maxAge.length - 1 else rangeEndPos
-                            val startPos = maxAge.indexOf(":", rangeStartPos)
-                            if (startPos != -1) {
-                                valid = maxAge.substring(startPos + 1, endPos).toLong()
-                            }
-                        }
-                        LogUtil.err(this@Repository.javaClass, "valid=${valid}")
+                    var ignore: Long = 0
+                    var start: Long = 0
+                    for (expires in response.headers().toMultimap()["expires"]!!) {
+//                        LogUtil.err(this@Repository.javaClass, "max_age=${maxAge}")
+//                        if (maxAge.contains("max_age")) {
+//
+//                            //查找max_age位置
+//                            val rangeStartPos = maxAge.indexOf("max_age")
+//                            val rangeEndPos = maxAge.indexOf(",", rangeStartPos)
+//
+//                            val endPos = if (rangeEndPos == -1) maxAge.length - 1 else rangeEndPos
+//                            val startPos = maxAge.indexOf(":", rangeStartPos)
+//                            if (startPos != -1) {
+//                                valid = maxAge.substring(startPos + 1, endPos).toLong()
+//                            }
+//                        }
+                        ignore = ToolUtils.utcToLocal(expires).time
+//
                     }
+                    for (date in response.headers().toMultimap()["date"]!!) {
 
+                        start = ToolUtils.utcToLocal(date).time
+//
+                    }
 
                     body()?.data?.let {
 
@@ -122,7 +128,7 @@ class Repository(val context: Context) {
                             putBoolean(SharePreferenceUtils.SP_KEY_LOGIN, true)
                             putString(SharePreferenceUtils.SP_KEY_UID, it.id)
                             putLong(SharePreferenceUtils.SP_KEY_LOGIN_TIME, SystemClock.uptimeMillis())
-                            putLong(SharePreferenceUtils.SP_KEY_COOKIE_VALID, valid)
+                            putLong(SharePreferenceUtils.SP_KEY_COOKIE_VALID, (ignore - start) / 1000)
                             commit()
                         }
                     }
