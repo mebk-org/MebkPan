@@ -122,12 +122,12 @@ class Repository(val context: Context) {
 //                                valid = maxAge.substring(startPos + 1, endPos).toLong()
 //                            }
 //                        }
-                        ignore = ToolUtils.utcToLocal(expires).time
+                        ignore = ToolUtils.utcToLocal(expires,ToolUtils.DATE_TYPE_GMT).time
 //
                     }
                     for (date in response.headers().toMultimap()["date"]!!) {
 
-                        start = ToolUtils.utcToLocal(date).time
+                        start = ToolUtils.utcToLocal(date,ToolUtils.DATE_TYPE_GMT).time
 //
                     }
 

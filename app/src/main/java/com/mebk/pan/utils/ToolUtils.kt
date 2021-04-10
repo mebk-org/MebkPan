@@ -73,18 +73,34 @@ class ToolUtils {
             }
         }
 
+
+        const val DATE_TYPE_UTC = 0
+        const val DATE_TYPE_GMT = 1
+
         /**
          * utc时间转成local时间
          * @param utcTime
          * @return
          */
-        fun utcToLocal(utcTime: String): Date {
-            val sdf = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z",Locale.ENGLISH)
-            sdf.timeZone = TimeZone.getTimeZone("GMT")
-            val utcDate = sdf.parse(utcTime)
-            sdf.timeZone = TimeZone.getDefault()
-            val localTime = sdf.format(utcDate.time)
-            return sdf.parse(localTime)
+        fun utcToLocal(time: String, dateType: Int): Date {
+            var sdf: SimpleDateFormat? = null
+            when (dateType) {
+                DATE_TYPE_GMT -> {
+                    sdf = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH)
+                    sdf.timeZone = TimeZone.getTimeZone("GMT")
+                }
+                DATE_TYPE_UTC -> {
+                    sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                    sdf.timeZone = TimeZone.getTimeZone("UTC")
+                }
+            }
+            sdf?.let {
+                val utcDate = it.parse(time)
+                it.timeZone = TimeZone.getDefault()
+                val localTime = it.format(utcDate.time)
+                return it.parse(localTime)
+            }
+            return Date(0L)
         }
 
     }
