@@ -19,10 +19,15 @@ class RetrofitClient(val context: Context) {
     companion object {
         const val REQUEST_SUCCESS = "SUCCESS"
         const val REQUEST_TIMEOUT = "TIMEOUT"
+
+        /*
+        * wait 等待下载 未获取链接
+        * prepare  获取链接 等待下载
+        * */
         const val DOWNLOAD_STATE_WAIT = 0
         const val DOWNLOAD_STATE_PREPARE = 1
-        const val DOWNLOAD_STATE_DONE = 2
-        const val DOWNLOAD_STATE_DOWNLOADING = 3
+        const val DOWNLOAD_STATE_DOWNLOADING = 2
+        const val DOWNLOAD_STATE_DONE = 3
         const val DOWNLOAD_STATE_ERR = 4
         const val DOWNLOAD_STATE_NETWORK_ERR = 5
 
