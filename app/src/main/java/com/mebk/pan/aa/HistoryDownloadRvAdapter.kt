@@ -34,7 +34,6 @@ class HistoryDownloadRvAdapter(val list: List<DownloadInfo>, val context: Contex
                     stateTv.text = RetrofitClient.checkDownloadState(list[position].state!!)
                     if (list[position].state == RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
                         progressBar.visibility = View.VISIBLE
-                        progressBar.progress = 50
                         sizeTv.visibility = View.VISIBLE
                         sizeTv.text = "0 Mb/s"
                     } else {
