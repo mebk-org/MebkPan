@@ -78,7 +78,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             file.client = pair.second
-            file.state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+            file.state = RetrofitClient.DOWNLOAD_STATE_PREPARE
             application.repository.updateDownloadingInfo(file)
             channel.send(file)
         }
