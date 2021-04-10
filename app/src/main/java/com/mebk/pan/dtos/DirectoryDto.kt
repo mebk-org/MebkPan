@@ -10,7 +10,7 @@ data class DirectoryDto(
             val name: String,
             val path: String,
             val pic: String,
-            val size: Int,
+            val size: Long,
             val type: String
     )
 }

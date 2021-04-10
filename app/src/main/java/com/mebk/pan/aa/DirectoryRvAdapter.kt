@@ -2,6 +2,7 @@ package com.mebk.pan.aa
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.ToolUtils
 
 class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryDto.Object>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,7 +23,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     var isFileOperator = false
     private lateinit var clickMoreImageViewListener: ((Int) -> Unit)
     private lateinit var clickCheckBoxListener: ((Int, Boolean) -> Unit)
-
 
     companion object {
         //文件
@@ -43,7 +44,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         this.clickMoreImageViewListener = clickMoreImageViewListener
     }
 
-    fun setOnClickCheckBoxListener(clickCheckBoxListener: ((Int, Boolean) -> Unit)){
+    fun setOnClickCheckBoxListener(clickCheckBoxListener: ((Int, Boolean) -> Unit)) {
         this.clickCheckBoxListener = clickCheckBoxListener
     }
 
@@ -62,12 +63,16 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
         return when (viewType) {
             TYPE_DIRECTORY -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.rv_item_directory, parent, false)
                 view.setOnClickListener {
-                    clickListener(view.tag as Int)
+                    if (isFileOperator) {
+                        val checkBox = view.findViewById<CheckBox>(R.id.rv_item_directory_choose)
+                        checkBox.isChecked = !checkBox.isChecked
+                    } else {
+                        clickListener(view.tag as Int)
+                    }
                 }
 
                 view.setOnLongClickListener {
@@ -93,7 +98,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             is DirectoryViewHolder -> {
 
                 holder.filenameTv.text = list[position].name
-                Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
+                Glide.with(context).load(ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
                 holder.timeTv.text = list[position].date
                 holder.itemView.tag = position
 
@@ -105,7 +110,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
 
                 holder.check.visibility = if (isFileOperator) VISIBLE else INVISIBLE
                 holder.moreIv.visibility = if (!isFileOperator) VISIBLE else INVISIBLE
-
+                holder.check.isChecked = false
                 holder.moreIv.setOnClickListener {
                     clickMoreImageViewListener(position)
                 }
@@ -124,23 +129,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         }
     }
 
-    //根据文件类型与文件名选择缩略图
-    private fun chooseDirectoryThumbnail(type: String, name: String): Drawable {
-        return when {
-            type == "dir" -> context.resources.getDrawable(R.drawable.directory_32, null)
-            name.endsWith(".zip") || name.endsWith(".rar") || name.endsWith(".7z") -> context.resources.getDrawable(R.drawable.file_zip, null)
-            name.endsWith(".txt") -> context.resources.getDrawable(R.drawable.file_txt, null)
-            name.endsWith(".doc") || name.endsWith(".docx") -> context.resources.getDrawable(R.drawable.file_word, null)
-            name.endsWith(".xls") || name.endsWith(".xlsx") -> context.resources.getDrawable(R.drawable.file_excel, null)
-            name.endsWith(".pdf") -> context.resources.getDrawable(R.drawable.file_pdf, null)
-            name.endsWith(".m4a") || name.endsWith(".mp3") || name.endsWith(".aac") || name.endsWith(".wma") -> context.resources.getDrawable(R.drawable.file_music, null)
-            name.endsWith(".mp4") || name.endsWith(".flv") || name.endsWith(".avi") || name.endsWith(".wmp") -> context.resources.getDrawable(R.drawable.file_play, null)
-            name.endsWith(".bin") -> context.resources.getDrawable(R.drawable.file_binary, null)
-            name.endsWith(".bat") || name.endsWith(".sh") -> context.resources.getDrawable(R.drawable.file_code, null)
-            else -> context.resources.getDrawable(R.drawable.file_32, null)
-        }
-    }
-
     override fun getItemViewType(position: Int): Int {
         return when (list[position].type) {
             "refresh" -> TYPE_REFRESH
@@ -148,4 +136,6 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
         }
 
     }
+
+
 }

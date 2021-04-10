@@ -9,6 +9,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,8 @@ import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.mebk.pan.dtos.DirectoryDto;
 import com.mebk.pan.utils.LogUtil;
 import com.mebk.pan.vm.MainViewModel;
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
+    private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-//        v_pager = findViewById(R.id.v_pager);
-//        list = new ArrayList<>();
-//        list.add(new FragmentDirectory());
-//        list.add(new Main_farment_IMG());
-//        FragAdapter adapter = new FragAdapter(this, list);
-//        v_pager.setAdapter(adapter);
-//
         initView();
+
+        onClick();
 
         mainViewModel.isFileOperator().observe(this, item -> {
             fileOperatorAnimation(item);
@@ -67,38 +67,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//
-//        //动画
-//        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-//        compositePageTransformer.addTransformer(new MarginPageTransformer(10));
-//        compositePageTransformer.addTransformer(new TransFormer());
-//        v_pager.setPageTransformer(compositePageTransformer);
-//
-//        //检测当前页面
-//        v_pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                //获取页面id并传下去
-//                msetRb(position);
-//                super.onPageSelected(position);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//                super.onPageScrollStateChanged(state);
-//            }
-//        });
-
-        navView = findViewById(R.id.nav_view);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
+    }
+
+    private void onClick() {
+        downloadItem.view.setOnClickListener(v -> {
+            mainViewModel.download();
+        });
     }
 
     /**
@@ -128,12 +106,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-//        radioButton_file = findViewById(R.id.rb_file);
-//        radioButton_file.setOnClickListener(this);
-//        radioButton_img = findViewById(R.id.rb_img);
-//        radioButton_img.setOnClickListener(this);
         navView = findViewById(R.id.nav_view);
         rootLayout = findViewById(R.id.container);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+
+        downloadItem = tabLayout.getTabAt(0);
+        shareItem = tabLayout.getTabAt(1);
+        deleteItem = tabLayout.getTabAt(2);
+        moreItem = tabLayout.getTabAt(3);
+        navView = findViewById(R.id.nav_view);
     }
 
     /**
@@ -152,17 +133,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.rb_file:
-//                v_pager.setCurrentItem(0);
-//                break;
-//            case R.id.rb_img:
-//                v_pager.setCurrentItem(1);
-//                break;
-//        }
-//    }
 
     private void fileOperatorAnimation(boolean isFileOperator) {
         ConstraintSet constraintSet = new ConstraintSet();
@@ -174,6 +144,5 @@ public class MainActivity extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(rootLayout);
         constraintSet.applyTo(rootLayout);
     }
-
 
 }

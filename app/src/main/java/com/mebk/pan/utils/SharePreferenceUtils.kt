@@ -30,6 +30,8 @@ class SharePreferenceUtils {
         //上次刷新时间
         const val SP_KEY_REFRESH_TIME = "refreshTime"
 
+        //下载位置
+        const val SP_KEY_DOWNLOAD_DIR_KEY = "download_dir"
 
         fun getSharePreference(context: Context, name: String = SP_USER): SharedPreferences {
             return context.getSharedPreferences(name, Context.MODE_PRIVATE)

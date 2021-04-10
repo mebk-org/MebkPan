@@ -38,7 +38,7 @@ class FragmentDownload : Fragment() {
         LogUtil.err(this.javaClass, "path=$path,id=$id")
         if (TextUtils.isEmpty(path) || TextUtils.isEmpty(id)) {
             Toast.makeText(activity, "无法获取参数，请重新打开", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_downloadFragment_to_fragment_directory)
+//            findNavController().navigate(R.id.action_downloadFragment_to_fragment_directory)
         } else {
             downloadViewModel.download(id!!)
         }

@@ -63,7 +63,7 @@ class FragmentFileInfo : Fragment() {
 
         downloadBtn.isClickable = false
         downloadBtn.setOnClickListener {
-            val path = activity?.getExternalFilesDir(null)!!.path + name
+            val path = activity?.getExternalFilesDir(null)!!.path + "/" + name
             fileInfoViewModel.writeFile(path)
             with(downloadBtn) {
                 setBackgroundColor(ResourcesCompat.getColor(resources, R.color.communism_clink, null))
