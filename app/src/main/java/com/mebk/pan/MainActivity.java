@@ -68,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        mainViewModel.getDownloadingList().observe(this, item -> {
+            if (item.isEmpty()) return;
+            if (!mainViewModel.isDownloadingDone()) {
+                mainViewModel.setDownloadingDone(true);
+                mainViewModel.downloadFile(item.get(mainViewModel.getCurrentPos()));
+            }
+        });
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 

@@ -48,8 +48,8 @@ class FragmentHistoryDownload : Fragment() {
         })
 
         mainViewModel.downloadWorkInfo.observe(viewLifecycleOwner, {
-
-            when (it[mainViewModel.currentPos].state) {
+            if (it.isEmpty()) return@observe
+            when (it[0].state) {
                 WorkInfo.State.ENQUEUED -> {
                     if (listview.isNotEmpty()) {
                         listview[mainViewModel.currentPos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
@@ -70,17 +70,8 @@ class FragmentHistoryDownload : Fragment() {
                         }
                     }
                 }
-                WorkInfo.State.SUCCEEDED -> {
-//                    if (listview.isNotEmpty()) {
-//                        listview.removeFirst()
-//                        adapter.notifyDataSetChanged()
-//                    }
-                }
-                WorkInfo.State.CANCELLED -> {
-
-                }
-                WorkInfo.State.FAILED -> {
-
+                else -> {
+                    mainViewModel.downloadDone(it[0].state)
                 }
             }
 
