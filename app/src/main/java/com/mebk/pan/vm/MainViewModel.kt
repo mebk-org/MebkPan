@@ -11,6 +11,7 @@ import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
+import kotlinx.android.synthetic.main.rv_item_history_download_waiting.view.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -94,6 +95,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * 下载文件
+     * @param file DownloadingInfo
+     * @return Job
+     */
     fun downloadFile(file: DownloadingInfo) = viewModelScope.launch {
         val dataBuilder = Data.Builder()
                 .putString(DOWNLOAD_KEY_OUTPUT_FILE_ID, file.id)
@@ -111,13 +117,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
     }
 
-    fun downloadDone() = viewModelScope.launch {
-        if (downloadingList.value!!.size > 1) downloadFile(downloadingList.value!![1])
-        myApplication.repository.deleteDownloadingInfo(downloadingList.value!![0])
-    }
-
-    fun workerFinish(uuid: UUID) {
-        workManager.cancelWorkById(uuid)
+    fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
+        when (state) {
+            WorkInfo.State.SUCCEEDED -> {
+                if (downloadingList.value!!.size > 1) downloadFile(downloadingList.value!![1])
+                downloadingList.value?.get(currentPos)?.let { myApplication.repository.deleteDownloadingInfo(it) }
+            }
+            WorkInfo.State.CANCELLED -> {
+                ++currentPos
+                if (currentPos >= downloadingList.value!!.size) isDownloadingDone = true
+            }
+            WorkInfo.State.FAILED -> {
+                ++currentPos
+                if (currentPos >= downloadingList.value!!.size) isDownloadingDone = true
+            }
+        }
     }
 
 }
