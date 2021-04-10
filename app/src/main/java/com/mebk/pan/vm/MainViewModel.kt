@@ -50,7 +50,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun download() = viewModelScope.launch {
 
-        downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, it.size, RetrofitClient.DOWNLOAD_STATE_WAIT, 0) }.toMutableList()
+        downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0) }.toMutableList()
 
         downloadList.forEach {
             application.repository.addDownloadingInfo(it)

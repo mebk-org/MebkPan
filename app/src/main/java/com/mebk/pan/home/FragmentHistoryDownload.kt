@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import com.mebk.pan.R
-import com.mebk.pan.aa.HistoryDownloadRvAdapter
-import com.mebk.pan.database.entity.HistoryDownloadInfo
+import com.mebk.pan.aa.DownloadRvAdapter
+import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.utils.DOWNLOAD_KEY_PROGRESS
 import com.mebk.pan.vm.HistoryDownloadViewModel
 import com.mebk.pan.vm.MainViewModel
@@ -20,8 +20,8 @@ import kotlinx.android.synthetic.main.rv_item_history_download_waiting.view.*
 
 class FragmentHistoryDownload : Fragment() {
     private lateinit var rv: RecyclerView
-    private lateinit var adapter: HistoryDownloadRvAdapter
-    private var listview = mutableListOf<HistoryDownloadInfo>()
+    private lateinit var adapter: DownloadRvAdapter
+    private var listview = mutableListOf<DownloadingInfo>()
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val downloadVewModel by viewModels<HistoryDownloadViewModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,7 +29,7 @@ class FragmentHistoryDownload : Fragment() {
 
         rv = view.findViewById(R.id.fragment_history_download_rv)
         rv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        adapter = HistoryDownloadRvAdapter(listview, requireActivity())
+        adapter = DownloadRvAdapter(listview, requireActivity())
         rv.adapter = adapter
 
         mainViewModel.downloadListInfo.observe(viewLifecycleOwner, {
