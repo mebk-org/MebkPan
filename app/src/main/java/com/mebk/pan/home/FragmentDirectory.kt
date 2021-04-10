@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.WorkInfo
 import com.mebk.pan.R
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.dtos.DirectoryDto
@@ -139,6 +140,30 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         })
 
+        mainViewModel.downloadWorkInfo.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()) return@Observer
+            for (info in it) {
+                LogUtil.err(this.javaClass, "state=$info")
+                if (info.state.isFinished) {
+                    mainViewModel.workerFinish(info.id)
+                }
+            }
+            val info = it[0]
+            when (info.state) {
+                WorkInfo.State.SUCCEEDED -> mainViewModel.downloadDone()
+            }
+
+
+        })
+
+        mainViewModel.downloadingList.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()) return@Observer
+            if (!mainViewModel.isDownloadingDone) {
+                mainViewModel.isDownloadingDone = true
+                mainViewModel.downloadFile(it[0])
+            }
+        })
+
         return view
     }
 
@@ -151,4 +176,6 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         }
         return false
     }
+
+
 }

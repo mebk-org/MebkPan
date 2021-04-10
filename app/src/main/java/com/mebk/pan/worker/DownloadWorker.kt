@@ -69,7 +69,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
             } catch (e: IOException) {
                 file.state = RetrofitClient.DOWNLOAD_STATE_ERR
 //                (applicationContext as MyApplication).repository.updateDownloadInfo(file)
-//                LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
+                LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
                 return Result.failure()
             } finally {
                 nio.close()
