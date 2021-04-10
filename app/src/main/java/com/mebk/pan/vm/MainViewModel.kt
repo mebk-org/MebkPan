@@ -8,14 +8,13 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.DownloadInfo
+import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,14 +23,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isFileOperator = MutableLiveData<Boolean>().also {
         it.value = false
     }
-    var downloadListInfo = MutableLiveData<MutableList<DownloadInfo>>()
+    var downloadListInfo = MutableLiveData<MutableList<DownloadingInfo>>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
     val downloadWorkInfo = workManager.getWorkInfosByTagLiveData(DOWNLOAD_TAG)
-    private val channel = Channel<DownloadInfo>()
+    private val channel = Channel<DownloadingInfo>()
 
 
     private val checkList = mutableListOf<DirectoryDto.Object>()
-    private var downloadList = mutableListOf<DownloadInfo>()
+    private var downloadList = mutableListOf<DownloadingInfo>()
 
     fun changeFileOperator() {
         isFileOperator.value = !(isFileOperator.value)!!
@@ -51,19 +50,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun download() = viewModelScope.launch {
 
-        downloadList = checkList.map { DownloadInfo(it.id, it.name, "", "", it.size, it.type, 0L, RetrofitClient.DOWNLOAD_STATE_WAIT) }.toMutableList()
+        downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, it.size, RetrofitClient.DOWNLOAD_STATE_WAIT, 0) }.toMutableList()
 
-        for (file in downloadList) {
-            application.repository.addDownloadInfo(file)
+        downloadList.forEach {
+            application.repository.addDownloadingInfo(it)
         }
-
         getDownloadClient()
 
         downloadFile()
 
     }
 
-    //获取下载链接
+    /**
+     * 获取下载链接
+     * @return Job
+     */
     private suspend fun getDownloadClient() = viewModelScope.launch {
         var pos = 0
         for (file in downloadList) {
@@ -71,14 +72,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val pair = application.repository.getDownloadClient(file.id)
             if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
                 file.state = RetrofitClient.DOWNLOAD_STATE_ERR
-                application.repository.updateDownloadInfo(file)
+                application.repository.updateDownloadingInfo(file)
                 ++pos
                 continue
             }
 
             file.client = pair.second
             file.state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
-            application.repository.updateDownloadInfo(file)
+            application.repository.updateDownloadingInfo(file)
             channel.send(file)
         }
     }
@@ -86,7 +87,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun downloadFile() = viewModelScope.launch {
         for (file in channel) {
             val dataBuilder = Data.Builder()
-                    .putString(DOWNLOAD_KEY_OUTPUT_FILE, Json.encodeToString(file))
+                    .putString(DOWNLOAD_KEY_OUTPUT_FILE_ID, file.id)
+                    .putString(DOWNLOAD_KEY_OUTPUT_FILE_NAME, file.name)
+                    .putString(DOWNLOAD_KEY_INPUT_FILE_CLIENT, file.client)
+                    .putLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, file.size)
+                    .putLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE, file.date)
+                    .putString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE, file.type)
                     .build()
             val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                     .setInputData(dataBuilder)

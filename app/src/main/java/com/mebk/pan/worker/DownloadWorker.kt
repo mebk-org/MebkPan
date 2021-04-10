@@ -5,12 +5,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.DownloadInfo
+import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import java.io.IOException
 
 class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
@@ -19,17 +17,30 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
 
 
-        val fileData = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE)
+        val downloadClient = inputData.getString(DOWNLOAD_KEY_INPUT_FILE_CLIENT)
+                ?: return@withContext Result.failure()
+        val fileName = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_NAME)
                 ?: return@withContext Result.failure()
 
-        val file = Json.decodeFromString<DownloadInfo>(fileData)
+        val date=inputData.getLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE,0)
+        if (date == 0L) return@withContext Result.failure()
+        val id=inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_ID)
+                ?: return@withContext Result.failure()
+        val type=inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE)
+                ?: return@withContext Result.failure()
+
+        val fileSize = inputData.getLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, 0L)
+        if (fileSize == 0L) return@withContext Result.failure()
         val firstUpdate = workDataOf(DOWNLOAD_KEY_PROGRESS to 0)
+
+        var file=HistoryDownloadInfo(id,fileName,"",downloadClient,fileSize,type,date,RetrofitClient.DOWNLOAD_STATE_WAIT)
 
         setProgress(firstUpdate)
         download(file)
+
     }
 
-    private suspend fun download(file: DownloadInfo): Result {
+    private suspend fun download(file: HistoryDownloadInfo): Result {
         val responseBody = (applicationContext as MyApplication).repository.downloadFile(file.client)
         val nio = NIOUtils(MyApplication.path!! + file.name)
         with(responseBody.byteStream()) {
@@ -52,13 +63,13 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                     }
                 }
                 LogUtil.err(this@DownloadWorker.javaClass, "下载完成")
-                file.state = RetrofitClient.DOWNLOAD_STATE_DONE
-                (applicationContext as MyApplication).repository.updateDownloadInfo(file)
+//                file.state = RetrofitClient.DOWNLOAD_STATE_DONE
+//                (applicationContext as MyApplication).repository.updateDownloadInfo(file)
                 return Result.success()
             } catch (e: IOException) {
                 file.state = RetrofitClient.DOWNLOAD_STATE_ERR
-                (applicationContext as MyApplication).repository.updateDownloadInfo(file)
-                LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
+//                (applicationContext as MyApplication).repository.updateDownloadInfo(file)
+//                LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
                 return Result.failure()
             } finally {
                 nio.close()

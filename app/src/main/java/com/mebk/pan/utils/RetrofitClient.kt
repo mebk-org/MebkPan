@@ -81,8 +81,6 @@ class RetrofitClient(val context: Context) {
                 .hostnameVerifier(DO_NOT_VERIFY)
                 .build()
 
-
-
         retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

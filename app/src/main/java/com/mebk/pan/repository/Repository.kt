@@ -5,10 +5,7 @@ import android.os.SystemClock
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
-import com.mebk.pan.database.entity.DownloadInfo
-import com.mebk.pan.database.entity.File
-import com.mebk.pan.database.entity.FileUpdateDownloadClient
-import com.mebk.pan.database.entity.User
+import com.mebk.pan.database.entity.*
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
@@ -48,21 +45,40 @@ class Repository(val context: Context) {
 
 
     /**
-     * 存储下载列表
+     * 存储历史下载记录
      */
-    suspend fun addDownloadInfo(file: DownloadInfo) = database.downloadInfoDao().insertDownloadFile(file)
+    suspend fun addHistoryDownloadInfo(file: HistoryDownloadInfo) = database.historyDownloadInfoDao().insertDownloadFile(file)
 
 
     /**
-     * 更新下载列表
+     * 更新史下载记录
      */
-    suspend fun updateDownloadInfo(file: DownloadInfo) = database.downloadInfoDao().updateDownloadFile(file)
+    suspend fun updateHistoryDownloadInfo(file: HistoryDownloadInfo) = database.historyDownloadInfoDao().updateDownloadFile(file)
 
     /**
      * 获取历史下载记录
      */
-    fun getHistoryDownload(): Flow<List<DownloadInfo>> = database.downloadInfoDao().getDownloadInfo()
+    fun getHistoryDownload(): Flow<List<HistoryDownloadInfo>> = database.historyDownloadInfoDao().getDownloadInfo()
 
+    /**
+     * 获取下载列表
+     */
+    fun getDownloadingInfo(): Flow<List<DownloadingInfo>> = database.downloadingInfoDao().getDownloadInfo()
+
+    /**
+     * 存储下载列表
+     */
+    suspend fun addDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().insertDownloadFile(file)
+
+    /**
+     * 删除下载列表
+     */
+    suspend fun deleteDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().delete(file)
+
+    /**
+     * 更新下载列表
+     */
+    suspend fun updateDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().updateDownloadFile(file)
 
     /**
      * 登录

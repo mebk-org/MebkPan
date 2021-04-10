@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
-import com.mebk.pan.database.entity.DownloadInfo
+import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.ToolUtils
 
-class HistoryDownloadRvAdapter(val list: List<DownloadInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HistoryDownloadRvAdapter(val list: List<HistoryDownloadInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

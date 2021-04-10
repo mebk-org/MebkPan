@@ -4,19 +4,22 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.mebk.pan.database.daos.DownloadInfoDao
+import com.mebk.pan.database.daos.DownloadingDao
 import com.mebk.pan.database.daos.FileDao
+import com.mebk.pan.database.daos.HistoryDownloadInfoDao
 import com.mebk.pan.database.daos.UserDao
-import com.mebk.pan.database.entity.DownloadInfo
+import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.database.entity.User
 
-@Database(entities = [User::class, File::class, DownloadInfo::class], version = 1)
+@Database(entities = [User::class, File::class, HistoryDownloadInfo::class, DownloadingInfo::class], version = 1)
 abstract class DataBase() : RoomDatabase() {
 
     abstract fun userDao(): UserDao
     abstract fun fileDao(): FileDao
-    abstract fun downloadInfoDao(): DownloadInfoDao
+    abstract fun historyDownloadInfoDao(): HistoryDownloadInfoDao
+    abstract fun downloadingInfoDao(): DownloadingDao
 
     companion object {
         //通过单例模式获取实例
