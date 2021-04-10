@@ -79,7 +79,7 @@ class RetrofitClient(val context: Context) {
 
         val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(AddCookiesInterceptor(context))
-                .addInterceptor(httpLoggingInterceptor)
+//                .addInterceptor(httpLoggingInterceptor)
                 .connectTimeout(180, TimeUnit.SECONDS)
                 .readTimeout(180, TimeUnit.SECONDS)
                 .sslSocketFactory(sslContext.getSocketFactory())
