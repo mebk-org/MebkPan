@@ -22,20 +22,18 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
         val fileName = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_NAME)
                 ?: return@withContext Result.failure()
 
-        val date=inputData.getLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE,0)
+        val date = inputData.getLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE, 0)
         if (date == 0L) return@withContext Result.failure()
-        val id=inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_ID)
+        val id = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_ID)
                 ?: return@withContext Result.failure()
-        val type=inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE)
+        val type = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE)
                 ?: return@withContext Result.failure()
 
         val fileSize = inputData.getLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, 0L)
         if (fileSize == 0L) return@withContext Result.failure()
-        val firstUpdate = workDataOf(DOWNLOAD_KEY_PROGRESS to 0)
 
-        var file=HistoryDownloadInfo(id,fileName,"",downloadClient,fileSize,type,date,RetrofitClient.DOWNLOAD_STATE_WAIT)
+        var file = HistoryDownloadInfo(id, fileName, "", downloadClient, fileSize, type, date, RetrofitClient.DOWNLOAD_STATE_WAIT)
 
-        setProgress(firstUpdate)
         download(file)
 
     }
@@ -59,7 +57,9 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                     progress = current.toFloat() / file.size
                     if (progress - lastProgress > 0.01F) {
                         lastProgress = progress
-                        setProgress(workDataOf(DOWNLOAD_KEY_PROGRESS to lastProgress))
+                        setProgress(workDataOf(DOWNLOAD_KEY_PROGRESS to (progress * 100).toInt()))
+                    } else {
+                        setProgress(workDataOf(DOWNLOAD_KEY_PROGRESS to (lastProgress * 100).toInt()))
                     }
                 }
                 LogUtil.err(this@DownloadWorker.javaClass, "下载完成")

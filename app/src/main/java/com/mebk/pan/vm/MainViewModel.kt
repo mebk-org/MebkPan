@@ -26,6 +26,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var downloadListInfo = MutableLiveData<MutableList<DownloadingInfo>>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
     val downloadWorkInfo = workManager.getWorkInfosByTagLiveData(DOWNLOAD_TAG)
+    val downloadProgressWorkInfo = workManager.getWorkInfosByTagLiveData(DOWNLOAD_KEY_PROGRESS)
     private val channel = Channel<DownloadingInfo>()
 
 
