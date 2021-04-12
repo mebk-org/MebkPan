@@ -35,16 +35,15 @@
 
     <ProgressBar
         android:id="@+id/rv_item_history_download_waiting_progress"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:indeterminate="true"
+        android:indeterminate="false"
         android:indeterminateTint="@color/communism"
         android:indeterminateTintMode="src_atop"
         android:max="100"
         android:progress="70"
-        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/rv_item_history_download_waiting_size_state"
         app:layout_constraintStart_toStartOf="@+id/rv_item_history_download_waiting_filename_tv"
         app:layout_constraintTop_toBottomOf="@+id/rv_item_history_download_waiting_filename_tv" />
