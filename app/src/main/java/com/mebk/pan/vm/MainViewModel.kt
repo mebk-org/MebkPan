@@ -1,10 +1,7 @@
 package com.mebk.pan.vm
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.work.*
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.DownloadingInfo
@@ -25,14 +22,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
     var downloadListInfo = MutableLiveData<MutableList<DownloadingInfo>>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
-    val downloadWorkInfo = workManager.getWorkInfosByTagLiveData(DOWNLOAD_TAG)
+    var downloadWorkInfo = MutableLiveData<WorkInfo>()
     var currentPos = 0
     private val channel = Channel<DownloadingInfo>()
-    private val downloadClientList = mutableListOf<DownloadingInfo>()
     val downloadingList = myApplication.repository.getDownloadingInfo().asLiveData()
     private val checkList = mutableListOf<DirectoryDto.Object>()
     private var downloadList = mutableListOf<DownloadingInfo>()
-    var isDownloadingDone = false
+    var isDownloadDone = false
+    var isDownloading = false
     fun changeFileOperator() {
         isFileOperator.value = !(isFileOperator.value)!!
         checkList.clear()
@@ -66,9 +63,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * 更新下载列表
      */
-    private suspend fun updateDownloadList() {
+    private suspend fun updateDownloadList() = viewModelScope.launch {
         for (file in channel) {
             myApplication.repository.updateDownloadingInfo(file)
+            downloadFile(file)
         }
     }
 
@@ -79,7 +77,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun getDownloadClient() = viewModelScope.launch {
         var pos = 0
         for (file in downloadList) {
-
+            isDownloading = true
             val pair = myApplication.repository.getDownloadClient(file.id)
             if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
                 file.state = RetrofitClient.DOWNLOAD_STATE_ERR
@@ -101,35 +99,49 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun downloadFile(file: DownloadingInfo) = viewModelScope.launch {
-        val dataBuilder = Data.Builder()
-                .putString(DOWNLOAD_KEY_OUTPUT_FILE_ID, file.id)
-                .putString(DOWNLOAD_KEY_OUTPUT_FILE_NAME, file.name)
-                .putString(DOWNLOAD_KEY_INPUT_FILE_CLIENT, file.client)
-                .putLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, file.size)
-                .putLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE, file.date)
-                .putString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE, file.type)
-                .build()
-        val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-                .setInputData(dataBuilder)
-                .addTag(DOWNLOAD_TAG)
-                .build()
-        val requestId = downloadRequest.id
-        workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
+        when (file.state) {
+            RetrofitClient.DOWNLOAD_STATE_PREPARE -> {
+                val dataBuilder = Data.Builder()
+                        .putString(DOWNLOAD_KEY_OUTPUT_FILE_ID, file.id)
+                        .putString(DOWNLOAD_KEY_OUTPUT_FILE_NAME, file.name)
+                        .putString(DOWNLOAD_KEY_INPUT_FILE_CLIENT, file.client)
+                        .putLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, file.size)
+                        .putLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE, file.date)
+                        .putString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE, file.type)
+                        .build()
+                val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+                        .setInputData(dataBuilder)
+                        .addTag(DOWNLOAD_TAG)
+                        .build()
+                LogUtil.err(this@MainViewModel.javaClass, "开始下载")
+                downloadWorkInfo = workManager.getWorkInfoByIdLiveData(downloadRequest.id) as MutableLiveData<WorkInfo>
+                workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
+                file.state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+                myApplication.repository.updateDownloadingInfo(file)
+            }
+            RetrofitClient.DOWNLOAD_STATE_ERR -> {
+                ++currentPos
+            }
+        }
+
     }
 
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
+                isDownloading = false
                 if (downloadingList.value!!.size > 1) downloadFile(downloadingList.value!![1])
-                downloadingList.value?.get(currentPos)?.let { myApplication.repository.deleteDownloadingInfo(it) }
+                if (currentPos < downloadingList.value!!.size) downloadingList.value?.get(currentPos)?.let { myApplication.repository.deleteDownloadingInfo(it) }
             }
             WorkInfo.State.CANCELLED -> {
+                isDownloading = false
                 ++currentPos
-                if (currentPos >= downloadingList.value!!.size) isDownloadingDone = true
+                if (currentPos >= downloadingList.value!!.size) isDownloadDone = true
             }
             WorkInfo.State.FAILED -> {
+                isDownloading = false
                 ++currentPos
-                if (currentPos >= downloadingList.value!!.size) isDownloadingDone = true
+                if (currentPos >= downloadingList.value!!.size) isDownloadDone = true
             }
         }
     }

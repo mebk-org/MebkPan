@@ -14,42 +14,42 @@ import java.io.IOException
 class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
 
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+    override suspend fun doWork(): Result {
 
 
         val downloadClient = inputData.getString(DOWNLOAD_KEY_INPUT_FILE_CLIENT)
-                ?: return@withContext Result.failure()
+                ?: return Result.failure()
         val fileName = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_NAME)
-                ?: return@withContext Result.failure()
-
+                ?: return Result.failure()
+        LogUtil.err(this@DownloadWorker.javaClass, "downloadClient=$downloadClient")
         val date = inputData.getLong(DOWNLOAD_KEY_OUTPUT_FILE_DATE, 0)
-        if (date == 0L) return@withContext Result.failure()
+        if (date == 0L) return Result.failure()
         val id = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_ID)
-                ?: return@withContext Result.failure()
+                ?: return Result.failure()
         val type = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_TYPE)
-                ?: return@withContext Result.failure()
+                ?: return Result.failure()
 
         val fileSize = inputData.getLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, 0L)
-        if (fileSize == 0L) return@withContext Result.failure()
+        if (fileSize == 0L) return Result.failure()
 
         var file = HistoryDownloadInfo(id, fileName, "", downloadClient, fileSize, type, date, RetrofitClient.DOWNLOAD_STATE_WAIT)
 
-        download(file)
+        return download(file)
 
     }
 
     private suspend fun download(file: HistoryDownloadInfo): Result {
         val responseBody = (applicationContext as MyApplication).repository.downloadFile(file.client)
         val nio = NIOUtils(MyApplication.path!! + file.name)
+        LogUtil.err(this@DownloadWorker.javaClass, "contentlen=${responseBody.contentLength()}")
         with(responseBody.byteStream()) {
-            val byteArray = ByteArray(65535)
+            val byteArray = ByteArray(1024)
             var lastProgress = 0f
             var current = 0
             var progress: Float
             try {
                 while (true) {
                     val len = read(byteArray)
-
                     if (len < 0) break
                     current += len
                     //应保证写入的字节与接收到的字节大小一致

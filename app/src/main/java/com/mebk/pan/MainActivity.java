@@ -20,12 +20,14 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.transition.Scene;
 import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
+import androidx.work.WorkInfo;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.mebk.pan.dtos.DirectoryDto;
 import com.mebk.pan.utils.LogUtil;
+import com.mebk.pan.utils.RetrofitClient;
 import com.mebk.pan.vm.MainViewModel;
 
 import java.util.Dictionary;
@@ -68,11 +70,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mainViewModel.getDownloadingList().observe(this, item -> {
-            if (item.isEmpty()) return;
-            if (!mainViewModel.isDownloadingDone()) {
-                mainViewModel.setDownloadingDone(true);
-                mainViewModel.downloadFile(item.get(mainViewModel.getCurrentPos()));
+//        mainViewModel.getDownloadingList().observe(this, item -> {
+//            if (item.isEmpty()) return;
+//            if (!mainViewModel.isDownloading()) {
+//                mainViewModel.downloadFile(item.get(mainViewModel.getCurrentPos()));
+//            }
+//
+//        });
+
+        mainViewModel.getDownloadWorkInfo().observe(this, item -> {
+            Log.e(TAG, "onCreate: " + item.toString());
+            if (item.getState().isFinished()) {
+                mainViewModel.downloadDone(item.getState());
             }
         });
 
