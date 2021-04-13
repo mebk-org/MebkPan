@@ -2,6 +2,7 @@ package com.mebk.pan.vm
 
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.work.*
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.DownloadingInfo
@@ -14,15 +15,18 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
+    var workManager: WorkManager = WorkManager.getInstance(application)
+
+    init {
+        workManager.pruneWork()
+    }
 
     private val myApplication = application as MyApplication
-    private val workManager = WorkManager.getInstance(application)
     val isFileOperator = MutableLiveData<Boolean>().also {
         it.value = false
     }
     var downloadListInfo = MutableLiveData<MutableList<DownloadingInfo>>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
-    var downloadWorkInfo = MutableLiveData<WorkInfo>()
     var currentPos = 0
     private val channel = Channel<DownloadingInfo>()
     val downloadingList = myApplication.repository.getDownloadingInfo().asLiveData()
@@ -30,12 +34,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var downloadList = mutableListOf<DownloadingInfo>()
     var isDownloadDone = false
     var isDownloading = false
+    var downloadWorkerInfo = MutableLiveData<WorkInfo>()
+
+    val observer = Observer<WorkInfo> {
+        downloadWorkerInfo.value = it
+    }
+
     fun changeFileOperator() {
         isFileOperator.value = !(isFileOperator.value)!!
         checkList.clear()
         checkInfo.value = checkList
     }
 
+    private val workerIdList = mutableListOf<UUID>()
     fun addCheck(file: DirectoryDto.Object) {
         checkList += file
         checkInfo.value = checkList
@@ -48,7 +59,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun download() = viewModelScope.launch {
 
-        downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0) }.toMutableList()
+        downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
 
         downloadList.forEach {
             myApplication.repository.addDownloadingInfo(it)
@@ -77,7 +88,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun getDownloadClient() = viewModelScope.launch {
         var pos = 0
         for (file in downloadList) {
-            isDownloading = true
             val pair = myApplication.repository.getDownloadClient(file.id)
             if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
                 file.state = RetrofitClient.DOWNLOAD_STATE_ERR
@@ -113,10 +123,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         .setInputData(dataBuilder)
                         .addTag(DOWNLOAD_TAG)
                         .build()
-                LogUtil.err(this@MainViewModel.javaClass, "开始下载")
-                downloadWorkInfo = workManager.getWorkInfoByIdLiveData(downloadRequest.id) as MutableLiveData<WorkInfo>
+
+                if (!isDownloading) {
+                    workManager.getWorkInfoByIdLiveData(downloadRequest.id).observeForever(observer)
+                    isDownloading = true
+                }
                 workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
                 file.state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+                file.workID = downloadRequest.id.toString()
+
                 myApplication.repository.updateDownloadingInfo(file)
             }
             RetrofitClient.DOWNLOAD_STATE_ERR -> {
@@ -129,9 +144,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
-                isDownloading = false
-                if (downloadingList.value!!.size > 1) downloadFile(downloadingList.value!![1])
-                if (currentPos < downloadingList.value!!.size) downloadingList.value?.get(currentPos)?.let { myApplication.repository.deleteDownloadingInfo(it) }
+                if (currentPos < downloadingList.value?.size!!) {
+                    downloadingList.value?.get(currentPos)?.let {
+                        if (currentPos + 1 < downloadingList.value?.size!!) {
+                            workManager.getWorkInfoByIdLiveData(UUID.fromString(downloadingList.value!![currentPos + 1].workID)).observeForever(observer)
+                        }
+                        myApplication.repository.deleteDownloadingInfo(it)
+                    }
+                }
             }
             WorkInfo.State.CANCELLED -> {
                 isDownloading = false
@@ -144,6 +164,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (currentPos >= downloadingList.value!!.size) isDownloadDone = true
             }
         }
+
     }
 
 }

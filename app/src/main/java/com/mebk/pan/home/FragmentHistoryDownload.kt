@@ -47,36 +47,36 @@ class FragmentHistoryDownload : Fragment() {
 
         })
 
-        mainViewModel.downloadWorkInfo.observe(viewLifecycleOwner, {
-//            if (it.) return@observe
-
-            LogUtil.err(this.javaClass, "info=$it")
-
-            LogUtil.err(this.javaClass, "循环结束")
-            when (it.state) {
-                WorkInfo.State.ENQUEUED -> {
-                    if (listview.isNotEmpty()) {
-                        listview[mainViewModel.currentPos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
-                        adapter.notifyDataSetChanged()
-                    }
-                }
-                WorkInfo.State.RUNNING -> {
-                    if (listview.isNotEmpty()) {
-                        if (listview[mainViewModel.currentPos].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
-                            listview[mainViewModel.currentPos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
-                            adapter.notifyDataSetChanged()
-                        }
-                        val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)
-                        LogUtil.err(this.javaClass, "progress=$progress")
-                        val viewHolder = rv.findViewHolderForAdapterPosition(mainViewModel.currentPos)
-                        viewHolder?.let { vh ->
-                            vh.itemView.rv_item_history_download_waiting_progress.progress = progress
-                        }
-                    }
-                }
-            }
-
-        })
+//        mainViewModel.downloadWorkInfo.observe(viewLifecycleOwner, {
+//
+////            for (info in it) {
+////                LogUtil.err(this.javaClass, "info=$info")
+////                LogUtil.err(this.javaClass, "循环结束")
+////            }
+////            when (it.state) {
+////                WorkInfo.State.ENQUEUED -> {
+////                    if (listview.isNotEmpty()) {
+////                        listview[mainViewModel.currentPos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+////                        adapter.notifyDataSetChanged()
+////                    }
+////                }
+////                WorkInfo.State.RUNNING -> {
+////                    if (listview.isNotEmpty()) {
+////                        if (listview[mainViewModel.currentPos].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
+////                            listview[mainViewModel.currentPos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+////                            adapter.notifyDataSetChanged()
+////                        }
+////                        val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)
+////                        LogUtil.err(this.javaClass, "progress=$progress")
+////                        val viewHolder = rv.findViewHolderForAdapterPosition(mainViewModel.currentPos)
+////                        viewHolder?.let { vh ->
+////                            vh.itemView.rv_item_history_download_waiting_progress.progress = progress
+////                        }
+////                    }
+////                }
+////            }
+//
+//        })
 
 
 

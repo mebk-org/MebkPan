@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
+import java.util.*
 
 /**
  * 下载列表
@@ -30,6 +31,8 @@ data class DownloadingInfo(
         @ColumnInfo var state: Int,
 
         @ColumnInfo var progress: Int,
+
+        @ColumnInfo var workID: String,
 
         )
 

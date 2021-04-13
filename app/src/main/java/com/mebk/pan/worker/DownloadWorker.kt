@@ -69,6 +69,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                 LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
                 return Result.failure()
             } finally {
+                responseBody.close()
                 nio.close()
             }
         }
