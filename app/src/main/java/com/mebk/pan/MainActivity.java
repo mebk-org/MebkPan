@@ -69,22 +69,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mainViewModel.getDownloadingList().observe(this, item -> {
+            for (int i = 0; i < item.size(); i++) {
+                Log.e(TAG, "onCreate: " + item.get(i));
+            }
+        });
+        mainViewModel.getDownloadWorkerInfo().observe(this, item -> {
+            if (item == null) return;
 
-//        mainViewModel.getDownloadingList().observe(this, item -> {
-//            if (item.isEmpty()) return;
-//            if (!mainViewModel.isDownloading()) {
-//                mainViewModel.downloadFile(item.get(mainViewModel.getCurrentPos()));
-//            }
-//
-//        });
-
-        mainViewModel.getDownloadWorkInfo().observe(this, item -> {
             Log.e(TAG, "onCreate: " + item.toString());
             if (item.getState().isFinished()) {
                 mainViewModel.downloadDone(item.getState());
             }
-        });
 
+        });
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
