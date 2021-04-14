@@ -5,31 +5,39 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
+import java.util.*
 
 /**
  * 下载列表
  */
 
 @Entity(tableName = "downloading_info_table")
-data class DownloadingInfo(
-        @PrimaryKey val id: String,
+class DownloadingInfo(
 
-        @ColumnInfo val name: String,
+        @ColumnInfo var fileId: String,
+
+        @ColumnInfo var name: String,
 
         //本地路径
-        @ColumnInfo val path: String,
+        @ColumnInfo var path: String,
 
         @ColumnInfo var client: String,
 
-        @ColumnInfo val size: Long,
+        @ColumnInfo var size: Long,
 
-        @ColumnInfo val type: String,
+        @ColumnInfo var type: String,
 
-        @ColumnInfo val date: Long,
+        @ColumnInfo var date: Long,
 
         @ColumnInfo var state: Int,
 
         @ColumnInfo var progress: Int,
 
-        )
+        @ColumnInfo var workID: String,
+
+        ) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}
+
 

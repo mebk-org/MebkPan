@@ -27,19 +27,21 @@ class RetrofitClient(val context: Context) {
         const val DOWNLOAD_STATE_WAIT = 0
         const val DOWNLOAD_STATE_PREPARE = 1
         const val DOWNLOAD_STATE_DOWNLOADING = 2
-        const val DOWNLOAD_STATE_DONE = 3
-        const val DOWNLOAD_STATE_ERR = 4
-        const val DOWNLOAD_STATE_NETWORK_ERR = 5
+        const val DOWNLOAD_STATE_CLIENT_ERR = 3
+        const val DOWNLOAD_STATE_DOWNLOAD_ERR = 4
+        const val DOWNLOAD_STATE_ERR = 5
+        const val DOWNLOAD_STATE_DONE = 6
 
 
         fun checkDownloadState(state: Int): String {
             return when (state) {
-                DOWNLOAD_STATE_WAIT -> "等待中"
+                DOWNLOAD_STATE_WAIT -> "等待下载"
                 DOWNLOAD_STATE_PREPARE -> "获取链接"
                 DOWNLOAD_STATE_DONE -> "下载完成"
                 DOWNLOAD_STATE_DOWNLOADING -> "下载中"
                 DOWNLOAD_STATE_ERR -> "错误"
-                DOWNLOAD_STATE_NETWORK_ERR -> "网络错误"
+                DOWNLOAD_STATE_CLIENT_ERR -> "无法获取链接"
+                DOWNLOAD_STATE_DOWNLOAD_ERR -> "下载错误"
                 else -> "状态码不正确，code=${state}"
             }
         }

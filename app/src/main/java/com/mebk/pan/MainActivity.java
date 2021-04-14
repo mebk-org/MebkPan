@@ -20,12 +20,14 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.transition.Scene;
 import androidx.transition.TransitionManager;
 import androidx.viewpager2.widget.ViewPager2;
+import androidx.work.WorkInfo;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.mebk.pan.dtos.DirectoryDto;
 import com.mebk.pan.utils.LogUtil;
+import com.mebk.pan.utils.RetrofitClient;
 import com.mebk.pan.vm.MainViewModel;
 
 import java.util.Dictionary;
@@ -67,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mainViewModel.getDownloadWorkerInfo().observe(this, item -> {
+            if (item == null) return;
 
+            Log.e(TAG, "onCreate: " + item.toString());
+            if (item.getState().isFinished()) {
+                mainViewModel.downloadDone(item.getState());
+            }
+
+        });
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 

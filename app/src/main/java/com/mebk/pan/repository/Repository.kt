@@ -43,23 +43,6 @@ class Repository(val context: Context) {
      */
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient) = database.fileDao().updateDownloadClient(file)
 
-
-    /**
-     * 存储历史下载记录
-     */
-    suspend fun addHistoryDownloadInfo(file: HistoryDownloadInfo) = database.historyDownloadInfoDao().insertDownloadFile(file)
-
-
-    /**
-     * 更新史下载记录
-     */
-    suspend fun updateHistoryDownloadInfo(file: HistoryDownloadInfo) = database.historyDownloadInfoDao().updateDownloadFile(file)
-
-    /**
-     * 获取历史下载记录
-     */
-    fun getHistoryDownload(): Flow<List<HistoryDownloadInfo>> = database.historyDownloadInfoDao().getDownloadInfo()
-
     /**
      * 获取下载列表
      */
@@ -76,9 +59,31 @@ class Repository(val context: Context) {
     suspend fun deleteDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().delete(file)
 
     /**
-     * 更新下载列表
+     * 更新下载状态
      */
-    suspend fun updateDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().updateDownloadFile(file)
+    suspend fun updateDownloadingState(fileId: String, state: Int) = database.downloadingInfoDao().updateDownloadFileState(fileId, state)
+
+    /**
+     * 更新下载链接
+     */
+    suspend fun updateDownloadingClient(fileId: String, client: String) = database.downloadingInfoDao().updateDownloadFileClient(fileId, client)
+
+    /**
+     * 更新工作ID
+     */
+    suspend fun updateDownloadingWorkId(fileId: String, workerId: String) = database.downloadingInfoDao().updateDownloadFileWorkerId(fileId, workerId)
+
+    /**
+     * 获取正在下载的列表
+     * @return List<DownloadingInfo>
+     */
+    fun getDownloadingList() = database.downloadingInfoDao().getDownloadingList()
+
+    /**
+     * 获取下载完成列表
+     * @return List<DownloadingInfo>
+     */
+    fun getDownloadDoneList() = database.downloadingInfoDao().getDownloadDoneList()
 
     /**
      * 登录
@@ -122,12 +127,12 @@ class Repository(val context: Context) {
 //                                valid = maxAge.substring(startPos + 1, endPos).toLong()
 //                            }
 //                        }
-                        ignore = ToolUtils.utcToLocal(expires,ToolUtils.DATE_TYPE_GMT).time
+                        ignore = ToolUtils.utcToLocal(expires, ToolUtils.DATE_TYPE_GMT).time
 //
                     }
                     for (date in response.headers().toMultimap()["date"]!!) {
 
-                        start = ToolUtils.utcToLocal(date,ToolUtils.DATE_TYPE_GMT).time
+                        start = ToolUtils.utcToLocal(date, ToolUtils.DATE_TYPE_GMT).time
 //
                     }
 
