@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.work.*
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
@@ -149,6 +150,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         if (currentPos + 1 < downloadingList.value?.size!!) {
                             workManager.getWorkInfoByIdLiveData(UUID.fromString(downloadingList.value!![currentPos + 1].workID)).observeForever(observer)
                         }
+                        myApplication.repository.addHistoryDownloadInfo(HistoryDownloadInfo(it.id, it.name, MyApplication.path!!, it.client, it.size, it.type, it.date, it.state))
                         myApplication.repository.deleteDownloadingInfo(it)
                     }
                 }
