@@ -10,8 +10,11 @@ interface DownloadingDao {
     @Query("SELECT * FROM downloading_info_table")
     fun getDownloadInfo(): Flow<List<DownloadingInfo>>
 
-    @Query("SELECT * FROM downloading_info_table WHERE state<${RetrofitClient.DOWNLOAD_STATE_DONE}  ORDER BY id DESC")
+    @Query("SELECT * FROM downloading_info_table WHERE state<${RetrofitClient.DOWNLOAD_STATE_DONE}  ORDER BY id")
     fun getDownloadingList(): Flow<List<DownloadingInfo>>
+
+    @Query("SELECT * FROM downloading_info_table WHERE state=${RetrofitClient.DOWNLOAD_STATE_DONE}  ORDER BY id DESC")
+    fun getDownloadDoneList(): Flow<List<DownloadingInfo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDownloadFile(file: DownloadingInfo)

@@ -22,7 +22,7 @@ class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TAG -> TagViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_history_download_tag, parent, false))
-            else -> WaitingViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_history_download_waiting, parent, false))
+            else -> WaitingViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_downloading, parent, false))
         }
     }
 

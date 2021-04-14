@@ -9,7 +9,6 @@ import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
-import kotlinx.android.synthetic.main.rv_item_history_download_waiting.view.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -150,22 +149,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
+        if (failedCount + successCount >= totalCount) isDownloadDone = true
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
-                ++successCount
-                if (failedCount + successCount >= totalCount) isDownloadDone = true
                 if (!isDownloadDone) {
                     workManager.getWorkInfoByIdLiveData(workerIdList[successCount + failedCount]).observeForever(observer)
                     myApplication.repository.updateDownloadingState(downloadListInfo[successCount + failedCount].fileId, RetrofitClient.DOWNLOAD_STATE_DONE)
                 }
+                ++successCount
             }
             WorkInfo.State.CANCELLED -> {
                 ++failedCount
-                if (failedCount + successCount >= totalCount) isDownloadDone = true
             }
             WorkInfo.State.FAILED -> {
                 ++failedCount
-                if (failedCount + successCount >= totalCount) isDownloadDone = true
             }
         }
     }
