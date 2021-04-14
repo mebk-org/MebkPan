@@ -12,15 +12,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.database.entity.DownloadingInfo
-import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.ToolUtils
 
 class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+    private val TAG = 0
+    private val FILE = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return WaitingViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_history_download_waiting, parent, false))
+        return when (viewType) {
+            TAG -> TagViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_history_download_tag, parent, false))
+            else -> WaitingViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_history_download_waiting, parent, false))
+        }
     }
 
     override fun getItemCount(): Int = list.size
@@ -41,9 +44,10 @@ class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) :
                         sizeTv.visibility = View.INVISIBLE
                         progressBar.visibility = View.INVISIBLE
                     }
-
-
                 }
+            }
+            is TagViewHolder -> {
+                holder.tagTv.text = list[position].name
             }
         }
 
@@ -59,4 +63,14 @@ class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) :
         internal val progressBar: ProgressBar = itemView.findViewById(R.id.rv_item_history_download_waiting_progress)
     }
 
+    private class TagViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        internal val tagTv: TextView = itemView.findViewById(R.id.rv_item_history_download_done_tag)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (list[position].type) {
+            "tag" -> TAG
+            else -> FILE
+        }
+    }
 }
