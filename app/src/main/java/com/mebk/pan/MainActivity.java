@@ -2,8 +2,10 @@ package com.mebk.pan;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
@@ -16,18 +18,41 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+
+import androidx.transition.Scene;
+import androidx.transition.TransitionManager;
+
 import androidx.viewpager2.widget.ViewPager2;
+import androidx.work.WorkInfo;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import com.mebk.pan.aa.ExpandableListviewAdapter;
 
+
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
+import com.mebk.pan.dtos.DirectoryDto;
+import com.mebk.pan.utils.LogUtil;
+import com.mebk.pan.utils.RetrofitClient;
+import com.mebk.pan.vm.MainViewModel;
+
+import java.util.Dictionary;
+
 import java.util.List;
+import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+
 
     //数据
     private String[] data = {
@@ -36,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     //左侧菜单栏
     private ExpandableListView expand_list_id;
     ListView listView;
+
     //几个代表页面的常量
 
     RadioButton radioButton_file;
@@ -43,17 +69,50 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
     ImageView imageView;
     DrawerLayout drawer_layout;
+    private ConstraintLayout rootLayout;
+    private MainViewModel mainViewModel;
+    private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
        //组件初始化
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
         views();
 
+
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        initView();
+
+        onClick();
+
+        mainViewModel.isFileOperator().observe(this, item -> {
+            fileOperatorAnimation(item);
+        });
+
+        mainViewModel.getCheckInfo().observe(this, item -> {
+            for (DirectoryDto.Object obj : item) {
+                Log.e(TAG, "onCreate: " + obj.toString());
+            }
+        });
+
+        mainViewModel.getDownloadWorkerInfo().observe(this, item -> {
+            if (item == null) return;
+
+            Log.e(TAG, "onCreate: " + item.toString());
+            if (item.getState().isFinished()) {
+                mainViewModel.downloadDone(item.getState());
+            }
+
+        });
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
+
 
         ExpandableListviewAdapter adapter = new ExpandableListviewAdapter();
         expand_list_id.setAdapter(adapter);
@@ -81,6 +140,13 @@ public class MainActivity extends AppCompatActivity {
         imageView=findViewById(R.id.header_title);
     }
 
+    private void onClick() {
+        downloadItem.view.setOnClickListener(v -> {
+            mainViewModel.download();
+        });
+
+    }
+
     /**
      * 创建菜单
      */
@@ -106,6 +172,20 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+
+    private void initView() {
+        navView = findViewById(R.id.nav_view);
+        rootLayout = findViewById(R.id.container);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+
+        downloadItem = tabLayout.getTabAt(0);
+        shareItem = tabLayout.getTabAt(1);
+        deleteItem = tabLayout.getTabAt(2);
+        moreItem = tabLayout.getTabAt(3);
+        navView = findViewById(R.id.nav_view);
+    }
+
     /**
      * 得到position并进行处理
      *
@@ -121,5 +201,19 @@ public class MainActivity extends AppCompatActivity {
                 radioButton_img.setChecked(true);
         }
     }
+
+
+
+    private void fileOperatorAnimation(boolean isFileOperator) {
+        ConstraintSet constraintSet = new ConstraintSet();
+        if (isFileOperator) {
+            constraintSet.load(this, R.layout.layout_file_opreator);
+        } else {
+            constraintSet.load(this, R.layout.activity_main);
+        }
+        TransitionManager.beginDelayedTransition(rootLayout);
+        constraintSet.applyTo(rootLayout);
+    }
+
 
 }

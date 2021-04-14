@@ -1,12 +1,16 @@
 package com.mebk.pan.utils
 
+import android.graphics.drawable.Drawable
+import com.mebk.pan.R
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ToolUtils {
     companion object {
 
         //kb转换
-        fun sizeChange(size: Int): String {
+        fun sizeChange(size: Long): String {
             val df = DecimalFormat("#.00")
             when {
                 size < 1024 -> {
@@ -44,5 +48,60 @@ class ToolUtils {
             }
             return path
         }
+
+        /**
+         * 根据文件类型与文件名选择缩略图
+         *
+         * @param type String
+         * @param name String
+         * @return Drawable
+         */
+        fun chooseDirectoryThumbnail(type: String, name: String): Int {
+            return when {
+                type == "dir" -> R.drawable.directory_32
+                name.endsWith(".zip") || name.endsWith(".rar") || name.endsWith(".7z") -> R.drawable.file_zip
+                name.endsWith(".txt") -> R.drawable.file_txt
+                name.endsWith(".doc") || name.endsWith(".docx") -> R.drawable.file_word
+                name.endsWith(".xls") || name.endsWith(".xlsx") -> R.drawable.file_excel
+                name.endsWith(".pdf") -> R.drawable.file_pdf
+                name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".gif") -> R.drawable.file_image
+                name.endsWith(".m4a") || name.endsWith(".mp3") || name.endsWith(".aac") || name.endsWith(".wma") -> R.drawable.file_music
+                name.endsWith(".mp4") || name.endsWith(".flv") || name.endsWith(".avi") || name.endsWith(".wmp") -> R.drawable.file_play
+                name.endsWith(".bin") -> R.drawable.file_binary
+                name.endsWith(".bat") || name.endsWith(".sh") -> R.drawable.file_code
+                else -> R.drawable.file_32
+            }
+        }
+
+
+        const val DATE_TYPE_UTC = 0
+        const val DATE_TYPE_GMT = 1
+
+        /**
+         * utc时间转成local时间
+         * @param utcTime
+         * @return
+         */
+        fun utcToLocal(time: String, dateType: Int): Date {
+            var sdf: SimpleDateFormat? = null
+            when (dateType) {
+                DATE_TYPE_GMT -> {
+                    sdf = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH)
+                    sdf.timeZone = TimeZone.getTimeZone("GMT")
+                }
+                DATE_TYPE_UTC -> {
+                    sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                    sdf.timeZone = TimeZone.getTimeZone("UTC")
+                }
+            }
+            sdf?.let {
+                val utcDate = it.parse(time)
+                it.timeZone = TimeZone.getDefault()
+                val localTime = it.format(utcDate.time)
+                return it.parse(localTime)
+            }
+            return Date(0L)
+        }
+
     }
 }

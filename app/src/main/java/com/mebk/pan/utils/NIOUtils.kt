@@ -1,5 +1,7 @@
 package com.mebk.pan.utils
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
@@ -26,7 +28,7 @@ class NIOUtils(val path: String) {
         outputStream?.let {
             fileChannel = it.channel
         }
-        byteBuffer = ByteBuffer.allocate(4096).order(ByteOrder.nativeOrder())
+        byteBuffer = ByteBuffer.allocate(65535).order(ByteOrder.nativeOrder())
     }
 
     /**
@@ -34,19 +36,19 @@ class NIOUtils(val path: String) {
      * @param bytes ByteArray
      * @return Boolean
      */
-    fun write(bytes: ByteArray): Boolean {
+    suspend fun write(bytes: ByteArray, size: Int): Boolean = withContext(Dispatchers.IO) {
         byteBuffer?.let {
             it.clear()
-            it.put(bytes)
+            it.put(bytes, 0, size)
             fileChannel
         }?.let {
             if (byteBuffer!!.position() != 0) {
                 byteBuffer!!.flip()
             }
             it.write(byteBuffer)
-            return true
+            true
         }
-        return false
+        false
     }
 
     /**

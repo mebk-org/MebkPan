@@ -6,7 +6,7 @@
     android:layout_height="64dp">
 
     <ImageView
-        android:id="@+id/rv_item_directory_thumbnail_iv"
+        android:id="@+id/rv_item_history_download_done_thumbnail_iv"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
@@ -17,7 +17,7 @@
         tools:background="@color/communism" />
 
     <TextView
-        android:id="@+id/rv_item_directory_filename_tv"
+        android:id="@+id/rv_item_history_download_done_filename_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -28,60 +28,60 @@
         android:maxLines="2"
         android:textColor="@color/gray"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/rv_item_directory_time_tv"
-        app:layout_constraintEnd_toStartOf="@+id/rv_item_directory_choose"
-        app:layout_constraintStart_toEndOf="@+id/rv_item_directory_thumbnail_iv"
+        app:layout_constraintBottom_toTopOf="@+id/rv_item_history_download_done_time_tv"
+        app:layout_constraintEnd_toStartOf="@+id/rv_item_history_download_done_choose"
+        app:layout_constraintStart_toEndOf="@+id/rv_item_history_download_done_thumbnail_iv"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="简单来说就是：销量成功了，收益和投资人信心失败了：靠着约1300万的总销量，按照一份60美元算，刨除三四个亿的宣发和开发成本，大概净赚约五个亿美元，但是公司股价下跌了九十多亿波兰兹罗提（约合23亿美元），折合下来净亏损16-18亿美元，更不要说投资人信心大幅度受损，以后融资更难了。这和12月10日一堆人说的「股价下跌是因为持股者高点套现」可不是一个概念的东西嗷。" />
 
     <TextView
-        android:id="@+id/rv_item_directory_time_tv"
+        android:id="@+id/rv_item_history_download_done_time_tv"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginBottom="4dp"
         android:gravity="center|start"
         android:textColor="@color/gray_8f"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_item_directory_bottom_view"
-        app:layout_constraintStart_toStartOf="@+id/rv_item_directory_filename_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_item_history_download_done_bottom_view"
+        app:layout_constraintStart_toStartOf="@+id/rv_item_history_download_done_filename_tv"
         tools:text="2021-03-19 15:02" />
 
     <TextView
-        android:id="@+id/rv_item_directory_size_tv"
+        android:id="@+id/rv_item_history_download_done_size_tv"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"
         android:gravity="center|start"
         android:textColor="@color/gray_8f"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/rv_item_directory_time_tv"
-        app:layout_constraintTop_toTopOf="@+id/rv_item_directory_time_tv"
+        app:layout_constraintStart_toEndOf="@+id/rv_item_history_download_done_time_tv"
+        app:layout_constraintTop_toTopOf="@+id/rv_item_history_download_done_time_tv"
         app:layout_constraintVertical_bias="0.0"
         tools:text="15.53MB" />
 
     <ImageView
-        android:id="@+id/rv_item_directory_more_iv"
+        android:id="@+id/rv_item_history_download_done_more_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/more_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/rv_item_directory_choose"
+        app:layout_constraintStart_toStartOf="@+id/rv_item_history_download_done_choose"
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/rv_item_directory_choose"
+        android:id="@+id/rv_item_history_download_done_choose"
         style="?attr/checkboxStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:shadowColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_item_directory_thumbnail_iv"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_item_history_download_done_thumbnail_iv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_item_directory_thumbnail_iv" />
+        app:layout_constraintTop_toTopOf="@+id/rv_item_history_download_done_thumbnail_iv" />
 
     <View
-        android:id="@+id/rv_item_directory_bottom_view"
+        android:id="@+id/rv_item_history_download_done_bottom_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray_cc"

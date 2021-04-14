@@ -25,12 +25,16 @@ class StartActivity : AppCompatActivity(), WaitingAnimationEndInterface {
         if (MyApplication.isLogin) {
             startViewModel.getCookie(SharePreferenceUtils.getSharePreference(applicationContext).getString(SharePreferenceUtils.SP_KEY_UID, "")!!)
         }
-        LogUtil.err(this.javaClass, "剩余时间=${(SystemClock.elapsedRealtime() -
-                SharePreferenceUtils.getSharePreference(this).getLong(SharePreferenceUtils.SP_KEY_LOGIN_TIME, 0)) / 1000}")
-        isValid = (SystemClock.elapsedRealtime() -
-                SharePreferenceUtils.getSharePreference(this).getLong(SharePreferenceUtils.SP_KEY_LOGIN_TIME, 0)) / 1000 < (SharePreferenceUtils.getSharePreference(this).getLong(SharePreferenceUtils.SP_KEY_COOKIE_VALID, 0)) - 3600
-        if (!isValid) {
-            Toast.makeText(this, "登录已过期，请重新登录", Toast.LENGTH_SHORT).show()
+        LogUtil.err(this.javaClass, "剩余时间=${(SystemClock.elapsedRealtime() / 1000 -
+                SharePreferenceUtils.getSharePreference(this).getLong(SharePreferenceUtils.SP_KEY_LOGIN_TIME, 0))}")
+
+        if (MyApplication.isLogin) {
+            isValid = (SystemClock.elapsedRealtime()/ 1000  -
+                    SharePreferenceUtils.getSharePreference(this).getLong(SharePreferenceUtils.SP_KEY_LOGIN_TIME, 0)) < (SharePreferenceUtils.getSharePreference(this).getLong(SharePreferenceUtils.SP_KEY_COOKIE_VALID, 0)) - 3600
+
+            if (!isValid) {
+                Toast.makeText(this, "登录已过期，请重新登录", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -38,8 +42,10 @@ class StartActivity : AppCompatActivity(), WaitingAnimationEndInterface {
     override fun waitingEnd(isEnd: Boolean) {
         if (MyApplication.isLogin && isValid) {
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         } else {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 }
