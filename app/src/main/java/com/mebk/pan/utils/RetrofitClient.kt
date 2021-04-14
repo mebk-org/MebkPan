@@ -34,7 +34,7 @@ class RetrofitClient(val context: Context) {
 
         fun checkDownloadState(state: Int): String {
             return when (state) {
-                DOWNLOAD_STATE_WAIT -> "等待中"
+                DOWNLOAD_STATE_WAIT -> "等待下载"
                 DOWNLOAD_STATE_PREPARE -> "获取链接"
                 DOWNLOAD_STATE_DONE -> "下载完成"
                 DOWNLOAD_STATE_DOWNLOADING -> "下载中"
