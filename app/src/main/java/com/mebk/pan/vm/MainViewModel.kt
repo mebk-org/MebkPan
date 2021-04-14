@@ -98,7 +98,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 ++pos
                 continue
             }
-
+            file.state = RetrofitClient.DOWNLOAD_STATE_PREPARE
+            file.client = pair.second
             myApplication.repository.updateDownloadingClient(file.fileId, pair.second)
             myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_PREPARE)
             channel.send(file)
@@ -135,7 +136,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 myApplication.repository.updateDownloadingWorkId(file.fileId, downloadRequest.id.toString())
             }
             RetrofitClient.DOWNLOAD_STATE_ERR -> {
-                ++failedCount
+                // TODO: 2021/4/14 获取链接失败
+//                ++failedCount
             }
         }
 
@@ -147,7 +149,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
-
+        LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
                 ++successCount
