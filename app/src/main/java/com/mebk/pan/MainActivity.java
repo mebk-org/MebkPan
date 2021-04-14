@@ -69,11 +69,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mainViewModel.getDownloadingList().observe(this, item -> {
-            for (int i = 0; i < item.size(); i++) {
-                Log.e(TAG, "onCreate: " + item.get(i));
-            }
-        });
         mainViewModel.getDownloadWorkerInfo().observe(this, item -> {
             if (item == null) return;
 

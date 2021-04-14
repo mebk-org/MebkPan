@@ -6,19 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mebk.pan.database.daos.DownloadingDao
 import com.mebk.pan.database.daos.FileDao
-import com.mebk.pan.database.daos.HistoryDownloadInfoDao
 import com.mebk.pan.database.daos.UserDao
 import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.database.entity.File
-import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.database.entity.User
 
-@Database(entities = [User::class, File::class, HistoryDownloadInfo::class, DownloadingInfo::class], version = 1)
+@Database(entities = [User::class, File::class, DownloadingInfo::class], version = 1)
 abstract class DataBase() : RoomDatabase() {
 
     abstract fun userDao(): UserDao
     abstract fun fileDao(): FileDao
-    abstract fun historyDownloadInfoDao(): HistoryDownloadInfoDao
     abstract fun downloadingInfoDao(): DownloadingDao
 
     companion object {

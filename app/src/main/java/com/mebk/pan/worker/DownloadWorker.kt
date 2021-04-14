@@ -5,10 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.HistoryDownloadInfo
 import com.mebk.pan.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
@@ -31,16 +28,13 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
 
         val fileSize = inputData.getLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, 0L)
         if (fileSize == 0L) return Result.failure()
-
-        var file = HistoryDownloadInfo(id, fileName, "", downloadClient, fileSize, type, date, RetrofitClient.DOWNLOAD_STATE_WAIT)
-
-        return download(file)
+        return download(downloadClient, fileName, fileSize)
 
     }
 
-    private suspend fun download(file: HistoryDownloadInfo): Result {
-        val responseBody = (applicationContext as MyApplication).repository.downloadFile(file.client)
-        val nio = NIOUtils(MyApplication.path!! + file.name)
+    private suspend fun download(client: String, name: String, size: Long): Result {
+        val responseBody = (applicationContext as MyApplication).repository.downloadFile(client)
+        val nio = NIOUtils(MyApplication.path!! + name)
         LogUtil.err(this@DownloadWorker.javaClass, "contentlen=${responseBody.contentLength()}")
         with(responseBody.byteStream()) {
             val byteArray = ByteArray(1024)
@@ -54,7 +48,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                     current += len
                     //应保证写入的字节与接收到的字节大小一致
                     nio.write(byteArray, len)
-                    progress = current.toFloat() / file.size
+                    progress = current.toFloat() / size
                     if (progress - lastProgress > 0.01F) {
                         lastProgress = progress
                         setProgress(workDataOf(DOWNLOAD_KEY_PROGRESS to (progress * 100).toInt()))
@@ -65,7 +59,6 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                 LogUtil.err(this@DownloadWorker.javaClass, "下载完成")
                 return Result.success()
             } catch (e: IOException) {
-                file.state = RetrofitClient.DOWNLOAD_STATE_ERR
                 LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
                 return Result.failure()
             } finally {
