@@ -31,6 +31,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var currentPos = 0
     private val channel = Channel<DownloadingInfo>()
     val downloadingList = myApplication.repository.getDownloadingInfo().asLiveData()
+    val historyDownloadList = myApplication.repository.getHistoryDownload().asLiveData()
     private val checkList = mutableListOf<DirectoryDto.Object>()
     private var downloadList = mutableListOf<DownloadingInfo>()
     var isDownloadDone = false
@@ -130,7 +131,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     isDownloading = true
                 }
                 workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
-                file.state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+                file.state = RetrofitClient.DOWNLOAD_STATE_WAIT
                 file.workID = downloadRequest.id.toString()
 
                 myApplication.repository.updateDownloadingInfo(file)

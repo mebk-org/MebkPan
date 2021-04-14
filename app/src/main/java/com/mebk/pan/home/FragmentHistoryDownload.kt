@@ -47,6 +47,24 @@ class FragmentHistoryDownload : Fragment() {
 
         })
 
+        mainViewModel.downloadWorkerInfo.observe(viewLifecycleOwner, {
+            when (it.state) {
+                WorkInfo.State.RUNNING -> {
+                    if (listview.isNotEmpty()) {
+                        if (listview[mainViewModel.currentPos].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
+                            listview[mainViewModel.currentPos].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+                            adapter.notifyDataSetChanged()
+                        }
+                        val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)
+                        LogUtil.err(this.javaClass, "progress=$progress")
+                        val viewHolder = rv.findViewHolderForAdapterPosition(mainViewModel.currentPos)
+                        viewHolder?.let { vh ->
+                            vh.itemView.rv_item_history_download_waiting_progress.progress = progress
+                        }
+                    }
+                }
+            }
+        })
 //        mainViewModel.downloadWorkInfo.observe(viewLifecycleOwner, {
 //
 ////            for (info in it) {
@@ -77,10 +95,6 @@ class FragmentHistoryDownload : Fragment() {
 ////            }
 //
 //        })
-
-
-
-
 
 
         return view
