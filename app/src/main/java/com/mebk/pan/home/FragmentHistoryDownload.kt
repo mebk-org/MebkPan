@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -16,8 +17,8 @@ import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.utils.DOWNLOAD_KEY_PROGRESS
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
+import com.mebk.pan.vm.HistoryDownloadViewModel
 import com.mebk.pan.vm.MainViewModel
-import kotlinx.android.synthetic.main.rv_item_history_download_waiting.view.*
 
 class FragmentHistoryDownload : Fragment() {
     private lateinit var rv: RecyclerView
@@ -25,7 +26,8 @@ class FragmentHistoryDownload : Fragment() {
     private var listview = mutableListOf<DownloadingInfo>()
     private var downloadingListView = mutableListOf<DownloadingInfo>()
     private var historyListView = mutableListOf<DownloadingInfo>()
-
+    private var downloadDonePos = 0
+    private val viewModel by viewModels<HistoryDownloadViewModel>()
     private val mainViewModel by activityViewModels<MainViewModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_histroy_download, container, false)
@@ -34,7 +36,7 @@ class FragmentHistoryDownload : Fragment() {
         rv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-        adapter = DownloadRvAdapter(listview, requireActivity())
+        adapter = DownloadRvAdapter(listview, requireContext())
         rv.adapter = adapter
 
 //        mainViewModel.downloadingList.observe(viewLifecycleOwner, {
@@ -51,24 +53,48 @@ class FragmentHistoryDownload : Fragment() {
 //            }
 //        })
 
-        mainViewModel.downloadWorkerInfo.observe(viewLifecycleOwner, {
-            when (it.state) {
-                WorkInfo.State.RUNNING -> {
-                    if (listview.isNotEmpty()) {
-                        if (listview[mainViewModel.getCurrentPos()].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
-                            listview[mainViewModel.getCurrentPos()].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
-                            adapter.notifyDataSetChanged()
-                        }
-                        val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)
-                        LogUtil.err(this.javaClass, "progress=$progress")
-                        val viewHolder = rv.findViewHolderForAdapterPosition(mainViewModel.getCurrentPos())
-                        viewHolder?.let { vh ->
-                            vh.itemView.rv_item_history_download_waiting_progress.progress = progress
-                        }
-                    }
-                }
-            }
-        })
+//        viewModel.downloadingListInfo.observe(viewLifecycleOwner, {
+//            downloadingListView.clear()
+//            if (it.isNotEmpty()) {
+//                downloadingListView.add(DownloadingInfo("", "下载中", "", ",", 0, "tag", 0, 0, 0, ""))
+//                downloadingListView.addAll(it)
+//            }
+//            listview.clear()
+//            listview.addAll(downloadingListView)
+//            listview.addAll(historyListView)
+//            adapter.notifyDataSetChanged()
+//        })
+//        viewModel.downloadingDoneInfo.observe(viewLifecycleOwner, {
+//            if (it.isNotEmpty()) {
+//                historyListView = it.toMutableList()
+//                if (historyListView.isNullOrEmpty()) {
+//                    historyListView.add(0, DownloadingInfo("", "已完成", "", ",", 0, "tag", 0, 0, 0, ""))
+//                }
+//            }
+//            listview.clear()
+//            listview.addAll(downloadingListView)
+//            listview.addAll(historyListView)
+//            adapter.notifyDataSetChanged()
+//        })
+//
+//        mainViewModel.downloadWorkerInfo.observe(viewLifecycleOwner, {
+//            when (it.state) {
+//                WorkInfo.State.RUNNING -> {
+//                    if (listview.isNotEmpty()) {
+//                        if (listview[mainViewModel.getCurrentPos()+1].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
+//                            listview[mainViewModel.getCurrentPos()+1].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+//                            adapter.notifyDataSetChanged()
+//                        }
+//                        val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)
+//                        LogUtil.err(this.javaClass, "progress=$progress")
+//                        val viewHolder = rv.findViewHolderForAdapterPosition(mainViewModel.getCurrentPos()+1)
+//                        viewHolder?.let { vh ->
+//                            vh.itemView.rv_item_history_download_waiting_progress.progress = progress
+//                        }
+//                    }
+//                }
+//            }
+//        })
 //        mainViewModel.downloadWorkInfo.observe(viewLifecycleOwner, {
 //
 ////            for (info in it) {

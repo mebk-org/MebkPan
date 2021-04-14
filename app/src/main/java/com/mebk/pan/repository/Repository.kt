@@ -80,6 +80,12 @@ class Repository(val context: Context) {
     fun getDownloadingList() = database.downloadingInfoDao().getDownloadingList()
 
     /**
+     * 获取下载完成列表
+     * @return List<DownloadingInfo>
+     */
+    fun getDownloadDoneList() = database.downloadingInfoDao().getDownloadDoneList()
+
+    /**
      * 登录
      * @param username String 用户名
      * @param pwd String 密码
