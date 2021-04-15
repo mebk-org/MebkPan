@@ -61,6 +61,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun download() = viewModelScope.launch {
+        isDownloadDone = false
+        isDownloading = false
+        successCount = 0
+        failedCount = 0
         downloadListInfo.clear()
         downloadListInfo = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
         totalCount = downloadListInfo.size
@@ -70,7 +74,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         getDownloadClient()
 
         updateDownloadList()
-
 
     }
 
@@ -148,15 +151,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
-        LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
-        if (failedCount + successCount >= totalCount) isDownloadDone = true
+        LogUtil.err(this@MainViewModel.javaClass, "info=${state.toString()}")
+        if (failedCount + successCount >= totalCount) {
+            isDownloadDone = true
+            isDownloading = false
+            totalCount = 0
+            failedCount = 0
+            successCount = 0
+        }
+        LogUtil.err(this@MainViewModel.javaClass, "total=$totalCount,success=$successCount,failed=$failedCount")
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
                 if (!isDownloadDone) {
                     workManager.getWorkInfoByIdLiveData(workerIdList[successCount + failedCount]).observeForever(observer)
                     myApplication.repository.updateDownloadingState(downloadListInfo[successCount + failedCount].fileId, RetrofitClient.DOWNLOAD_STATE_DONE)
+                    ++successCount
                 }
-                ++successCount
             }
             WorkInfo.State.CANCELLED -> {
                 ++failedCount

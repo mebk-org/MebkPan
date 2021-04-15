@@ -57,6 +57,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                     }
                 }
                 LogUtil.err(this@DownloadWorker.javaClass, "下载完成")
+                createNotification(applicationContext, "下载完成")
                 return Result.success()
             } catch (e: IOException) {
                 LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")
