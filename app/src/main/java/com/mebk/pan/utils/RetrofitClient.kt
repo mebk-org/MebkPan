@@ -31,6 +31,7 @@ class RetrofitClient(val context: Context) {
         const val DOWNLOAD_STATE_DOWNLOAD_ERR = 4
         const val DOWNLOAD_STATE_ERR = 5
         const val DOWNLOAD_STATE_DONE = 6
+        const val DOWNLOAD_STATE_CANCEL = 7
 
 
         fun checkDownloadState(state: Int): String {
@@ -42,6 +43,7 @@ class RetrofitClient(val context: Context) {
                 DOWNLOAD_STATE_ERR -> "错误"
                 DOWNLOAD_STATE_CLIENT_ERR -> "无法获取链接"
                 DOWNLOAD_STATE_DOWNLOAD_ERR -> "下载错误"
+                DOWNLOAD_STATE_CANCEL -> "已取消"
                 else -> "状态码不正确，code=${state}"
             }
         }
