@@ -16,6 +16,9 @@ interface DownloadingDao {
     @Query("SELECT * FROM downloading_info_table WHERE state=${RetrofitClient.DOWNLOAD_STATE_DONE}  ORDER BY id DESC")
     fun getDownloadDoneList(): Flow<List<DownloadingInfo>>
 
+    @Query("SELECT * FROM downloading_info_table WHERE state=:state  ORDER BY id")
+    suspend fun getDownloadingList(state: Int): List<DownloadingInfo>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDownloadFile(file: DownloadingInfo)
 
@@ -28,8 +31,10 @@ interface DownloadingDao {
     @Query("UPDATE downloading_info_table SET workID=:workerId WHERE fileId=:fileId")
     suspend fun updateDownloadFileWorkerId(fileId: String, workerId: String)
 
+
     @Query("DELETE FROM downloading_info_table")
     suspend fun clear()
+
 
     @Delete
     suspend fun delete(file: DownloadingInfo)
