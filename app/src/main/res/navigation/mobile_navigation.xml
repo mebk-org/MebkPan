@@ -23,6 +23,12 @@
             android:id="@+id/action_fragment_directory_to_fragmentTransmit"
             app:destination="@id/fragmentTransmit" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_fragment_img"
+        android:name="com.mebk.pan.home.Main_farment_IMG"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_home_file" />
     <fragment
         android:id="@+id/fragment_internal_file"
         android:name="com.mebk.pan.home.FragmentInternalFile"

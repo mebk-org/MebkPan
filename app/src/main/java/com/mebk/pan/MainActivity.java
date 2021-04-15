@@ -1,43 +1,28 @@
 package com.mebk.pan;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
-
 import androidx.transition.Scene;
 import androidx.transition.TransitionManager;
-
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.work.WorkInfo;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import com.mebk.pan.aa.ExpandableListviewAdapter;
-
-
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.mebk.pan.dtos.DirectoryDto;
@@ -46,29 +31,18 @@ import com.mebk.pan.utils.RetrofitClient;
 import com.mebk.pan.vm.MainViewModel;
 
 import java.util.Dictionary;
-
 import java.util.List;
 import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-
-
-    //数据
-    private String[] data = {
-           "我的分享","离线下载","容量配额","任务队列"
-    };
-    //左侧菜单栏
-    private ExpandableListView expand_list_id;
-    ListView listView;
-
     //几个代表页面的常量
-
+    private ViewPager2 v_pager;
+    RadioGroup radioGroup;
     RadioButton radioButton_file;
     RadioButton radioButton_img;
+    List<Fragment> list;
     BottomNavigationView navView;
-    ImageView imageView;
-    DrawerLayout drawer_layout;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
     private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
@@ -78,12 +52,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-       //组件初始化
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
-        views();
-
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
@@ -113,38 +81,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
-
-        ExpandableListviewAdapter adapter = new ExpandableListviewAdapter();
-        expand_list_id.setAdapter(adapter);
-        //默认展开第一个数组
-        expand_list_id.expandGroup(0);
-
-        ArrayAdapter<String> list_adapter = new ArrayAdapter<String>(this ,
-                android.R.layout.simple_list_item_1, data );//适配器
-        listView.setAdapter(list_adapter);//添加适配器
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                drawer_layout.open();
-            }
-        });
-    }
-
-    private void views() {
-        navView=findViewById(R.id.nav_view);
-        drawer_layout=findViewById(R.id.drawer_layout);
-        expand_list_id =findViewById(R.id.expand_list_id_dynamic);
-        listView = findViewById(R.id.list_item_main);//获取组件对象
-        imageView=findViewById(R.id.header_title);
     }
 
     private void onClick() {
         downloadItem.view.setOnClickListener(v -> {
             mainViewModel.download();
         });
-
     }
 
     /**
@@ -172,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
-
 
     private void initView() {
         navView = findViewById(R.id.nav_view);
@@ -203,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void fileOperatorAnimation(boolean isFileOperator) {
         ConstraintSet constraintSet = new ConstraintSet();
         if (isFileOperator) {
@@ -214,6 +154,5 @@ public class MainActivity extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(rootLayout);
         constraintSet.applyTo(rootLayout);
     }
-
 
 }

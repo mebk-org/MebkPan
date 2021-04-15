@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    主题色-->
-    <color name="Dark_blue">#FF3F51B5</color><!--深蓝-->
-    <color name="Sea_blue">#2196f3</color><!--海蓝-->
-    <color name="purple">#673AB7</color><!--紫色-->
-    <color name="red">#E91E63</color><!--红色-->
-    <color name="Orange">#FF5722</color><!--橙色-->
-    <color name="yellow">#FFC107</color><!--黄色-->
-    <color name="Light_green">#8BC34A</color><!--淡绿色-->
-    <color name="Dark_green">#009688</color><!--深绿-->
-    <color name="gray">#607D8B</color><!--灰色-->
-    <color name="brown">#795548</color><!--褐色-->
-    <color name="Orange_red">#f44336</color><!--橙红色-->
-
-
-    <color name="purple_200">#FC8686</color>
+    <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
@@ -32,6 +18,7 @@
     <color name="half_white">#7FFFFFFF</color><!--白色 -->
     <color name="ivory">#FFFFF0</color><!--象牙色 -->
     <color name="lightyellow">#FFFFE0</color><!--亮黄色 -->
+    <color name="yellow">#FFFF00</color><!--黄色 -->
     <color name="snow">#FFFAFA</color><!--雪白色 -->
     <color name="floralwhite">#FFFAF0</color><!--花白色 -->
     <color name="lemonchiffon">#FFFACD</color><!--柠檬绸色 -->
@@ -57,6 +44,7 @@
     <color name="orangered">#FF4500</color><!--红橙色 -->
     <color name="deeppink">#FF1493</color><!--深粉红色 -->
     <color name="fuchsia">#ef80ef</color><!--紫红色 -->
+    <color name="red">#FF0000</color><!--红色 -->
     <color name="oldlace">#FDF5E6</color><!--老花色 -->
     <color name="lightgoldenrodyellow">#FAFAD2</color><!--亮金黄色 -->
     <color name="linen">#FAF0E6</color><!--亚麻色 -->
@@ -104,6 +92,7 @@
     <color name="greenyellow">#ADFF2F</color><!--黄绿色 -->
     <color name="lightblue">#ADD8E6</color><!--亮蓝色 -->
     <color name="darkgray">#A9A9A9</color><!--暗灰色 -->
+    <color name="brown">#A52A2A</color><!--褐色 -->
     <color name="sienna">#A0522D</color><!--赭色 -->
     <color name="darkorchid">#9932CC</color><!--暗紫色 -->
     <color name="palegreen">#98FB98</color><!--苍绿色 -->
@@ -117,7 +106,9 @@
     <color name="blueviolet">#8A2BE2</color><!--紫罗兰蓝色 -->
     <color name="lightskyblue">#87CEFA</color><!--亮天蓝色 -->
     <color name="skyblue">#87CEEB</color><!--天蓝色 -->
+    <color name="gray">#292424</color><!--灰色 -->
     <color name="olive">#808000</color><!--橄榄色 -->
+    <color name="purple">#800080</color><!--紫色 -->
     <color name="maroon">#800000</color><!--粟色 -->
     <color name="aquamarine">#7FFFD4</color><!--碧绿色 -->
     <color name="chartreuse">#7FFF00</color><!--黄绿色 -->
