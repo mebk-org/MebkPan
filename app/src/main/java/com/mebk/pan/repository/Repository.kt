@@ -5,7 +5,10 @@ import android.os.SystemClock
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
-import com.mebk.pan.database.entity.*
+import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.FileUpdateDownloadClient
+import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
@@ -84,6 +87,13 @@ class Repository(val context: Context) {
      * @return List<DownloadingInfo>
      */
     fun getDownloadDoneList() = database.downloadingInfoDao().getDownloadDoneList()
+
+    /**
+     * 查询库中处于prepare的数据
+     * @return List<DownloadingInfo>
+     */
+    suspend fun getDownloadPrepareList() = database.downloadingInfoDao().getDownloadingList(RetrofitClient.DOWNLOAD_STATE_PREPARE)
+
 
     /**
      * 登录

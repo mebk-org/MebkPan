@@ -70,4 +70,5 @@ class FragmentDownloading : Fragment() {
 
         return view
     }
+
 }
