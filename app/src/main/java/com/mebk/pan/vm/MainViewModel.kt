@@ -157,7 +157,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
-        if (failedCount + successCount >= totalCount) {
+        myApplication.repository.updateDownloadingState(downloadListInfo[successCount + failedCount].fileId, changeState(state))
+        if (failedCount + successCount + 1 >= totalCount) {
             isDownloadDone = true
             isDownloading = false
             totalCount = 0
@@ -168,10 +169,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         LogUtil.err(this@MainViewModel.javaClass, "total=$totalCount,success=$successCount,failed=$failedCount")
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
+                ++successCount
                 if (!isDownloadDone) {
                     workManager.getWorkInfoByIdLiveData(workerIdList[successCount + failedCount]).observeForever(observer)
-                    myApplication.repository.updateDownloadingState(downloadListInfo[successCount + failedCount].fileId, RetrofitClient.DOWNLOAD_STATE_DONE)
-                    ++successCount
                 }
             }
             WorkInfo.State.CANCELLED -> {
@@ -191,4 +191,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Int
      */
     fun getCurrentPos() = successCount + failedCount
+
+    /**
+     * 转换workinfo state
+     * @param state State
+     * @return Int
+     */
+    private fun changeState(state: WorkInfo.State): Int {
+        return when (state) {
+            WorkInfo.State.BLOCKED -> RetrofitClient.DOWNLOAD_STATE_WAIT
+            WorkInfo.State.ENQUEUED -> RetrofitClient.DOWNLOAD_STATE_WAIT
+            WorkInfo.State.RUNNING -> RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+            WorkInfo.State.SUCCEEDED -> RetrofitClient.DOWNLOAD_STATE_DONE
+            WorkInfo.State.FAILED -> RetrofitClient.DOWNLOAD_STATE_DOWNLOAD_ERR
+            WorkInfo.State.CANCELLED -> RetrofitClient.DOWNLOAD_STATE_CANCEL
+        }
+    }
 }
