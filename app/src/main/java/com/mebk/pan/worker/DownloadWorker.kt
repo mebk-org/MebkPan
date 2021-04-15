@@ -13,7 +13,6 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
 
     override suspend fun doWork(): Result {
 
-
         val downloadClient = inputData.getString(DOWNLOAD_KEY_INPUT_FILE_CLIENT)
                 ?: return Result.failure()
         val fileName = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_NAME)
@@ -28,6 +27,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
 
         val fileSize = inputData.getLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, 0L)
         if (fileSize == 0L) return Result.failure()
+        createNotification(applicationContext, "正在下载$fileName")
         return download(downloadClient, fileName, fileSize)
 
     }
