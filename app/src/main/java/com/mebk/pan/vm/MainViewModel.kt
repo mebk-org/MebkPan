@@ -169,6 +169,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
+        myApplication.repository.updateDownloadingDate(queueList[successCount + failedCount], System.currentTimeMillis() / 1000)
         myApplication.repository.updateDownloadingState(queueList[successCount + failedCount], changeState(state))
         if (failedCount + successCount + 1 >= queueList.size) {
             isDownloadDone = true
@@ -238,6 +239,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 ++workPos
             }
         }
-
     }
 }

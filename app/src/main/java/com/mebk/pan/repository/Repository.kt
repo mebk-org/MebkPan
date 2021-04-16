@@ -75,6 +75,10 @@ class Repository(val context: Context) {
      * 更新工作ID
      */
     suspend fun updateDownloadingWorkId(fileId: String, workerId: String) = database.downloadingInfoDao().updateDownloadFileWorkerId(fileId, workerId)
+    /**
+     * 更新完成时间
+     */
+    suspend fun updateDownloadingDate(fileId: String, date: Long) = database.downloadingInfoDao().updateDownloadDate(fileId, date)
 
     /**
      * 获取正在下载的列表
@@ -93,6 +97,12 @@ class Repository(val context: Context) {
      * @return List<DownloadingInfo>
      */
     suspend fun getDownloadPrepareList() = database.downloadingInfoDao().getDownloadingList(RetrofitClient.DOWNLOAD_STATE_PREPARE)
+
+    /**
+     * 获取历史下载列表
+     * @return List<DownloadingInfo>
+     */
+    suspend fun getHistoryDownloadList() = database.downloadingInfoDao().getHistoryDownloadList()
 
 
     /**

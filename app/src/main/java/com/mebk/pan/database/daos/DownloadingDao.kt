@@ -19,18 +19,23 @@ interface DownloadingDao {
     @Query("SELECT * FROM downloading_info_table WHERE state=:state  ORDER BY id")
     suspend fun getDownloadingList(state: Int): List<DownloadingInfo>
 
+    @Query("SELECT * FROM downloading_info_table WHERE state>${RetrofitClient.DOWNLOAD_STATE_DOWNLOADING}  ORDER BY id")
+    suspend fun getHistoryDownloadList(): List<DownloadingInfo>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDownloadFile(file: DownloadingInfo)
 
-    @Query("UPDATE downloading_info_table SET state=:state WHERE fileId=:fileId")
+    @Query("UPDATE downloading_info_table SET state=:state WHERE fileId=:fileId AND state<${RetrofitClient.DOWNLOAD_STATE_DONE}")
     suspend fun updateDownloadFileState(fileId: String, state: Int)
 
     @Query("UPDATE downloading_info_table SET client=:client WHERE fileId=:fileId")
     suspend fun updateDownloadFileClient(fileId: String, client: String)
 
-    @Query("UPDATE downloading_info_table SET workID=:workerId WHERE fileId=:fileId")
+    @Query("UPDATE downloading_info_table SET workID=:workerId WHERE fileId=:fileId AND state<${RetrofitClient.DOWNLOAD_STATE_DONE}")
     suspend fun updateDownloadFileWorkerId(fileId: String, workerId: String)
 
+    @Query("UPDATE downloading_info_table SET date=:date WHERE fileId=:fileId AND state<${RetrofitClient.DOWNLOAD_STATE_DONE}")
+    suspend fun updateDownloadDate(fileId: String, date: Long)
 
     @Query("DELETE FROM downloading_info_table")
     suspend fun clear()
