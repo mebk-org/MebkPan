@@ -60,7 +60,6 @@ class FragmentFileInfo : Fragment() {
         nameTv = view.findViewById(R.id.fragment_file_info_name)
 
         nameTv.text = name
-
         downloadBtn.isClickable = false
         downloadBtn.setOnClickListener {
             val path = activity?.getExternalFilesDir(null)!!.path + "/" + name

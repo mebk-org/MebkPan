@@ -62,6 +62,7 @@
             android:layout_gravity="bottom|center|end"
             android:layout_margin="16dp"
             android:clickable="true"
+            android:src="@drawable/ic_baseline_add_24"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -121,7 +122,6 @@
 
         </com.google.android.material.tabs.TabLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--    </com.google.android.material.appbar.AppBarLayout>-->
     <include
         layout="@layout/fragment_main_menu"
         android:layout_width="match_parent"

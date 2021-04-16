@@ -4,9 +4,9 @@ import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.DownloadClientDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
-import com.mebk.pan.utils.API_DIRECTORY
-import com.mebk.pan.utils.API_LOGIN
-import com.mebk.pan.utils.CONTENT_TYPE_JSON
+import com.mebk.pan.utils.HttpConfigure.Companion.API_DIRECTORY
+import com.mebk.pan.utils.HttpConfigure.Companion.API_LOGIN
+import com.mebk.pan.utils.HttpConfigure.Companion.CONTENT_TYPE_JSON
 import com.mebk.pan.utils.ResponseData
 import okhttp3.RequestBody
 import okhttp3.ResponseBody

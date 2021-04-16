@@ -14,6 +14,10 @@ import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.net.WebService
 import com.mebk.pan.utils.*
+import com.mebk.pan.utils.HttpConfigure.Companion.API_DIRECTORY
+import com.mebk.pan.utils.HttpConfigure.Companion.API_DOWNLOAD_CLIENT
+import com.mebk.pan.utils.HttpConfigure.Companion.API_FILE_INFO
+import com.mebk.pan.utils.HttpConfigure.Companion.CONTENT_TYPE_JSON
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType
 import okhttp3.RequestBody

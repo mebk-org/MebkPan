@@ -1,6 +1,7 @@
 package com.mebk.pan.utils
 
 import android.content.Context
+import com.mebk.pan.utils.HttpConfigure.Companion.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -100,4 +101,3 @@ class RetrofitClient(val context: Context) {
 
 
 }
-
