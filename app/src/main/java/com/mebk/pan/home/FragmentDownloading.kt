@@ -43,6 +43,11 @@ class FragmentDownloading : Fragment() {
             list.addAll(it)
             adapter.notifyDataSetChanged()
         })
+
+        adapter.setOnClickCancelImageViewListener {
+            mainViewModel.cancelDownload(list[it].fileId)
+        }
+
         mainViewModel.downloadWorkerInfo.observe(viewLifecycleOwner, {
             when (it.state) {
                 WorkInfo.State.RUNNING -> {

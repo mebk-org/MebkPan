@@ -55,9 +55,7 @@
         android:textColor="@color/gray_8f"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/rv_item_directory_time_tv"
-        app:layout_constraintTop_toTopOf="@+id/rv_item_directory_time_tv"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="15.53MB" />
+        app:layout_constraintTop_toTopOf="@+id/rv_item_directory_time_tv" />
 
     <ImageView
         android:id="@+id/rv_item_directory_more_iv"

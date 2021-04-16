@@ -32,12 +32,14 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
 
     }
 
+
+
     private suspend fun download(client: String, name: String, size: Long): Result {
         val responseBody = (applicationContext as MyApplication).repository.downloadFile(client)
         val nio = NIOUtils(MyApplication.path!! + name)
         LogUtil.err(this@DownloadWorker.javaClass, "contentlen=${responseBody.contentLength()}")
         with(responseBody.byteStream()) {
-            val byteArray = ByteArray(1024)
+            val byteArray = ByteArray(8192)
             var lastProgress = 0f
             var current = 0
             var progress: Float
