@@ -2,7 +2,6 @@ package com.mebk.pan.vm
 
 import android.app.Application
 import android.text.TextUtils
-import androidx.activity.addCallback
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -20,7 +19,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val application = getApplication<MyApplication>()
 
-    var directoryList = mutableListOf<DirectoryDto.Object>()
+    private var directoryList = mutableListOf<DirectoryDto.Object>()
 
     var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
 
@@ -88,8 +87,6 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
-
-
 
 
 }

@@ -13,7 +13,6 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
 
     override suspend fun doWork(): Result {
 
-
         val downloadClient = inputData.getString(DOWNLOAD_KEY_INPUT_FILE_CLIENT)
                 ?: return Result.failure()
         val fileName = inputData.getString(DOWNLOAD_KEY_OUTPUT_FILE_NAME)
@@ -28,16 +27,19 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
 
         val fileSize = inputData.getLong(DOWNLOAD_KEY_INPUT_FILE_SIZE, 0L)
         if (fileSize == 0L) return Result.failure()
+        createNotification(applicationContext, "正在下载$fileName")
         return download(downloadClient, fileName, fileSize)
 
     }
+
+
 
     private suspend fun download(client: String, name: String, size: Long): Result {
         val responseBody = (applicationContext as MyApplication).repository.downloadFile(client)
         val nio = NIOUtils(MyApplication.path!! + name)
         LogUtil.err(this@DownloadWorker.javaClass, "contentlen=${responseBody.contentLength()}")
         with(responseBody.byteStream()) {
-            val byteArray = ByteArray(1024)
+            val byteArray = ByteArray(8192)
             var lastProgress = 0f
             var current = 0
             var progress: Float
@@ -57,6 +59,7 @@ class DownloadWorker(appContext: Context, params: WorkerParameters) : CoroutineW
                     }
                 }
                 LogUtil.err(this@DownloadWorker.javaClass, "下载完成")
+                createNotification(applicationContext, "下载完成")
                 return Result.success()
             } catch (e: IOException) {
                 LogUtil.err(this@DownloadWorker.javaClass, "下载出错${e}")

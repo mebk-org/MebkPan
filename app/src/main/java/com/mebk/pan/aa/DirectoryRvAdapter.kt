@@ -104,6 +104,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
 
                 if ("dir" != list[position].type) {
                     holder.sizeTv.text = ToolUtils.sizeChange(list[position].size)
+                    LogUtil.err(this.javaClass,"show=${holder.sizeTv.text},change=${ToolUtils.sizeChange(list[position].size)}")
                 } else {
                     holder.sizeTv.visibility = GONE
                 }
