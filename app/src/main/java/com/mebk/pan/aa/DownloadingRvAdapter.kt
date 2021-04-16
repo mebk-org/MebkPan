@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -16,6 +15,11 @@ import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.ToolUtils
 
 class DownloadingRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private lateinit var clickCancelImageViewListener: ((Int) -> Unit)
+    fun setOnClickCancelImageViewListener(clickCancelImageViewListener: ((Int) -> Unit)) {
+        this.clickCancelImageViewListener = clickCancelImageViewListener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return WaitingViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_downloading, parent, false))
     }
@@ -37,17 +41,19 @@ class DownloadingRvAdapter(val list: List<DownloadingInfo>, val context: Context
                 sizeTv.visibility = View.INVISIBLE
                 progressBar.visibility = View.INVISIBLE
             }
+            holder.cancelIv.setOnClickListener {
+                clickCancelImageViewListener(position)
+            }
         }
 
     }
 
     private class WaitingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val thumbnailIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_thumbnail_iv)
-        internal val check: CheckBox = itemView.findViewById(R.id.rv_item_history_download_waiting_choose)
         internal val filenameTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_filename_tv)
         internal val sizeTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_size_tv)
         internal val stateTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_size_state)
-        internal val moreIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_more_iv)
+        internal val cancelIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_cancel)
         internal val progressBar: ProgressBar = itemView.findViewById(R.id.rv_item_history_download_waiting_progress)
     }
 

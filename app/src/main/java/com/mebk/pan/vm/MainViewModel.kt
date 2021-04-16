@@ -19,26 +19,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isFileOperator = MutableLiveData<Boolean>().also {
         it.value = false
     }
-    private var downloadListInfo = mutableListOf<DownloadingInfo>()
+    private var downloadList = mutableListOf<DownloadingInfo>()
+    private var queueList = mutableListOf<String>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
     private val channel = Channel<DownloadingInfo>()
     private val checkList = mutableListOf<DirectoryDto.Object>()
-    private val workerIdList = mutableListOf<UUID>()
+    private val workerIdList = mutableListOf<Pair<String, UUID>>()
     private var isDownloadDone = false
     private var isDownloading = false
     var downloadWorkerInfo = MutableLiveData<WorkInfo>()
+    private var cancelList = mutableListOf<String>()
 
     private var totalCount = 0
     private var failedCount = 0
     private var successCount = 0
+    private var cancelCount = 0
 
     init {
         workManager.pruneWork()
         viewModelScope.launch {
-            downloadListInfo = myApplication.repository.getDownloadPrepareList().toMutableList()
-            if (downloadListInfo.isNotEmpty()) {
-                totalCount = downloadListInfo.size
-                workManager.getWorkInfoByIdLiveData(UUID.fromString(downloadListInfo[0].workID)).observeForever(observer)
+            downloadList = myApplication.repository.getDownloadPrepareList().toMutableList()
+            if (downloadList.isNotEmpty()) {
+                totalCount = downloadList.size
+                workManager.getWorkInfoByIdLiveData(UUID.fromString(downloadList[0].workID)).observeForever(observer)
                 isDownloading = true
                 isDownloadDone = false
             }
@@ -75,15 +78,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         isDownloading = false
         successCount = 0
         failedCount = 0
-        if (downloadListInfo.isNotEmpty()) {
-            pos = downloadListInfo.size
-            downloadListInfo.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
+        if (downloadList.isNotEmpty()) {
+            pos = downloadList.size
+            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
         } else {
-            downloadListInfo = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
+            downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
         }
-        totalCount = downloadListInfo.size
-        for (i in pos until downloadListInfo.size) {
-            myApplication.repository.addDownloadingInfo(downloadListInfo[i])
+        totalCount = downloadList.size
+        for (i in pos until downloadList.size) {
+            myApplication.repository.addDownloadingInfo(downloadList[i])
         }
         getDownloadClient()
 
@@ -96,6 +99,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     private suspend fun updateDownloadList() = viewModelScope.launch {
         for (file in channel) {
+            if (cancelList.indexOf(file.fileId) != -1) continue
             downloadFile(file)
         }
     }
@@ -106,17 +110,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     private suspend fun getDownloadClient() = viewModelScope.launch {
         var pos = 0
-        for (file in downloadListInfo) {
-            val pair = myApplication.repository.getDownloadClient(file.fileId)
-            if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
-                file.state = RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR
-                myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR)
+        for (file in downloadList) {
+            if (cancelList.indexOf(file.fileId) != -1) {
+                myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_CANCEL)
+                downloadList.removeAt(pos)
+                --totalCount
+            } else {
+                val pair = myApplication.repository.getDownloadClient(file.fileId)
+                if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
+                    file.state = RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR
+                    myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR)
+                    ++pos
+                    continue
+                }
+                file.client = pair.second
+                myApplication.repository.updateDownloadingClient(file.fileId, pair.second)
+                channel.send(file)
                 ++pos
-                continue
             }
-            file.client = pair.second
-            myApplication.repository.updateDownloadingClient(file.fileId, pair.second)
-            channel.send(file)
         }
     }
 
@@ -136,17 +147,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 .build()
         val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(dataBuilder)
-                .addTag(DOWNLOAD_TAG)
+                .addTag(file.fileId)
                 .build()
-        workerIdList.add(downloadRequest.id)
+        workerIdList.add(Pair(file.fileId, downloadRequest.id))
         if (!isDownloading) {
             workManager.getWorkInfoByIdLiveData(downloadRequest.id).observeForever(observer)
             isDownloading = true
         }
         workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
+        queueList.add(file.fileId)
         myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_PREPARE)
         myApplication.repository.updateDownloadingWorkId(file.fileId, downloadRequest.id.toString())
-
+        LogUtil.err(this@MainViewModel.javaClass, "queuelistsize=${queueList.size}")
     }
 
 
@@ -157,21 +169,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
-        myApplication.repository.updateDownloadingState(downloadListInfo[successCount + failedCount].fileId, changeState(state))
-        if (failedCount + successCount + 1 >= totalCount) {
+        myApplication.repository.updateDownloadingState(queueList[successCount + failedCount], changeState(state))
+        if (failedCount + successCount + 1 >= queueList.size) {
             isDownloadDone = true
             isDownloading = false
             totalCount = 0
             failedCount = 0
             successCount = 0
-            downloadListInfo.clear()
+            cancelCount = 0
+            downloadList.clear()
         }
         LogUtil.err(this@MainViewModel.javaClass, "total=$totalCount,success=$successCount,failed=$failedCount")
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
                 ++successCount
                 if (!isDownloadDone) {
-                    workManager.getWorkInfoByIdLiveData(workerIdList[successCount + failedCount]).observeForever(observer)
+                    workManager.getWorkInfoByIdLiveData(workerIdList[successCount + failedCount].second).observeForever(observer)
                 }
             }
             WorkInfo.State.CANCELLED -> {
@@ -206,5 +219,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             WorkInfo.State.FAILED -> RetrofitClient.DOWNLOAD_STATE_DOWNLOAD_ERR
             WorkInfo.State.CANCELLED -> RetrofitClient.DOWNLOAD_STATE_CANCEL
         }
+    }
+
+    fun cancelDownload(id: String) = viewModelScope.launch {
+        cancelList.add(id)
+        cancelCount++
+        myApplication.repository.updateDownloadingState(id, RetrofitClient.DOWNLOAD_STATE_CANCEL)
+        val pos = queueList.indexOf(id)
+        if (pos != -1) {
+            queueList.removeAt(pos)
+            var workPos = 0
+            for (pair in workerIdList) {
+                if (pair.first == id) {
+                    workManager.cancelWorkById(pair.second)
+                    workerIdList.removeAt(workPos)
+                    break
+                }
+                ++workPos
+            }
+        }
+
     }
 }

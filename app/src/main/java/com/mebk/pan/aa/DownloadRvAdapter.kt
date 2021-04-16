@@ -55,11 +55,11 @@ class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) :
 
     private class WaitingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val thumbnailIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_thumbnail_iv)
-        internal val check: CheckBox = itemView.findViewById(R.id.rv_item_history_download_waiting_choose)
+//        internal val check: CheckBox = itemView.findViewById(R.id.rv_item_history_download_waiting_choose)
         internal val filenameTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_filename_tv)
         internal val sizeTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_size_tv)
         internal val stateTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_size_state)
-        internal val moreIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_more_iv)
+//        internal val moreIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_more_iv)
         internal val progressBar: ProgressBar = itemView.findViewById(R.id.rv_item_history_download_waiting_progress)
     }
 
