@@ -19,6 +19,10 @@ interface DownloadingDao {
     @Query("SELECT * FROM downloading_info_table WHERE state=:state  ORDER BY id")
     suspend fun getDownloadingList(state: Int): List<DownloadingInfo>
 
+    @Query("SELECT workID FROM downloading_info_table WHERE state<${RetrofitClient.DOWNLOAD_STATE_DONE}  ORDER BY id")
+    suspend fun getDownloadingWorkIdList(): List<String>
+
+
     @Query("SELECT * FROM downloading_info_table WHERE state>${RetrofitClient.DOWNLOAD_STATE_DOWNLOADING}  ORDER BY id")
     suspend fun getHistoryDownloadList(): List<DownloadingInfo>
 

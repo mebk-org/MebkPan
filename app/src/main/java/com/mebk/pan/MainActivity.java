@@ -64,9 +64,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mainViewModel.getCheckInfo().observe(this, item -> {
-            for (DirectoryDto.Object obj : item) {
-                Log.e(TAG, "onCreate: " + obj.toString());
-            }
         });
 
         mainViewModel.getDownloadWorkerInfo().observe(this, item -> {

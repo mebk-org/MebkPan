@@ -21,8 +21,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
     private var downloadList = mutableListOf<DownloadingInfo>()
     private var queueList = mutableListOf<String>()
+    private val historyDownloadIdList = mutableListOf<String>()
     val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
-    private val channel = Channel<DownloadingInfo>()
+    private val downloadChannel = Channel<DownloadingInfo>(100)
+    private val clientChannel = Channel<DownloadingInfo>(100)
     private val checkList = mutableListOf<DirectoryDto.Object>()
     private val workerIdList = mutableListOf<Pair<String, UUID>>()
     private var isDownloadDone = false
@@ -30,7 +32,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var downloadWorkerInfo = MutableLiveData<WorkInfo>()
     private var cancelList = mutableListOf<String>()
 
-    private var totalCount = 0
     private var failedCount = 0
     private var successCount = 0
     private var cancelCount = 0
@@ -38,10 +39,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         workManager.pruneWork()
         viewModelScope.launch {
-            downloadList = myApplication.repository.getDownloadPrepareList().toMutableList()
-            if (downloadList.isNotEmpty()) {
-                totalCount = downloadList.size
-                workManager.getWorkInfoByIdLiveData(UUID.fromString(downloadList[0].workID)).observeForever(observer)
+            queueList = myApplication.repository.getDownloadingWorkIdList().toMutableList()
+            if (queueList.isNotEmpty()) {
+                workManager.getWorkInfoByIdLiveData(UUID.fromString(queueList[0])).observeForever(observer)
                 isDownloading = true
                 isDownloadDone = false
             }
@@ -73,20 +73,34 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun download() = viewModelScope.launch {
-        var pos = 0
         isDownloadDone = false
         isDownloading = false
         successCount = 0
         failedCount = 0
-        if (downloadList.isNotEmpty()) {
-            pos = downloadList.size
+        downloadList.clear()
+//        if (downloadList.isNotEmpty()) {
+//            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
+//        } else {
+//            downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
+//        }
+
+
+        if (historyDownloadIdList.isEmpty()) {
+            historyDownloadIdList.addAll(checkList.map { it.id })
             downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
         } else {
-            downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
+            for (file in checkList) {
+                if (historyDownloadIdList.indexOf(file.id) == -1) {
+                    downloadList.add(DownloadingInfo(file.id, file.name, "", "", file.size, file.type, ToolUtils.utcToLocal(file.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, ""))
+                    historyDownloadIdList.add(file.id)
+                }
+            }
         }
-        totalCount = downloadList.size
-        for (i in pos until downloadList.size) {
-            myApplication.repository.addDownloadingInfo(downloadList[i])
+
+
+        for (file in downloadList) {
+            myApplication.repository.addDownloadingInfo(file)
+            clientChannel.send(file)
         }
         getDownloadClient()
 
@@ -98,7 +112,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * 更新下载列表
      */
     private suspend fun updateDownloadList() = viewModelScope.launch {
-        for (file in channel) {
+        for (file in downloadChannel) {
             if (cancelList.indexOf(file.fileId) != -1) continue
             downloadFile(file)
         }
@@ -110,11 +124,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     private suspend fun getDownloadClient() = viewModelScope.launch {
         var pos = 0
-        for (file in downloadList) {
+        for (file in clientChannel) {
             if (cancelList.indexOf(file.fileId) != -1) {
                 myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_CANCEL)
                 downloadList.removeAt(pos)
-                --totalCount
             } else {
                 val pair = myApplication.repository.getDownloadClient(file.fileId)
                 if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
@@ -125,7 +138,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 file.client = pair.second
                 myApplication.repository.updateDownloadingClient(file.fileId, pair.second)
-                channel.send(file)
+                downloadChannel.send(file)
                 ++pos
             }
         }
@@ -174,13 +187,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (failedCount + successCount + 1 >= queueList.size) {
             isDownloadDone = true
             isDownloading = false
-            totalCount = 0
             failedCount = 0
             successCount = 0
             cancelCount = 0
-            downloadList.clear()
         }
-        LogUtil.err(this@MainViewModel.javaClass, "total=$totalCount,success=$successCount,failed=$failedCount")
+        LogUtil.err(this@MainViewModel.javaClass, "success=$successCount,failed=$failedCount")
         when (state) {
             WorkInfo.State.SUCCEEDED -> {
                 ++successCount

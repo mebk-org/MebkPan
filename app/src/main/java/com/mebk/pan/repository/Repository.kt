@@ -104,6 +104,11 @@ class Repository(val context: Context) {
      */
     suspend fun getHistoryDownloadList() = database.downloadingInfoDao().getHistoryDownloadList()
 
+    /**
+     * 获取下载workid
+     * @return List<String>
+     */
+    suspend fun getDownloadingWorkIdList() = database.downloadingInfoDao().getDownloadingWorkIdList()
 
     /**
      * 登录
