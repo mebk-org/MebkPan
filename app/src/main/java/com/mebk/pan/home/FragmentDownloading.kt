@@ -52,18 +52,22 @@ class FragmentDownloading : Fragment() {
             when (it.state) {
                 WorkInfo.State.RUNNING -> {
                     if (list.isNotEmpty()) {
-                        while ((mainViewModel.getCurrentPos() + offset < list.size)
-                                && (list[mainViewModel.getCurrentPos() + offset].state == RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR)) {
-                            ++offset
-                        }
-                        if (mainViewModel.getCurrentPos() + offset >= list.size) return@observe
-                        if (list[mainViewModel.getCurrentPos() + offset].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
-                            list[mainViewModel.getCurrentPos() + offset].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+//                        while ((mainViewModel.getCurrentPos() + offset < list.size)
+//                                && (list[mainViewModel.getCurrentPos() + offset].state == RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR)) {
+//                            ++offset
+//                        }
+//                        if (mainViewModel.getCurrentPos() + offset >= list.size) return@observe
+//                        if (list[mainViewModel.getCurrentPos() + offset].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
+//                            list[mainViewModel.getCurrentPos() + offset].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+//                            adapter.notifyDataSetChanged()
+//                        }
+                        if (list[0].state!=RetrofitClient.DOWNLOAD_STATE_DOWNLOADING){
+                            list[0].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
                             adapter.notifyDataSetChanged()
                         }
                         val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)
                         LogUtil.err(this.javaClass, "progress=$progress")
-                        val viewHolder = rv.findViewHolderForAdapterPosition(mainViewModel.getCurrentPos() + offset)
+                        val viewHolder = rv.findViewHolderForAdapterPosition(0)
                         viewHolder?.let { vh ->
                             vh.itemView.rv_item_history_download_waiting_progress.progress = progress
                         }
