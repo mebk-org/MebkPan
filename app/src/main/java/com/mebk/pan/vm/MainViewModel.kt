@@ -39,9 +39,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         workManager.pruneWork()
         viewModelScope.launch {
-            queueList = myApplication.repository.getDownloadingWorkIdList().toMutableList()
+            queueList = myApplication.repository.getDownloadingFileIdList().toMutableList()
             if (queueList.isNotEmpty()) {
-                workManager.getWorkInfoByIdLiveData(UUID.fromString(queueList[0])).observeForever(observer)
+                workerIdList.addAll(queueList.zip(
+                        myApplication.repository.getDownloadingWorkIdList().map {
+                            UUID.fromString(it)
+                        }).toMutableList())
+                workManager.getWorkInfoByIdLiveData(workerIdList[0].second).observeForever(observer)
                 isDownloading = true
                 isDownloadDone = false
             }
