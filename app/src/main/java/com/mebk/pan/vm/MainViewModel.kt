@@ -242,6 +242,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         cancelList.add(id)
         cancelCount++
         myApplication.repository.updateDownloadingState(id, RetrofitClient.DOWNLOAD_STATE_CANCEL)
+        myApplication.repository.updateDownloadingDate(id, System.currentTimeMillis())
         val pos = queueList.indexOf(id)
         if (pos != -1) {
             queueList.removeAt(pos)
