@@ -37,4 +37,8 @@
     <string name="transmit">传输列表</string>
     <string name="upload">上传</string>
     <string name="downloading">下载中</string>
+    <string name="history_download">下载历史</string>
+    <string name="mine_share">我的分享</string>
+    <string name="history_upload">上传历史</string>
+    <string name="detailed_info"><![CDATA[详细信息>]]></string>
 </resources>

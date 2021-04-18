@@ -6,16 +6,22 @@
 
 
     <androidx.appcompat.widget.Toolbar
-        android:background="@color/communism"
-        app:titleTextColor="@color/white"
-        app:title="@string/file"
         android:id="@+id/fragment_directory_toolbar"
         android:layout_width="match_parent"
-        app:menu="@menu/directory_menu"
         android:layout_height="?actionBarSize"
+        android:background="@color/communism"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/directory_menu">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/fragment_directory_toolbar_user_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/download_24" />
+    </androidx.appcompat.widget.Toolbar>
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/fragment_directory_sr"

@@ -19,16 +19,13 @@ import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.vm.HistoryDownloadViewModel
 import com.mebk.pan.vm.MainViewModel
+import kotlinx.android.synthetic.main.fragment_img_item_list.*
 
 class FragmentHistoryDownload : Fragment() {
     private lateinit var rv: RecyclerView
     private lateinit var adapter: DownloadRvAdapter
-    private var listview = mutableListOf<DownloadingInfo>()
-    private var downloadingListView = mutableListOf<DownloadingInfo>()
-    private var historyListView = mutableListOf<DownloadingInfo>()
-    private var downloadDonePos = 0
+    private var list = mutableListOf<DownloadingInfo>()
     private val viewModel by viewModels<HistoryDownloadViewModel>()
-    private val mainViewModel by activityViewModels<MainViewModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_histroy_download, container, false)
 
@@ -36,8 +33,15 @@ class FragmentHistoryDownload : Fragment() {
         rv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-        adapter = DownloadRvAdapter(listview, requireContext())
+        adapter = DownloadRvAdapter(list, requireContext())
         rv.adapter = adapter
+
+        viewModel.downloadListInfo.observe(viewLifecycleOwner, {
+            list.clear()
+            list.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
+
 
         return view
     }

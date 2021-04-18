@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view"
-    >
-    <group android:checkableBehavior="single">
-        <item
+    tools:showIn="navigation_view">
 
-            android:title="@string/Settings"/>
+    <group android:id="@+id/drawer_layout_menu_mine">
         <item
-            android:title="@string/Help"/>
+            android:id="@+id/drawer_layout_menu_mine_history_download"
+            android:title="@string/history_download" />
+        <item
+            android:id="@+id/drawer_layout_menu_mine_history_upload"
+            android:title="@string/history_upload" />
+        <item
+            android:id="@+id/drawer_layout_menu_mine_share"
+            android:title="@string/mine_share" />
+    </group>
+    <group
+        android:id="@+id/drawer_layout_menu_setting"
+        android:checkableBehavior="single">
+        <item android:title="@string/Settings" />
+        <item android:title="@string/Help" />
     </group>
 </menu>

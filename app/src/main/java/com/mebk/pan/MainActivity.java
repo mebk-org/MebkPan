@@ -37,11 +37,8 @@ import java.util.Observable;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     //几个代表页面的常量
-    private ViewPager2 v_pager;
-    RadioGroup radioGroup;
     RadioButton radioButton_file;
     RadioButton radioButton_img;
-    List<Fragment> list;
     BottomNavigationView navView;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;

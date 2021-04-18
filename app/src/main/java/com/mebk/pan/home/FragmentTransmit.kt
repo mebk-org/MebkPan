@@ -15,7 +15,7 @@ import com.mebk.pan.utils.LogUtil
 class FragmentTransmit : Fragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
-    private val tabs = arrayOf("文件上传", "文件下载")
+    private val tabs = arrayOf("文件上传", "文件下载","下载记录")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_transmit, container, false)
 

@@ -1,6 +1,7 @@
 package com.mebk.pan.home
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -18,18 +19,23 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.WorkInfo
+import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
+import com.mebk.pan.utils.SharePreferenceUtils
+import com.mebk.pan.utils.ToolUtils
 import com.mebk.pan.vm.DirectoryViewModel
 import com.mebk.pan.vm.MainViewModel
+import de.hdodenhof.circleimageview.CircleImageView
 
 class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
     private lateinit var rv: RecyclerView
     private lateinit var sr: SwipeRefreshLayout
     private lateinit var toolbar: Toolbar
+    private lateinit var circleIv: CircleImageView
     private val viewModel by viewModels<DirectoryViewModel>()
     private val mainViewModel by activityViewModels<MainViewModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,7 +48,18 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         toolbar = view.findViewById(R.id.fragment_directory_toolbar)
 
         toolbar.setOnMenuItemClickListener(this)
-
+        circleIv = toolbar.findViewById(R.id.fragment_directory_toolbar_user_image)
+        val uid = SharePreferenceUtils.getSharePreference(requireActivity()).getString(SharePreferenceUtils.SP_KEY_UID, "")
+        if (!TextUtils.isEmpty(uid)) {
+            Glide.with(requireActivity())
+                    .load(ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s"))
+                    .placeholder(R.drawable.mine)
+                    .into(circleIv)
+            LogUtil.err(this.javaClass, "url=${ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
+        }
+        circleIv.setOnClickListener {
+            findNavController().navigate(R.id.action_fragment_directory_to_fragmentUserInfo)
+        }
         sr.setProgressViewEndTarget(true, 300)
         viewModel.directory()
 

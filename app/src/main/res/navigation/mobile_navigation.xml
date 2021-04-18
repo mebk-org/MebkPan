@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_fragment_directory_to_fragmentTransmit"
             app:destination="@id/fragmentTransmit" />
+        <action
+            android:id="@+id/action_fragment_directory_to_fragmentUserInfo"
+            app:destination="@id/fragmentUserInfo" />
     </fragment>
 
     <fragment
@@ -81,6 +84,14 @@
         android:label="FragmentTransmit" >
         <action
             android:id="@+id/action_fragmentTransmit_to_fragment_directory"
+            app:destination="@id/fragment_directory" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentUserInfo"
+        android:name="com.mebk.pan.home.FragmentUserInfo"
+        android:label="FragmentUserInfo" >
+        <action
+            android:id="@+id/action_fragmentUserInfo_to_fragment_directory"
             app:destination="@id/fragment_directory" />
     </fragment>
 
