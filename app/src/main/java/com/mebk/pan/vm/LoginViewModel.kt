@@ -35,8 +35,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                             User(id, anonymous, avatar, created_at, nickname, preferred_theme, score, status, user_name, group.id, group.name,
                                     policy.allowSource, policy.maxSize, policy.saveType, policy.upUrl)
                         }
-
                 )
+                MyApplication.uid = response.second!!.id
             }
             RetrofitClient.REQUEST_TIMEOUT -> {
                 loginInfo.value = RetrofitClient.REQUEST_TIMEOUT

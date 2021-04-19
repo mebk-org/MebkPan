@@ -16,7 +16,7 @@ data class User(
         val status: Int,
         val user_name: String,
         val groupId: Int,
-        val name: String,
+        val groupName: String,
         val allowSource: Boolean,
         val maxSize: String,
         val saveType: String,
