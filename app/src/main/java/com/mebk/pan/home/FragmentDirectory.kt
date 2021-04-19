@@ -54,6 +54,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             Glide.with(requireActivity())
                     .load(ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s"))
                     .placeholder(R.drawable.mine)
+                    .dontAnimate()
                     .into(circleIv)
             LogUtil.err(this.javaClass, "url=${ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
         }

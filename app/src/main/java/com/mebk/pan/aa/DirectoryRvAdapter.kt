@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
@@ -98,7 +99,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             is DirectoryViewHolder -> {
 
                 holder.filenameTv.text = list[position].name
-                Glide.with(context).load(ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name)).into(holder.thumbnailIv)
+                Glide.with(context).load(ContextCompat.getDrawable(context, ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name))).into(holder.thumbnailIv)
                 holder.timeTv.text = list[position].date
                 holder.itemView.tag = position
 
