@@ -44,8 +44,10 @@ class FragmentFileInfo : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_file_info, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?=inflater.inflate(R.layout.fragment_file_info, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (id == null || type == null || name == null) {
             findNavController().navigate(R.id.action_fragmentFileInfo_to_fragment_directory)
         }
@@ -96,7 +98,5 @@ class FragmentFileInfo : Fragment() {
             createTimeTv.text = it.created_at
             alterTimeTv.text = it.updated_at
         })
-
-        return view
     }
 }

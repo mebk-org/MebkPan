@@ -21,6 +21,7 @@ class TransmitVpAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
             1 -> {
                 return FragmentDownloading()
             }
+
         }
         return FragmentHistoryUplaod()
     }

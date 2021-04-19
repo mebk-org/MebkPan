@@ -29,8 +29,10 @@ class FragmentDownloading : Fragment() {
     private val viewModel by viewModels<DownloadingViewModel>()
     private val mainViewModel by activityViewModels<MainViewModel>()
     private var offset = 0
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_downloading, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =inflater.inflate(R.layout.fragment_downloading, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         rv = view.findViewById(R.id.fragment_downloading_rv)
         rv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         adapter = DownloadingRvAdapter(list, requireContext())
@@ -61,7 +63,7 @@ class FragmentDownloading : Fragment() {
 //                            list[mainViewModel.getCurrentPos() + offset].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
 //                            adapter.notifyDataSetChanged()
 //                        }
-                        if (list[0].state!=RetrofitClient.DOWNLOAD_STATE_DOWNLOADING){
+                        if (list[0].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
                             list[0].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
                             adapter.notifyDataSetChanged()
                         }
@@ -77,7 +79,5 @@ class FragmentDownloading : Fragment() {
         })
 
 
-        return view
     }
-
 }

@@ -35,8 +35,10 @@ class FragmentInternalFile : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_internal_file, null)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = layoutInflater.inflate(R.layout.fragment_internal_file, null)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         rv = view.findViewById(R.id.fragment_internal_file_rv)
         sr = view.findViewById(R.id.fragment_internal_file_sr)
@@ -86,8 +88,6 @@ class FragmentInternalFile : Fragment() {
             callBack.isEnabled = it > 1
         })
 
-        return view
     }
-
 
 }

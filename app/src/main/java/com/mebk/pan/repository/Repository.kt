@@ -5,10 +5,7 @@ import android.os.SystemClock
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
-import com.mebk.pan.database.entity.DownloadingInfo
-import com.mebk.pan.database.entity.File
-import com.mebk.pan.database.entity.FileUpdateDownloadClient
-import com.mebk.pan.database.entity.User
+import com.mebk.pan.database.entity.*
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
@@ -32,7 +29,7 @@ class Repository(val context: Context) {
     /**
      *从本地获取cookie
      */
-    suspend fun getUserCookie(uid: String): List<User> = database.userDao().getUserCookie(uid)
+    suspend fun getUserCookie(uid: String): List<UserCookie> = database.cookieDao().getUserCookie(uid)
 
 
     /**
@@ -75,6 +72,7 @@ class Repository(val context: Context) {
      * 更新工作ID
      */
     suspend fun updateDownloadingWorkId(fileId: String, workerId: String) = database.downloadingInfoDao().updateDownloadFileWorkerId(fileId, workerId)
+
     /**
      * 更新完成时间
      */
@@ -109,11 +107,25 @@ class Repository(val context: Context) {
      * @return List<String>
      */
     suspend fun getDownloadingWorkIdList() = database.downloadingInfoDao().getDownloadingWorkIdList()
+
     /**
      * 获取下载workid
      * @return List<String>
      */
     suspend fun getDownloadingFileIdList() = database.downloadingInfoDao().getDownloadingFileIdList()
+
+    /**
+     * 保存用户信息
+     * @param user User
+     */
+    suspend fun insertUser(user: User) = database.userDao().insertUser(user)
+
+    /**
+     * 获取用户信息
+     * @param id String
+     * @return User
+     */
+    suspend fun getUserInfo(id: String): User = database.userDao().getUser(id)
 
     /**
      * 登录
@@ -168,12 +180,13 @@ class Repository(val context: Context) {
 
                     body()?.data?.let {
 
-                        database.userDao().clear()
-                        database.userDao().insertUser(User(it.id,
+                        database.cookieDao().clear()
+                        database.cookieDao().insertUserCookie(UserCookie(it.id,
                                 it.nickname,
                                 this.headers().toMultimap()["set-cookie"]?.get(0),
                                 if (this.headers().toMultimap()["set-cookie"]?.size!! > 1) this.headers().toMultimap()["set-cookie"]?.get(1) else ""
                         ))
+
                         val sharedPref = SharePreferenceUtils.getSharePreference(context)
                         with(sharedPref.edit()) {
                             putBoolean(SharePreferenceUtils.SP_KEY_LOGIN, true)
