@@ -38,9 +38,11 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
     private lateinit var circleIv: CircleImageView
     private val viewModel by viewModels<DirectoryViewModel>()
     private val mainViewModel by activityViewModels<MainViewModel>()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater.inflate(R.layout.fragment_directory, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_directory, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val list: MutableList<DirectoryDto.Object> = mutableListOf()
 
         rv = view.findViewById(R.id.fragment_directory_rv)
@@ -158,7 +160,6 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         })
 
-        return view
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {

@@ -114,7 +114,18 @@ class Repository(val context: Context) {
      */
     suspend fun getDownloadingFileIdList() = database.downloadingInfoDao().getDownloadingFileIdList()
 
+    /**
+     * 保存用户信息
+     * @param user User
+     */
     suspend fun insertUser(user: User) = database.userDao().insertUser(user)
+
+    /**
+     * 获取用户信息
+     * @param id String
+     * @return User
+     */
+    suspend fun getUserInfo(id: String): User = database.userDao().getUser(id)
 
     /**
      * 登录

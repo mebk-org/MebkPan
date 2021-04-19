@@ -15,16 +15,18 @@ class MyApplication : Application() {
         var isLogin = false
         val cookieList = mutableListOf<String>()
         var path: String? = ""
+        var uid: String? = ""
     }
 
     override fun onCreate() {
         super.onCreate()
         with(SharePreferenceUtils.getSharePreference(this)) {
             isLogin = getBoolean(SharePreferenceUtils.SP_KEY_LOGIN, false)
+            uid = getString(SharePreferenceUtils.SP_KEY_UID, "")
             path = getString(SharePreferenceUtils.SP_KEY_DOWNLOAD_DIR_KEY, "")
             if (TextUtils.isEmpty(path)) {
                 with(edit()) {
-                    putString(SharePreferenceUtils.SP_KEY_DOWNLOAD_DIR_KEY, this@MyApplication.getExternalFilesDir(null)!!.path+"/")
+                    putString(SharePreferenceUtils.SP_KEY_DOWNLOAD_DIR_KEY, this@MyApplication.getExternalFilesDir(null)!!.path + "/")
                     commit()
                 }
                 path = this@MyApplication.getExternalFilesDir(null)!!.path + "/"

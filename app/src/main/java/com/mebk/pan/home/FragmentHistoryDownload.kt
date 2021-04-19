@@ -26,9 +26,11 @@ class FragmentHistoryDownload : Fragment() {
     private lateinit var adapter: DownloadRvAdapter
     private var list = mutableListOf<DownloadingInfo>()
     private val viewModel by viewModels<HistoryDownloadViewModel>()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_histroy_download, container, false)
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_histroy_download, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         rv = view.findViewById(R.id.fragment_history_download_rv)
         rv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -42,7 +44,5 @@ class FragmentHistoryDownload : Fragment() {
             adapter.notifyDataSetChanged()
         })
 
-
-        return view
     }
 }

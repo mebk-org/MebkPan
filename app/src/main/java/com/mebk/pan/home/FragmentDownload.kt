@@ -32,9 +32,10 @@ class FragmentDownload : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_download, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_download, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         LogUtil.err(this.javaClass, "path=$path,id=$id")
         if (TextUtils.isEmpty(path) || TextUtils.isEmpty(id)) {
             Toast.makeText(activity, "无法获取参数，请重新打开", Toast.LENGTH_SHORT).show()
@@ -47,8 +48,5 @@ class FragmentDownload : Fragment() {
             Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
         })
 
-
-        return v
     }
-
 }

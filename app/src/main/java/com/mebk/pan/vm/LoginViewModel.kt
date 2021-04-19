@@ -35,6 +35,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                             User(id, anonymous, avatar, created_at, nickname, preferred_theme, score, status, user_name, group.id, group.name,
                                     policy.allowSource, policy.maxSize, policy.saveType, policy.upUrl)
                         }
+
                 )
             }
             RetrofitClient.REQUEST_TIMEOUT -> {

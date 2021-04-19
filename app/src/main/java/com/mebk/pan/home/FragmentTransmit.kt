@@ -15,10 +15,12 @@ import com.mebk.pan.utils.LogUtil
 class FragmentTransmit : Fragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
-    private val tabs = arrayOf("文件上传", "文件下载","下载记录")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_transmit, container, false)
+    private val tabs = arrayOf("文件上传", "文件下载", "下载记录")
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_transmit, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         tabLayout = view.findViewById(R.id.fragment_transmit_tabLayout)
 
         viewPager = view.findViewById(R.id.fragment_transmit_vp)
@@ -29,9 +31,5 @@ class FragmentTransmit : Fragment() {
             LogUtil.err(this.javaClass, "pos=${position}")
             tab.text = tabs[position]
         }.attach()
-
-
-        return view
     }
-
 }
