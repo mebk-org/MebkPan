@@ -72,12 +72,10 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/nav_bottom_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_color_state"
-        app:labelVisibilityMode="labeled"
+        style="@style/BottomNavigationViewStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"

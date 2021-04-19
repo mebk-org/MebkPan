@@ -2,22 +2,13 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/palegreen</item>
+        <item name="colorAccent">@color/communism</item>
         <item name="android:colorControlNormal">@color/firebrick</item>
         <item name="colorControlActivated">@color/goldenrod</item>
         <item name="colorControlHighlight">@color/palegreen</item>
-        <item name="colorPrimaryDark">#AD92C2</item>
-        <item name="colorAccent">#AD92C2</item>
+        <item name="colorPrimaryDark">@color/firebrick</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-<!--    <style name="Theme.MebkPan.NoActionBar">-->
-<!--        <item name="windowActionBar">false</item>-->
-<!--        <item name="windowNoTitle">true</item>-->
-<!--    </style>-->
-
-    <style name="Theme.MebkPan.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.MebkPan.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

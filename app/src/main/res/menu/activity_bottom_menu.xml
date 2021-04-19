@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
-        <item
-            android:icon="@mipmap/file_icon"
-            android:title="@string/File"
-            android:id="@+id/nav_fragment_file"/>
-        <item
-            android:title="@string/Img"
-            android:id="@+id/nav_fragment_img"/>
-    </group>
+    <item
+        android:id="@+id/fragment_directory"
+        android:icon="@drawable/cloud_24"
+        android:title="@string/cloud" />
+    <item
+        android:id="@+id/nav_fragment_img"
+        android:icon="@drawable/folder_24"
+        android:title="@string/Img" />
 </menu>

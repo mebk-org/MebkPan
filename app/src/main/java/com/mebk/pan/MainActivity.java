@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     //几个代表页面的常量
     RadioButton radioButton_file;
     RadioButton radioButton_img;
-    BottomNavigationView navView;
+    BottomNavigationView bottomNavigationView;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
     private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupWithNavController(navView, navController);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
     }
 
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        navView = findViewById(R.id.nav_view);
+        bottomNavigationView = findViewById(R.id.nav_bottom_view);
         rootLayout = findViewById(R.id.container);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
 
@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         shareItem = tabLayout.getTabAt(1);
         deleteItem = tabLayout.getTabAt(2);
         moreItem = tabLayout.getTabAt(3);
-        navView = findViewById(R.id.nav_view);
     }
 
     /**
