@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.transition.Scene;
 import androidx.transition.TransitionManager;
@@ -56,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         onClick();
 
-        mainViewModel.isFileOperator().observe(this, item -> {
-            fileOperatorAnimation(item);
-        });
+        mainViewModel.isFileOperator().observe(this, this::fileOperatorAnimation);
 
         mainViewModel.getCheckInfo().observe(this, item -> {
         });
@@ -72,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
     }

@@ -1,5 +1,6 @@
 package com.mebk.pan.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
+import com.mebk.pan.UserInfoActivity
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
@@ -61,7 +63,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             LogUtil.err(this.javaClass, "url=${ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
         }
         circleIv.setOnClickListener {
-            findNavController().navigate(R.id.action_fragment_directory_to_fragmentUserInfo)
+            startActivity(Intent(requireContext(),UserInfoActivity::class.java))
         }
         sr.setProgressViewEndTarget(true, 300)
         viewModel.directory()
@@ -154,17 +156,15 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
             callBack.isEnabled = it
-
             adapter?.isFileOperator = it
             adapter?.notifyItemRangeChanged(0, list.size)
 
         })
-
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         LogUtil.err(this.javaClass, item!!.itemId.toString())
-        when (item!!.itemId) {
+        when (item.itemId) {
             R.id.menu_directory_transmit -> {
                 findNavController().navigate(R.id.action_fragment_directory_to_fragmentTransmit)
             }

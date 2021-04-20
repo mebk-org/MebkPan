@@ -238,6 +238,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * 取消下载
+     * @param id String 取消的文件id
+     * @return Job
+     */
     fun cancelDownload(id: String) = viewModelScope.launch {
         cancelList.add(id)
         cancelCount++
@@ -257,4 +262,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
 }
