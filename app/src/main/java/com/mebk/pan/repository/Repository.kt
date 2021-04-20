@@ -77,6 +77,10 @@ class Repository(val context: Context) {
      * 更新完成时间
      */
     suspend fun updateDownloadingDate(fileId: String, date: Long) = database.downloadingInfoDao().updateDownloadDate(fileId, date)
+    /**
+     * 更新文件路径
+     */
+    suspend fun updateDownloadFilePath(fileId: String, path: String) = database.downloadingInfoDao().updateDownloadPath(fileId, path)
 
     /**
      * 获取正在下载的列表

@@ -44,6 +44,12 @@ interface DownloadingDao {
     @Query("UPDATE downloading_info_table SET date=:date WHERE fileId=:fileId AND state<${RetrofitClient.DOWNLOAD_STATE_DONE}")
     suspend fun updateDownloadDate(fileId: String, date: Long)
 
+    @Query("UPDATE downloading_info_table SET type=:extension WHERE fileId=:fileId AND state<${RetrofitClient.DOWNLOAD_STATE_DONE}")
+    suspend fun updateDownloadFileExtension(fileId: String, extension: String)
+
+    @Query("UPDATE downloading_info_table SET path=:path WHERE fileId=:fileId AND state<${RetrofitClient.DOWNLOAD_STATE_DONE}")
+    suspend fun updateDownloadPath(fileId: String, path: String)
+
     @Query("DELETE FROM downloading_info_table")
     suspend fun clear()
 

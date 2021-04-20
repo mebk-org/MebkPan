@@ -24,9 +24,20 @@
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".MainActivity"
-            android:logo="@mipmap/communist"/>
+            android:logo="@mipmap/communist" />
         <activity android:name=".HistoryDownloadActivity" />
         <activity android:name=".UserInfoActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.mebk.pan.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"
+                />
+        </provider>
     </application>
 
 </manifest>

@@ -15,15 +15,20 @@ import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.ToolUtils
 
-class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HistoryDownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TAG = 0
     private val FILE = 1
-
+    private lateinit var clickListener: ((Int) -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TAG -> TagViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_history_download_tag, parent, false))
-            else -> WaitingViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item_downloading, parent, false))
+        val view = LayoutInflater.from(context).inflate(R.layout.rv_item_downloading, parent, false)
+        view.setOnClickListener {
+            clickListener(view.tag as Int)
         }
+        return WaitingViewHolder(view)
+    }
+
+    fun setOnClickListener(clickListener: ((Int) -> Unit)) {
+        this.clickListener = clickListener
     }
 
     override fun getItemCount(): Int = list.size
@@ -44,33 +49,20 @@ class DownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) :
                         sizeTv.visibility = View.INVISIBLE
                         progressBar.visibility = View.INVISIBLE
                     }
+                    itemView.tag = position
                 }
             }
-            is TagViewHolder -> {
-                holder.tagTv.text = list[position].name
-            }
+
         }
 
     }
 
     private class WaitingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val thumbnailIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_thumbnail_iv)
-//        internal val check: CheckBox = itemView.findViewById(R.id.rv_item_history_download_waiting_choose)
         internal val filenameTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_filename_tv)
         internal val sizeTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_size_tv)
         internal val stateTv: TextView = itemView.findViewById(R.id.rv_item_history_download_waiting_size_state)
-//        internal val moreIv: ImageView = itemView.findViewById(R.id.rv_item_history_download_waiting_more_iv)
         internal val progressBar: ProgressBar = itemView.findViewById(R.id.rv_item_history_download_waiting_progress)
     }
 
-    private class TagViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal val tagTv: TextView = itemView.findViewById(R.id.rv_item_history_download_done_tag)
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return when (list[position].type) {
-            "tag" -> TAG
-            else -> FILE
-        }
-    }
 }

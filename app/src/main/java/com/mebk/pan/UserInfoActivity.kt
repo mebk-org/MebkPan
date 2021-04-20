@@ -45,7 +45,6 @@ class UserInfoActivity : AppCompatActivity() {
         downloadHistory.setOnClickListener {
             startActivity(Intent(this, HistoryDownloadActivity::class.java))
         }
-
     }
 
     private fun initView() {
