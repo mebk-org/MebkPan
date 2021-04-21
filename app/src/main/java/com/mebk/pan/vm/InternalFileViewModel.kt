@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
@@ -16,11 +17,10 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
 
     val application = getApplication<MyApplication>()
     val requestInfo = MutableLiveData<String>().also { it.value = "获取失败" }
-    var fileList = mutableListOf<DirectoryDto.Object>()
+    var fileList = mutableListOf<File>()
+    var fileInfo = MutableLiveData<MutableList<File>>()
 
-    var fileInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
-
-    private val fileStack = Stack<Pair<String, MutableList<DirectoryDto.Object>>>()
+    private val fileStack = Stack<Pair<String, MutableList<File>>>()
     var stackSize = MutableLiveData<Int>().also {
         it.value = fileStack.size
     }
@@ -39,11 +39,13 @@ class InternalFileViewModel(application: Application) : AndroidViewModel(applica
         if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
             LogUtil.err(this.javaClass, pair.second.toString())
-            fileList = pair.second!!.objects as MutableList<DirectoryDto.Object>
+
+            fileList = pair.second!!.objects as MutableList<File>
             fileInfo.value = fileList
+
+
             fileStack.push(Pair(name, fileList.toMutableList()))
             stackSize.value = fileStack.size
-
         } else {
             requestInfo.value = pair.first
         }

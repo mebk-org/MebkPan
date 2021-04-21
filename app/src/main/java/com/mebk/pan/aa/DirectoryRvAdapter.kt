@@ -14,11 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.*
 
-class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryDto.Object>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DirectoryRvAdapter(private val context: Context, val list: List<File>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var clickListener: ((Int) -> Unit)
     private lateinit var clickOnLongListener: ((Int) -> Unit)
     var isFileOperator = false
@@ -99,12 +99,12 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             is DirectoryViewHolder -> {
 
                 holder.filenameTv.text = list[position].name
-                Glide.with(context).load(ContextCompat.getDrawable(context, ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name))).into(holder.thumbnailIv)
-                holder.timeTv.text = list[position].date
+                Glide.with(context).load(ContextCompat.getDrawable(context, chooseDirectoryThumbnail(list[position].type, list[position].name))).into(holder.thumbnailIv)
+                holder.timeTv.text = timeStamp2String(list[position].date)
                 holder.itemView.tag = position
 
                 if ("dir" != list[position].type) {
-                    holder.sizeTv.text = ToolUtils.sizeChange(list[position].size)
+                    holder.sizeTv.text = sizeChange(list[position].size)
                 } else {
                     holder.sizeTv.visibility = GONE
                 }
@@ -123,7 +123,7 @@ class DirectoryRvAdapter(private val context: Context, val list: List<DirectoryD
             }
             is RefreshViewHolder -> {
                 holder.refreshMsgTv.text = list[position].name
-                holder.lastTimeTv.text = list[position].date
+                holder.lastTimeTv.text = timeStamp2String(list[position].date)
             }
             else -> {
             }

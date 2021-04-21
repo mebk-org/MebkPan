@@ -4,10 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.mebk.pan.aa.HistoryDownloadRvAdapter
 import com.mebk.pan.database.entity.DownloadingInfo
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.getFileMimeType
 import com.mebk.pan.vm.HistoryDownloadViewModel
 import java.io.File
 
@@ -42,7 +39,7 @@ class HistoryDownloadActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         })
         adapter.setOnClickListener {
-            val ext = MimeTypeMap.getFileExtensionFromUrl(ToolUtils.getFileMimeType(list[it].name))
+            val ext = MimeTypeMap.getFileExtensionFromUrl(getFileMimeType(list[it].name))
             val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
             val path = (list[it].path).replaceFirst("/", "") + list[it].name
             val file = File(path)

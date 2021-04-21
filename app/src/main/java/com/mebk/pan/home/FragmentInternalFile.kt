@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mebk.pan.R
 import com.mebk.pan.aa.DirectoryRvAdapter
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.vm.InternalFileViewModel
@@ -43,7 +44,7 @@ class FragmentInternalFile : Fragment() {
         rv = view.findViewById(R.id.fragment_internal_file_rv)
         sr = view.findViewById(R.id.fragment_internal_file_sr)
         sr.setProgressViewEndTarget(true, 300)
-        val list: MutableList<DirectoryDto.Object> = mutableListOf()
+        val list: MutableList<File> = mutableListOf()
 
 
 

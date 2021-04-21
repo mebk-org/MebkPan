@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
@@ -19,9 +20,9 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val application = getApplication<MyApplication>()
 
-    private var directoryList = mutableListOf<DirectoryDto.Object>()
+    private var directoryList = listOf<File>()
 
-    var directoryInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
+    var directoryInfo = MutableLiveData<List<File>>()
 
     var requestInfo = MutableLiveData<String>()
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
@@ -32,17 +33,32 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-            val localFileList = application.repository.getFile()
-            directoryList.clear()
-            for (file in localFileList) {
-                directoryList.add(DirectoryDto.Object(format.format(Date(file.date)), file.id, file.name, file.path, file.pic, file.size, file.type))
-            }
+            directoryList = application.repository.getFile()
             directoryInfo.value = directoryList
         } else {
             //从网络获取
             getNetFile()
         }
     }
+
+    fun directory(name: String, path: String = "/") = viewModelScope.launch {
+        val url = if (path != "/") {
+            "$path/$name"
+        } else {
+            path + name
+        }
+        val pair = application.repository.getInternalFile(url)
+        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+            requestInfo.value = "获取成功"
+            LogUtil.err(this.javaClass, pair.second.toString())
+
+//            directoryList = pair.second!!.objects as MutableList<File>
+//            fileInfo.value = fileList
+        } else {
+            requestInfo.value = pair.first
+        }
+    }
+
 
     //获取刷新时间
     private fun getLastRefreshTime(): String {
@@ -66,12 +82,14 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     //获取网络文件
     private fun getNetFile() = viewModelScope.launch {
-
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         val pair = application.repository.getDirectory()
         when (pair.first) {
             RetrofitClient.REQUEST_SUCCESS -> {
                 requestInfo.value = RetrofitClient.REQUEST_SUCCESS
-                directoryList = pair.second!!.objects as MutableList
+                directoryList = pair.second!!.objects.map{
+                    File(it.id,it.name,it.path,it.pic,it.size,it.type,format.parse(it.date).time,"")
+                }
                 directoryInfo.value = directoryList
 
                 //获取文件时也要更新刷新时间

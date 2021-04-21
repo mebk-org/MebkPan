@@ -173,12 +173,12 @@ class Repository(val context: Context) {
 //                                valid = maxAge.substring(startPos + 1, endPos).toLong()
 //                            }
 //                        }
-                        ignore = ToolUtils.utcToLocal(expires, ToolUtils.DATE_TYPE_GMT).time
+                        ignore = utcToLocal(expires, DATE_TYPE_GMT).time
 //
                     }
                     for (date in response.headers().toMultimap()["date"]!!) {
 
-                        start = ToolUtils.utcToLocal(date, ToolUtils.DATE_TYPE_GMT).time
+                        start = utcToLocal(date, DATE_TYPE_GMT).time
 //
                     }
 
@@ -270,7 +270,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, DirectoryDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getInternalFile(ToolUtils.splitUrl(API_DIRECTORY, path))
+                    .getInternalFile(splitUrl(API_DIRECTORY, path))
             LogUtil.err(this::class.java, response.toString())
             with(response) {
                 if (body()?.code == 0) {
@@ -301,7 +301,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, String>("", "")
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getDownloadFileClient(ToolUtils.splitUrl(API_DOWNLOAD_CLIENT, id))
+                    .getDownloadFileClient(splitUrl(API_DOWNLOAD_CLIENT, id))
             LogUtil.err(this::class.java, response.toString())
             with(response) {
                 if (body()?.code == 0) {
@@ -348,7 +348,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, FileInfoDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getFileInfo(ToolUtils.splitUrl(API_FILE_INFO, id), traceRoot, isFolder)
+                    .getFileInfo(splitUrl(API_FILE_INFO, id), traceRoot, isFolder)
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {

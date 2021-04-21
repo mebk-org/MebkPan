@@ -19,16 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.UserInfoActivity
 import com.mebk.pan.aa.DirectoryRvAdapter
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.SharePreferenceUtils
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.*
 import com.mebk.pan.vm.DirectoryViewModel
 import com.mebk.pan.vm.MainViewModel
 import de.hdodenhof.circleimageview.CircleImageView
@@ -45,7 +42,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list: MutableList<DirectoryDto.Object> = mutableListOf()
+        val list: MutableList<File> = mutableListOf()
 
         rv = view.findViewById(R.id.fragment_directory_rv)
         sr = view.findViewById(R.id.fragment_directory_sr)
@@ -56,14 +53,14 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         val uid = SharePreferenceUtils.getSharePreference(requireActivity()).getString(SharePreferenceUtils.SP_KEY_UID, "")
         if (!TextUtils.isEmpty(uid)) {
             Glide.with(requireActivity())
-                    .load(ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s"))
+                    .load(splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s"))
                     .placeholder(R.drawable.mine)
                     .dontAnimate()
                     .into(circleIv)
-            LogUtil.err(this.javaClass, "url=${ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
+            LogUtil.err(this.javaClass, "url=${splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
         }
         circleIv.setOnClickListener {
-            startActivity(Intent(requireContext(),UserInfoActivity::class.java))
+            startActivity(Intent(requireContext(), UserInfoActivity::class.java))
         }
         sr.setProgressViewEndTarget(true, 300)
         viewModel.directory()
@@ -93,7 +90,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
 
         sr.setOnRefreshListener {
-            val refreshDto = DirectoryDto.Object(viewModel.lastRefreshTimeInfo.value!!, "0", "正在刷新...", "", "", 0, "refresh")
+            val refreshDto = File("0", "正在刷新...", "", "", 0, "refresh", string2timeStamp(viewModel.lastRefreshTimeInfo.value!!), "")
             list.add(0, refreshDto)
             rv.scrollToPosition(0)
             adapter?.notifyItemInserted(0)

@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.mebk.pan.R
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.sizeChange
 import com.mebk.pan.vm.FileInfoViewModel
 
 class FragmentFileInfo : Fragment() {
@@ -92,7 +92,7 @@ class FragmentFileInfo : Fragment() {
 
 
         fileInfoViewModel.fileInfo.observe(viewLifecycleOwner, Observer {
-            sizeTv.text = ToolUtils.sizeChange(it.size)
+            sizeTv.text =sizeChange(it.size)
             policyTv.text = it.policy
             pathTv.text = if (TextUtils.isEmpty(it.path)) "根目录" else it.path
             createTimeTv.text = it.created_at

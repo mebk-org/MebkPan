@@ -2,14 +2,13 @@ package com.mebk.pan
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.splitUrl
 import com.mebk.pan.vm.UserInfoViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -33,7 +32,7 @@ class UserInfoActivity : AppCompatActivity() {
 
         viewModel.userInfoData.observe(this, {
             Glide.with(this)
-                    .load(ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", it.id, "/s"))
+                    .load(splitUrl("https://pan.mebk.org/api/v3/user/avatar/", it.id, "/s"))
                     .placeholder(R.drawable.mine)
                     .dontAnimate()
                     .into(circleImageView)
