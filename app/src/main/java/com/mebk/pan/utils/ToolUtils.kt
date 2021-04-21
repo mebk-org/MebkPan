@@ -1,5 +1,6 @@
 package com.mebk.pan.utils
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import com.mebk.pan.R
 import java.text.DecimalFormat
@@ -103,5 +104,14 @@ class ToolUtils {
             return Date(0L)
         }
 
+        /**
+         * 获取文件类型
+         * @param filename String
+         */
+        fun getFileMimeType(filename: String): String {
+            val pos = filename.lastIndexOf(".")
+            if (pos == -1) return ""
+            return filename.substring(pos)
+        }
     }
 }

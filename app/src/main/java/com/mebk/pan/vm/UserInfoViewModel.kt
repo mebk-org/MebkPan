@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.User
+import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.SharePreferenceUtils
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,7 @@ class UserInfoViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             if (!TextUtils.isEmpty(MyApplication.uid)) {
                 it.value = myApplication.repository.getUserInfo(MyApplication.uid!!)
+                LogUtil.err(this@UserInfoViewModel.javaClass,"userinfo=$it")
             }
         }
     }

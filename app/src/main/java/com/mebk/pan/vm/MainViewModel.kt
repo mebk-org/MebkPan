@@ -187,6 +187,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun downloadDone(state: WorkInfo.State) = viewModelScope.launch {
         LogUtil.err(this@MainViewModel.javaClass, "info=${state}")
         myApplication.repository.updateDownloadingDate(queueList[successCount + failedCount], System.currentTimeMillis() / 1000)
+        myApplication.repository.updateDownloadFilePath(queueList[successCount + failedCount], MyApplication.path!!)
         myApplication.repository.updateDownloadingState(queueList[successCount + failedCount], changeState(state))
         if (failedCount + successCount + 1 >= queueList.size) {
             isDownloadDone = true
@@ -238,6 +239,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * 取消下载
+     * @param id String 取消的文件id
+     * @return Job
+     */
     fun cancelDownload(id: String) = viewModelScope.launch {
         cancelList.add(id)
         cancelCount++
@@ -257,4 +263,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
 }

@@ -3,8 +3,9 @@
     package="com.mebk.pan">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -23,9 +24,20 @@
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".MainActivity"
-            android:logo="@mipmap/communist">
+            android:logo="@mipmap/communist" />
+        <activity android:name=".HistoryDownloadActivity" />
+        <activity android:name=".UserInfoActivity" />
 
-        </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.mebk.pan.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"
+                />
+        </provider>
     </application>
 
 </manifest>
