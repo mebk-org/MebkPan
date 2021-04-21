@@ -71,6 +71,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
         (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
             LogUtil.err(this::class.java, "更新列表")
             list.clear()
@@ -110,8 +111,9 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                     bundle.putString("path", viewModel.directoryInfo.value!![it].path)
                     when (viewModel.directoryInfo.value!![it].type) {
                         "dir" -> {
-                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
-                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+//                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
+//                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+                            viewModel.directory(viewModel.directoryInfo.value!![it].name,viewModel.directoryInfo.value!![it].path)
                         }
                         else -> {
                             bundle.putString("id", viewModel.directoryInfo.value!![it].id)

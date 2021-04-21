@@ -32,7 +32,6 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
         if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
-            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
             directoryList = application.repository.getFile()
             directoryInfo.value = directoryList
         } else {
@@ -51,9 +50,12 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
             LogUtil.err(this.javaClass, pair.second.toString())
-
-//            directoryList = pair.second!!.objects as MutableList<File>
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+            directoryList = pair.second!!.objects.map {
+                File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
+            }
 //            fileInfo.value = fileList
+            directoryInfo.value = directoryList
         } else {
             requestInfo.value = pair.first
         }
@@ -87,8 +89,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         when (pair.first) {
             RetrofitClient.REQUEST_SUCCESS -> {
                 requestInfo.value = RetrofitClient.REQUEST_SUCCESS
-                directoryList = pair.second!!.objects.map{
-                    File(it.id,it.name,it.path,it.pic,it.size,it.type,format.parse(it.date).time,"")
+                directoryList = pair.second!!.objects.map {
+                    File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
                 }
                 directoryInfo.value = directoryList
 
