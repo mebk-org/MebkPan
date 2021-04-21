@@ -132,6 +132,10 @@ class Repository(val context: Context) {
      */
     suspend fun getUserInfo(id: String): User = database.userDao().getUser(id)
 
+    /**
+     * 插入文件
+     * @param file File
+     */
     suspend fun addFile(file: File) = database.fileDao().insertFile(file)
 
     /**

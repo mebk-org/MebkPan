@@ -3,6 +3,7 @@ package com.mebk.pan.database.daos
 import androidx.room.*
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.database.entity.FileUpdateDownloadClient
+import com.mebk.pan.utils.RetrofitClient
 
 @Dao
 interface FileDao {
@@ -35,4 +36,6 @@ interface FileDao {
      */
     @Update(entity = File::class)
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient)
+
+
 }

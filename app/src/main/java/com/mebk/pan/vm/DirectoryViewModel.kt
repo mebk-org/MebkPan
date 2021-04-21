@@ -58,14 +58,14 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @return Job
      */
     fun directory(name: String, path: String = "/", isRefresh: Boolean = false) = viewModelScope.launch {
-//        if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
-//            //从本地数据库读取
-//            directoryList = application.repository.getFile()
-//            directoryInfo.value = directoryList
-//        } else {
+        if (!TextUtils.isEmpty(getLastRefreshTime(name)) && !isRefresh) {
+            //从本地数据库读取
+            directoryList = application.repository.getFile()
+            directoryInfo.value = directoryList
+        } else {
             //从网络获取
             getNetFile(name, path)
-//        }
+        }
     }
 
     /**
@@ -94,6 +94,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             directoryInfo.value = directoryList
 //            fileStack.push(Pair(name, directoryList))
 //            stackSize.value = fileStack.size
+            //获取文件时也要更新刷新时间
+            lastRefreshTimeInfo.value = setLastRefreshTime(name)
         } else {
             requestInfo.value = pair.first
         }
@@ -101,20 +103,30 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
 
     //获取刷新时间
-    private fun getLastRefreshTime(): String {
+    private fun getLastRefreshTime(name: String = "/"): String {
+
         val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
-        return sp.getString(SharePreferenceUtils.SP_KEY_REFRESH_TIME, "") ?: return ""
+        val set = sp.getStringSet(SharePreferenceUtils.SP_KEY_REFRESH_TIME, setOf())
+        set?.let {
+            if (name in set) {
+                return sp.getString(name, "") ?: ""
+            }
+        }
+        return ""
     }
 
 
     //更新刷新时间
-    private fun setLastRefreshTime(): String {
+    private fun setLastRefreshTime(name: String = "/"): String {
         val sp = SharePreferenceUtils.getSharePreference(application.applicationContext)
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         //获取当前时间
         val date = simpleDateFormat.format(Date(System.currentTimeMillis()))
+        val set = sp.getStringSet(SharePreferenceUtils.SP_KEY_REFRESH_TIME, setOf())
+        val newSet= set?.union(setOf(name))
         with(sp.edit()) {
-            putString(SharePreferenceUtils.SP_KEY_REFRESH_TIME, date)
+            putStringSet(SharePreferenceUtils.SP_KEY_REFRESH_TIME, newSet)
+            putString(name, date)
             commit()
         }
         return date
