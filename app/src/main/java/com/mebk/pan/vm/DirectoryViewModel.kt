@@ -28,7 +28,17 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
+    private val fileStack = Stack<Pair<String, List<File>>>()
 
+    var stackSize = MutableLiveData<Int>().also {
+        it.value = fileStack.size
+    }
+
+    /**
+     * 获取文件列表
+     * @param isRefresh Boolean
+     * @return Job
+     */
     fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
         if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
@@ -40,7 +50,31 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun directory(name: String, path: String = "/") = viewModelScope.launch {
+    /**
+     * 获取文件夹下文件列表
+     * @param isRefresh Boolean 刷新状态码
+     * @param name String 文件夹名
+     * @param path String 文件夹路径
+     * @return Job
+     */
+    fun directory(name: String, path: String = "/", isRefresh: Boolean = false) = viewModelScope.launch {
+//        if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
+//            //从本地数据库读取
+//            directoryList = application.repository.getFile()
+//            directoryInfo.value = directoryList
+//        } else {
+            //从网络获取
+            getNetFile(name, path)
+//        }
+    }
+
+    /**
+     * 获取网络文件夹下文件
+     * @param name String 文件夹名
+     * @param path String 文件夹路径
+     * @return Job
+     */
+    private fun getNetFile(name: String, path: String = "/") = viewModelScope.launch {
         val url = if (path != "/") {
             "$path/$name"
         } else {
@@ -54,8 +88,12 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             directoryList = pair.second!!.objects.map {
                 File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
             }
-//            fileInfo.value = fileList
+            directoryList.forEach {
+                application.repository.addFile(it)
+            }
             directoryInfo.value = directoryList
+//            fileStack.push(Pair(name, directoryList))
+//            stackSize.value = fileStack.size
         } else {
             requestInfo.value = pair.first
         }
@@ -82,7 +120,10 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         return date
     }
 
-    //获取网络文件
+    /**
+     * 获取网络文件
+     * @return Job
+     */
     private fun getNetFile() = viewModelScope.launch {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         val pair = application.repository.getDirectory()

@@ -77,6 +77,7 @@ class Repository(val context: Context) {
      * 更新完成时间
      */
     suspend fun updateDownloadingDate(fileId: String, date: Long) = database.downloadingInfoDao().updateDownloadDate(fileId, date)
+
     /**
      * 更新文件路径
      */
@@ -130,6 +131,8 @@ class Repository(val context: Context) {
      * @return User
      */
     suspend fun getUserInfo(id: String): User = database.userDao().getUser(id)
+
+    suspend fun addFile(file: File) = database.fileDao().insertFile(file)
 
     /**
      * 登录
