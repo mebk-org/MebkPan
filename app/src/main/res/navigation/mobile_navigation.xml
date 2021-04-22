@@ -11,9 +11,6 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_directory" >
         <action
-            android:id="@+id/action_fragment_directory_to_fragment_internal_file"
-            app:destination="@id/fragment_internal_file" />
-        <action
             android:id="@+id/action_fragment_directory_to_fragmentFileInfo"
             app:destination="@id/fragmentFileInfo" />
         <argument
@@ -28,21 +25,21 @@
         android:name="com.mebk.pan.home.Main_farment_IMG"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_img_item" />
-    <fragment
-        android:id="@+id/fragment_internal_file"
-        android:name="com.mebk.pan.home.FragmentInternalFile"
-        tools:layout="@layout/fragment_internal_file"
-        android:label="FragmentInternalFile" >
-        <argument
-            android:name="path"
-            app:argType="string" />
-        <argument
-            android:name="name"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_fragment_internal_file_to_fragment_directory"
-            app:destination="@id/fragment_directory" />
-    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/fragment_internal_file"-->
+<!--        android:name="com.mebk.pan.home.FragmentInternalFile"-->
+<!--        tools:layout="@layout/fragment_internal_file"-->
+<!--        android:label="FragmentInternalFile" >-->
+<!--        <argument-->
+<!--            android:name="path"-->
+<!--            app:argType="string" />-->
+<!--        <argument-->
+<!--            android:name="name"-->
+<!--            app:argType="string" />-->
+<!--        <action-->
+<!--            android:id="@+id/action_fragment_internal_file_to_fragment_directory"-->
+<!--            app:destination="@id/fragment_directory" />-->
+<!--    </fragment>-->
     <fragment
         tools:layout="@layout/fragment_file_info"
         android:id="@+id/fragmentFileInfo"

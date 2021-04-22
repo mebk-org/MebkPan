@@ -35,8 +35,12 @@ class Repository(val context: Context) {
     /**
      * 从本地获取文件
      */
-    suspend fun getFile(path: String="/"): List<File> = database.fileDao().getFile(path)
+//    suspend fun getDir(): List<File> = database.fileDao().getDir()
 
+    /**
+     * 从本地获取文件夹
+     */
+    suspend fun getFile(path: String = "/"): List<File> = database.fileDao().getFile(path)
 
     /**
      * 更新本地下载链接
@@ -303,7 +307,7 @@ class Repository(val context: Context) {
      * @return Pair<String, String> 文件下载链接
      */
     suspend fun getDownloadClient(id: String): Pair<String, String> {
-        var pair = Pair<String, String>("", "")
+        var pair = Pair("", "")
         try {
             val response = retrofit.create(WebService::class.java)
                     .getDownloadFileClient(splitUrl(API_DOWNLOAD_CLIENT, id))
@@ -369,5 +373,16 @@ class Repository(val context: Context) {
             pair = Pair(e.toString(), null)
         }
         return pair
+    }
+
+    /**
+     * 根据id 删除文件
+     * @param ids List<String> 文件id
+     */
+    suspend fun deleteFile(ids: List<String>) {
+        ids.forEach {
+            LogUtil.err(this.javaClass,"id=$it")
+        }
+        database.fileDao().deleteFileById(ids)
     }
 }

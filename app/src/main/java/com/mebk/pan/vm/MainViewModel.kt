@@ -63,12 +63,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         checkInfo.value = checkList
     }
 
-    fun addCheck(file:File) {
+    fun addCheck(file: File) {
         checkList += file
         checkInfo.value = checkList
     }
 
-    fun removeCheck(file:File) {
+    fun removeCheck(file: File) {
         checkList -= file
         checkInfo.value = checkList
     }
@@ -83,12 +83,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         successCount = 0
         failedCount = 0
         downloadList.clear()
-//        if (downloadList.isNotEmpty()) {
-//            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
-//        } else {
-//            downloadList = checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") }.toMutableList()
-//        }
-
 
         if (historyDownloadIdList.isEmpty()) {
             historyDownloadIdList.addAll(checkList.map { it.id })
@@ -264,6 +258,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 ++workPos
             }
         }
+    }
+
+    /**
+     *
+     * @return Job
+     */
+    fun deleteFile() = viewModelScope.launch {
+        var deleteList = checkList.map { it.id }
+        myApplication.repository.deleteFile(deleteList)
     }
 
 }

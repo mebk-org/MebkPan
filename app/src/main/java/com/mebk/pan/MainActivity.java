@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
         downloadItem.view.setOnClickListener(v -> {
             mainViewModel.download();
         });
+        deleteItem.view.setOnClickListener(v -> {
+            mainViewModel.deleteFile();
+        });
+
     }
 
     /**

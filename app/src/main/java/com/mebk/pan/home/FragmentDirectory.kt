@@ -127,8 +127,6 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                     bundle.putString("path", viewModel.directoryInfo.value!![it].path)
                     when (viewModel.directoryInfo.value!![it].type) {
                         "dir" -> {
-//                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
-//                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
                             viewModel.directory(viewModel.directoryInfo.value!![it].name, viewModel.directoryInfo.value!![it].path)
                         }
                         else -> {
