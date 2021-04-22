@@ -2,46 +2,31 @@ package com.mebk.pan;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Group;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
-import androidx.transition.Scene;
 import androidx.transition.TransitionManager;
-import androidx.viewpager2.widget.ViewPager2;
-import androidx.work.WorkInfo;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.mebk.pan.dtos.DirectoryDto;
-import com.mebk.pan.utils.LogUtil;
-import com.mebk.pan.utils.RetrofitClient;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
-
-import java.util.Dictionary;
-import java.util.List;
-import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -192,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             animator = ValueAnimator.ofFloat(1f, 0f);
         }
-        animator.setDuration(500);
+        animator.setDuration(300);
         ConstraintLayout.LayoutParams parms = (ConstraintLayout.LayoutParams) fab.getLayoutParams();
 
         animator.addUpdateListener(animation -> {
@@ -204,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             parms.circleRadius = (int) (fabRadius * v);
             fab.setLayoutParams(parms);
         });
+        animator.setInterpolator(new AccelerateInterpolator());
         animator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
