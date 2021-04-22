@@ -35,7 +35,7 @@ class Repository(val context: Context) {
     /**
      * 从本地获取文件
      */
-    suspend fun getFile(): List<File> = database.fileDao().getFile()
+    suspend fun getFile(path: String="/"): List<File> = database.fileDao().getFile(path)
 
 
     /**
@@ -77,6 +77,7 @@ class Repository(val context: Context) {
      * 更新完成时间
      */
     suspend fun updateDownloadingDate(fileId: String, date: Long) = database.downloadingInfoDao().updateDownloadDate(fileId, date)
+
     /**
      * 更新文件路径
      */
@@ -132,6 +133,12 @@ class Repository(val context: Context) {
     suspend fun getUserInfo(id: String): User = database.userDao().getUser(id)
 
     /**
+     * 插入文件
+     * @param file File
+     */
+    suspend fun addFile(file: File) = database.fileDao().insertFile(file)
+
+    /**
      * 登录
      * @param username String 用户名
      * @param pwd String 密码
@@ -173,12 +180,12 @@ class Repository(val context: Context) {
 //                                valid = maxAge.substring(startPos + 1, endPos).toLong()
 //                            }
 //                        }
-                        ignore = ToolUtils.utcToLocal(expires, ToolUtils.DATE_TYPE_GMT).time
+                        ignore = utcToLocal(expires, DATE_TYPE_GMT).time
 //
                     }
                     for (date in response.headers().toMultimap()["date"]!!) {
 
-                        start = ToolUtils.utcToLocal(date, ToolUtils.DATE_TYPE_GMT).time
+                        start = utcToLocal(date, DATE_TYPE_GMT).time
 //
                     }
 
@@ -230,8 +237,6 @@ class Repository(val context: Context) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
                         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-
-                        database.fileDao().clear()
                         for (file in it.objects) {
                             with(database.fileDao()) {
                                 insertFile(File(
@@ -270,7 +275,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, DirectoryDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getInternalFile(ToolUtils.splitUrl(API_DIRECTORY, path))
+                    .getInternalFile(splitUrl(API_DIRECTORY, path))
             LogUtil.err(this::class.java, response.toString())
             with(response) {
                 if (body()?.code == 0) {
@@ -301,7 +306,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, String>("", "")
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getDownloadFileClient(ToolUtils.splitUrl(API_DOWNLOAD_CLIENT, id))
+                    .getDownloadFileClient(splitUrl(API_DOWNLOAD_CLIENT, id))
             LogUtil.err(this::class.java, response.toString())
             with(response) {
                 if (body()?.code == 0) {
@@ -348,7 +353,7 @@ class Repository(val context: Context) {
         var pair = Pair<String, FileInfoDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java)
-                    .getFileInfo(ToolUtils.splitUrl(API_FILE_INFO, id), traceRoot, isFolder)
+                    .getFileInfo(splitUrl(API_FILE_INFO, id), traceRoot, isFolder)
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {

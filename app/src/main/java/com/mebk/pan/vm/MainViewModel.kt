@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.work.*
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
@@ -22,10 +23,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var downloadList = mutableListOf<DownloadingInfo>()
     private var queueList = mutableListOf<String>()
     private val historyDownloadIdList = mutableListOf<String>()
-    val checkInfo = MutableLiveData<MutableList<DirectoryDto.Object>>()
+    val checkInfo = MutableLiveData<MutableList<File>>()
     private val downloadChannel = Channel<DownloadingInfo>(100)
     private val clientChannel = Channel<DownloadingInfo>(100)
-    private val checkList = mutableListOf<DirectoryDto.Object>()
+    private val checkList = mutableListOf<File>()
     private val workerIdList = mutableListOf<Pair<String, UUID>>()
     private var isDownloadDone = false
     private var isDownloading = false
@@ -62,12 +63,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         checkInfo.value = checkList
     }
 
-    fun addCheck(file: DirectoryDto.Object) {
+    fun addCheck(file:File) {
         checkList += file
         checkInfo.value = checkList
     }
 
-    fun removeCheck(file: DirectoryDto.Object) {
+    fun removeCheck(file:File) {
         checkList -= file
         checkInfo.value = checkList
     }
@@ -91,11 +92,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         if (historyDownloadIdList.isEmpty()) {
             historyDownloadIdList.addAll(checkList.map { it.id })
-            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, ToolUtils.utcToLocal(it.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
+            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, utcToLocal(it.date, DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
         } else {
             for (file in checkList) {
                 if (historyDownloadIdList.indexOf(file.id) == -1) {
-                    downloadList.add(DownloadingInfo(file.id, file.name, "", "", file.size, file.type, ToolUtils.utcToLocal(file.date, ToolUtils.DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, ""))
+                    downloadList.add(DownloadingInfo(file.id, file.name, "", "", file.size, file.type, utcToLocal(file.date, DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, ""))
                     historyDownloadIdList.add(file.id)
                 }
             }
@@ -196,6 +197,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             successCount = 0
             cancelCount = 0
             queueList.clear()
+            workerIdList.clear()
         }
         LogUtil.err(this@MainViewModel.javaClass, "success=$successCount,failed=$failedCount")
         when (state) {

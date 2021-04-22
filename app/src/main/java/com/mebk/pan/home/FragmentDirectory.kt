@@ -19,16 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.UserInfoActivity
 import com.mebk.pan.aa.DirectoryRvAdapter
+import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.SharePreferenceUtils
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.*
 import com.mebk.pan.vm.DirectoryViewModel
 import com.mebk.pan.vm.MainViewModel
 import de.hdodenhof.circleimageview.CircleImageView
@@ -45,7 +42,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list: MutableList<DirectoryDto.Object> = mutableListOf()
+        val list: MutableList<File> = mutableListOf()
 
         rv = view.findViewById(R.id.fragment_directory_rv)
         sr = view.findViewById(R.id.fragment_directory_sr)
@@ -56,14 +53,14 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         val uid = SharePreferenceUtils.getSharePreference(requireActivity()).getString(SharePreferenceUtils.SP_KEY_UID, "")
         if (!TextUtils.isEmpty(uid)) {
             Glide.with(requireActivity())
-                    .load(ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s"))
+                    .load(splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s"))
                     .placeholder(R.drawable.mine)
                     .dontAnimate()
                     .into(circleIv)
-            LogUtil.err(this.javaClass, "url=${ToolUtils.splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
+            LogUtil.err(this.javaClass, "url=${splitUrl("https://pan.mebk.org/api/v3/user/avatar/", uid!!, "/s")}")
         }
         circleIv.setOnClickListener {
-            startActivity(Intent(requireContext(),UserInfoActivity::class.java))
+            startActivity(Intent(requireContext(), UserInfoActivity::class.java))
         }
         sr.setProgressViewEndTarget(true, 300)
         viewModel.directory()
@@ -74,6 +71,17 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
         (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+        //拦截返回事件
+        val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (mainViewModel.isFileOperator.value == true) {
+                mainViewModel.changeFileOperator()
+            } else {
+                LogUtil.err(this.javaClass, "pop")
+                viewModel.back()
+            }
+        }
+
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
             LogUtil.err(this::class.java, "更新列表")
             list.clear()
@@ -91,9 +99,15 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             }
         })
 
+        viewModel.stackSize.observe(viewLifecycleOwner, {
+            LogUtil.err(this::class.java, "栈内有${it}个列表")
+            callBack.isEnabled = (it != 1 || mainViewModel.isFileOperator.value == true)
+            LogUtil.err(this.javaClass, "stackSize 拦截callback=${callBack.isEnabled}")
+
+        })
 
         sr.setOnRefreshListener {
-            val refreshDto = DirectoryDto.Object(viewModel.lastRefreshTimeInfo.value!!, "0", "正在刷新...", "", "", 0, "refresh")
+            val refreshDto = File("0", "正在刷新...", "", "", 0, "refresh", string2timeStamp(viewModel.lastRefreshTimeInfo.value!!), "")
             list.add(0, refreshDto)
             rv.scrollToPosition(0)
             adapter?.notifyItemInserted(0)
@@ -113,8 +127,9 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                     bundle.putString("path", viewModel.directoryInfo.value!![it].path)
                     when (viewModel.directoryInfo.value!![it].type) {
                         "dir" -> {
-                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
-                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+//                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
+//                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
+                            viewModel.directory(viewModel.directoryInfo.value!![it].name, viewModel.directoryInfo.value!![it].path)
                         }
                         else -> {
                             bundle.putString("id", viewModel.directoryInfo.value!![it].id)
@@ -149,16 +164,15 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         }
 
-        //拦截返回事件
-        val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            mainViewModel.changeFileOperator()
-        }
+
 
         mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
-            callBack.isEnabled = it
+            LogUtil.err(this.javaClass, "it=${it},size=${viewModel.stackSize.value}")
+            callBack.isEnabled = (it || viewModel.stackSize.value != 1)
+
             adapter?.isFileOperator = it
             adapter?.notifyItemRangeChanged(0, list.size)
-
+            LogUtil.err(this.javaClass, "isFileOperator 拦截callback=${callBack.isEnabled}")
         })
     }
 

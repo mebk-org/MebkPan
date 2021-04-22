@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -13,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.ToolUtils
+import com.mebk.pan.utils.chooseDirectoryThumbnail
 
 class HistoryDownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TAG = 0
@@ -37,7 +36,7 @@ class HistoryDownloadRvAdapter(val list: List<DownloadingInfo>, val context: Con
         when (holder) {
             is WaitingViewHolder -> {
                 with(holder) {
-                    Glide.with(context).load(ToolUtils.chooseDirectoryThumbnail(list[position].type, list[position].name)).into(thumbnailIv)
+                    Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(thumbnailIv)
                     filenameTv.text = list[position].name
                     holder.itemView.tag = position
                     stateTv.text = RetrofitClient.checkDownloadState(list[position].state!!)
