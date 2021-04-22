@@ -2,6 +2,7 @@ package com.mebk.pan.repository
 
 import android.content.Context
 import android.os.SystemClock
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
@@ -380,9 +381,20 @@ class Repository(val context: Context) {
      * @param ids List<String> 文件id
      */
     suspend fun deleteFile(ids: List<String>) {
+        var idArr = JsonArray()
         ids.forEach {
-            LogUtil.err(this.javaClass,"id=$it")
+            idArr.add(it)
         }
+        val jsonObj = JsonObject()
+
+        var dirsArr = JsonArray()
+
+        jsonObj.add("items", idArr)
+        jsonObj.add("dirs", dirsArr)
+        LogUtil.err(this.javaClass, "json=${jsonObj.toString()}")
+        val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
+        val response = retrofit.create(WebService::class.java).deleteFile(requestBody)
+
         database.fileDao().deleteFileById(ids)
     }
 }

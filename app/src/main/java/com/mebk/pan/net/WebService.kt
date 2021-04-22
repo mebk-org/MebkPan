@@ -1,13 +1,7 @@
 package com.mebk.pan.net
 
-import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.dtos.DownloadClientDto
-import com.mebk.pan.dtos.FileInfoDto
-import com.mebk.pan.dtos.UserDto
-import com.mebk.pan.utils.API_DIRECTORY
-import com.mebk.pan.utils.API_LOGIN
-import com.mebk.pan.utils.CONTENT_TYPE_JSON
-import com.mebk.pan.utils.ResponseData
+import com.mebk.pan.dtos.*
+import com.mebk.pan.utils.*
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -42,4 +36,9 @@ interface WebService {
     suspend fun getFileInfo(@Path("path") path: String,
                             @Query("trace_root") traceRoot: Boolean,
                             @Query("is_folder") isFolder: Boolean): Response<ResponseData<FileInfoDto>>
+
+    //删除文件
+    @HTTP(method = "DELETE", hasBody = true, path = API_DELETE_FILE)
+    suspend fun deleteFile(@Body body: RequestBody): Response<DeleteDto>
+
 }
