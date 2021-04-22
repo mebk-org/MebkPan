@@ -105,7 +105,7 @@ class Repository(val context: Context) {
      * 查询库中处于prepare的数据
      * @return List<DownloadingInfo>
      */
-    suspend fun getDownloadPrepareList() = database.downloadingInfoDao().getDownloadingList(RetrofitClient.DOWNLOAD_STATE_PREPARE)
+    suspend fun getDownloadPrepareList() = database.downloadingInfoDao().getDownloadingList(DOWNLOAD_STATE_PREPARE)
 
     /**
      * 获取历史下载列表
@@ -213,13 +213,13 @@ class Repository(val context: Context) {
                             commit()
                         }
                     }
-                    pair = Pair(RetrofitClient.REQUEST_SUCCESS, body()?.data)
+                    pair = Pair(REQUEST_SUCCESS, body()?.data)
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -257,13 +257,13 @@ class Repository(val context: Context) {
                             }
                         }
                     }
-                    pair = Pair(RetrofitClient.REQUEST_SUCCESS, body()?.data)
+                    pair = Pair(REQUEST_SUCCESS, body()?.data)
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -286,14 +286,14 @@ class Repository(val context: Context) {
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, it)
+                        pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -318,14 +318,14 @@ class Repository(val context: Context) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
                         updateDownloadClient(FileUpdateDownloadClient(id, it))
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, it)
+                        pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
                     pair = Pair(body()?.msg!!, "")
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, "")
+            pair = Pair(REQUEST_TIMEOUT, "")
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), "")
         }
@@ -363,14 +363,14 @@ class Repository(val context: Context) {
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, it)
+                        pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -392,7 +392,6 @@ class Repository(val context: Context) {
         var pair = Pair<String, DeleteDto?>("", null)
         jsonObj.add("items", idArr)
         jsonObj.add("dirs", dirsArr)
-        LogUtil.err(this.javaClass, "json=${jsonObj.toString()}")
         val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
         try {
 
@@ -400,13 +399,13 @@ class Repository(val context: Context) {
             with(response) {
                 body()?.let {
                     if (it.code == 0) {
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, body())
+                        pair = Pair(REQUEST_SUCCESS, body())
                         database.fileDao().deleteFileById(ids)
                     }
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }

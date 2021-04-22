@@ -91,7 +91,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         })
 
         viewModel.requestInfo.observe(viewLifecycleOwner, Observer {
-            if (it != RetrofitClient.REQUEST_SUCCESS) {
+            if (it != REQUEST_SUCCESS) {
                 Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
                 sr.isRefreshing = false
                 list.removeAt(0)

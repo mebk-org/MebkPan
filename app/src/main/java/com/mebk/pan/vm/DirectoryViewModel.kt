@@ -8,9 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.SharePreferenceUtils
+import com.mebk.pan.utils.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -90,7 +88,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      */
     private fun getNetFile(name: String, url: String) = viewModelScope.launch {
         val pair = application.repository.getInternalFile(url)
-        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+        if (pair.first == REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
             LogUtil.err(this.javaClass, pair.second.toString())
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
@@ -148,8 +146,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         val pair = application.repository.getDirectory()
         when (pair.first) {
-            RetrofitClient.REQUEST_SUCCESS -> {
-                requestInfo.value = RetrofitClient.REQUEST_SUCCESS
+            REQUEST_SUCCESS -> {
+                requestInfo.value = REQUEST_SUCCESS
                 directoryList = pair.second!!.objects.map {
                     File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
                 }
@@ -159,7 +157,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
                 lastRefreshTimeInfo.value = setLastRefreshTime()
 
             }
-            RetrofitClient.REQUEST_TIMEOUT -> {
+            REQUEST_TIMEOUT -> {
                 requestInfo.value = "链接超时，请重试"
             }
             else -> {

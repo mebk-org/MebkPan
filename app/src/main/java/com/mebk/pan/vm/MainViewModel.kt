@@ -37,6 +37,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var successCount = 0
     private var cancelCount = 0
 
+
+
+    var deleteInfo = MutableLiveData<Int>()
+
     init {
         workManager.pruneWork()
         viewModelScope.launch {
@@ -86,11 +90,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         if (historyDownloadIdList.isEmpty()) {
             historyDownloadIdList.addAll(checkList.map { it.id })
-            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, utcToLocal(it.date, DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, "") })
+            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, utcToLocal(it.date, DATE_TYPE_UTC).time, DOWNLOAD_STATE_WAIT, 0, "") })
         } else {
             for (file in checkList) {
                 if (historyDownloadIdList.indexOf(file.id) == -1) {
-                    downloadList.add(DownloadingInfo(file.id, file.name, "", "", file.size, file.type, utcToLocal(file.date, DATE_TYPE_UTC).time, RetrofitClient.DOWNLOAD_STATE_WAIT, 0, ""))
+                    downloadList.add(DownloadingInfo(file.id, file.name, "", "", file.size, file.type, utcToLocal(file.date, DATE_TYPE_UTC).time, DOWNLOAD_STATE_WAIT, 0, ""))
                     historyDownloadIdList.add(file.id)
                 }
             }
@@ -125,13 +129,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         var pos = 0
         for (file in clientChannel) {
             if (cancelList.indexOf(file.fileId) != -1) {
-                myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_CANCEL)
+                myApplication.repository.updateDownloadingState(file.fileId, DOWNLOAD_STATE_CANCEL)
                 downloadList.removeAt(pos)
             } else {
                 val pair = myApplication.repository.getDownloadClient(file.fileId)
-                if (pair.first != RetrofitClient.REQUEST_SUCCESS) {
-                    file.state = RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR
-                    myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_CLIENT_ERR)
+                if (pair.first !=REQUEST_SUCCESS) {
+                    file.state =DOWNLOAD_STATE_CLIENT_ERR
+                    myApplication.repository.updateDownloadingState(file.fileId, DOWNLOAD_STATE_CLIENT_ERR)
                     ++pos
                     continue
                 }
@@ -168,7 +172,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
         workManager.enqueueUniqueWork(DOWNLOAD_KEY_OUTPUT_FILE, ExistingWorkPolicy.APPEND_OR_REPLACE, downloadRequest)
         queueList.add(file.fileId)
-        myApplication.repository.updateDownloadingState(file.fileId, RetrofitClient.DOWNLOAD_STATE_PREPARE)
+        myApplication.repository.updateDownloadingState(file.fileId, DOWNLOAD_STATE_PREPARE)
         myApplication.repository.updateDownloadingWorkId(file.fileId, downloadRequest.id.toString())
         LogUtil.err(this@MainViewModel.javaClass, "queuelistsize=${queueList.size}")
     }
@@ -226,12 +230,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     private fun changeState(state: WorkInfo.State): Int {
         return when (state) {
-            WorkInfo.State.BLOCKED -> RetrofitClient.DOWNLOAD_STATE_WAIT
-            WorkInfo.State.ENQUEUED -> RetrofitClient.DOWNLOAD_STATE_WAIT
-            WorkInfo.State.RUNNING -> RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
-            WorkInfo.State.SUCCEEDED -> RetrofitClient.DOWNLOAD_STATE_DONE
-            WorkInfo.State.FAILED -> RetrofitClient.DOWNLOAD_STATE_DOWNLOAD_ERR
-            WorkInfo.State.CANCELLED -> RetrofitClient.DOWNLOAD_STATE_CANCEL
+            WorkInfo.State.BLOCKED -> DOWNLOAD_STATE_WAIT
+            WorkInfo.State.ENQUEUED -> DOWNLOAD_STATE_WAIT
+            WorkInfo.State.RUNNING -> DOWNLOAD_STATE_DOWNLOADING
+            WorkInfo.State.SUCCEEDED -> DOWNLOAD_STATE_DONE
+            WorkInfo.State.FAILED -> DOWNLOAD_STATE_DOWNLOAD_ERR
+            WorkInfo.State.CANCELLED -> DOWNLOAD_STATE_CANCEL
         }
     }
 
@@ -243,7 +247,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun cancelDownload(id: String) = viewModelScope.launch {
         cancelList.add(id)
         cancelCount++
-        myApplication.repository.updateDownloadingState(id, RetrofitClient.DOWNLOAD_STATE_CANCEL)
+        myApplication.repository.updateDownloadingState(id, DOWNLOAD_STATE_CANCEL)
         myApplication.repository.updateDownloadingDate(id, System.currentTimeMillis())
         val pos = queueList.indexOf(id)
         if (pos != -1) {
@@ -266,7 +270,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun deleteFile() = viewModelScope.launch {
         var deleteList = checkList.map { it.id }
-        myApplication.repository.deleteFile(deleteList)
+        val pair = myApplication.repository.deleteFile(deleteList)
+        if (pair.first == REQUEST_SUCCESS) {
+
+        }
     }
 
 }

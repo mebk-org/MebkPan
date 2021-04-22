@@ -150,3 +150,22 @@ fun getFileMimeType(filename: String): String {
     if (pos == -1) return ""
     return filename.substring(pos)
 }
+
+/**
+ * 状态转换
+ * @param state Int
+ * @return String
+ */
+fun checkDownloadState(state: Int): String {
+    return when (state) {
+        DOWNLOAD_STATE_WAIT -> "等待下载"
+        DOWNLOAD_STATE_PREPARE -> "获取链接"
+        DOWNLOAD_STATE_DONE -> "下载完成"
+        DOWNLOAD_STATE_DOWNLOADING -> "下载中"
+        DOWNLOAD_STATE_ERR -> "错误"
+        DOWNLOAD_STATE_CLIENT_ERR -> "无法获取链接"
+        DOWNLOAD_STATE_DOWNLOAD_ERR -> "下载错误"
+        DOWNLOAD_STATE_CANCEL -> "已取消"
+        else -> "状态码不正确，code=${state}"
+    }
+}

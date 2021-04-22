@@ -16,41 +16,6 @@ class RetrofitClient(val context: Context) {
     private lateinit var retrofit: Retrofit
 
 
-    companion object {
-        const val REQUEST_SUCCESS = "SUCCESS"
-        const val REQUEST_TIMEOUT = "TIMEOUT"
-
-        /*
-        * wait 等待下载 未获取链接
-        * prepare  获取链接 等待下载
-        * */
-        const val DOWNLOAD_STATE_WAIT = 0
-        const val DOWNLOAD_STATE_PREPARE = 1
-        const val DOWNLOAD_STATE_DOWNLOADING = 2
-        const val DOWNLOAD_STATE_CLIENT_ERR = 3
-        const val DOWNLOAD_STATE_DOWNLOAD_ERR = 4
-        const val DOWNLOAD_STATE_ERR = 5
-        const val DOWNLOAD_STATE_DONE = 6
-        const val DOWNLOAD_STATE_CANCEL = 7
-
-
-        fun checkDownloadState(state: Int): String {
-            return when (state) {
-                DOWNLOAD_STATE_WAIT -> "等待下载"
-                DOWNLOAD_STATE_PREPARE -> "获取链接"
-                DOWNLOAD_STATE_DONE -> "下载完成"
-                DOWNLOAD_STATE_DOWNLOADING -> "下载中"
-                DOWNLOAD_STATE_ERR -> "错误"
-                DOWNLOAD_STATE_CLIENT_ERR -> "无法获取链接"
-                DOWNLOAD_STATE_DOWNLOAD_ERR -> "下载错误"
-                DOWNLOAD_STATE_CANCEL -> "已取消"
-                else -> "状态码不正确，code=${state}"
-            }
-        }
-
-
-    }
-
     /*
     * 忽略ca证书
     * */

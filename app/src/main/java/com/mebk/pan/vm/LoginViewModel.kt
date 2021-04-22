@@ -8,6 +8,8 @@ import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.User
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.REQUEST_SUCCESS
+import com.mebk.pan.utils.REQUEST_TIMEOUT
 import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
 
@@ -25,7 +27,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         val response = application.repository.getUser(username, pwd, captchaCode)
 
         when (response.first) {
-            RetrofitClient.REQUEST_SUCCESS -> {
+            REQUEST_SUCCESS -> {
                 loginInfo.value = LOGIN_SUCCESS
                 userInfo = MutableLiveData<UserDto>().also {
                     it.value = response.second
@@ -38,8 +40,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 )
                 MyApplication.uid = response.second!!.id
             }
-            RetrofitClient.REQUEST_TIMEOUT -> {
-                loginInfo.value = RetrofitClient.REQUEST_TIMEOUT
+            REQUEST_TIMEOUT -> {
+                loginInfo.value = REQUEST_TIMEOUT
             }
             else -> {
                 LogUtil.err(this@LoginViewModel::class.java, response.first)
