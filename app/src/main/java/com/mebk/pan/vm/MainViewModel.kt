@@ -197,6 +197,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             successCount = 0
             cancelCount = 0
             queueList.clear()
+            workerIdList.clear()
         }
         LogUtil.err(this@MainViewModel.javaClass, "success=$successCount,failed=$failedCount")
         when (state) {
