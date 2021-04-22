@@ -72,6 +72,12 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         rv.adapter = adapter
         (rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
+        //拦截返回事件
+        val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+//            mainViewModel.changeFileOperator()
+            viewModel.back()
+        }
+
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
             LogUtil.err(this::class.java, "更新列表")
             list.clear()
@@ -89,6 +95,10 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             }
         })
 
+        viewModel.stackSize.observe(viewLifecycleOwner, {
+            LogUtil.err(this::class.java, "栈内有${it}个列表")
+            callBack.isEnabled = (it != 1)
+        })
 
         sr.setOnRefreshListener {
             val refreshDto = File("0", "正在刷新...", "", "", 0, "refresh", string2timeStamp(viewModel.lastRefreshTimeInfo.value!!), "")
@@ -113,7 +123,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                         "dir" -> {
 //                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
 //                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
-                            viewModel.directory(viewModel.directoryInfo.value!![it].name,viewModel.directoryInfo.value!![it].path)
+                            viewModel.directory(viewModel.directoryInfo.value!![it].name, viewModel.directoryInfo.value!![it].path)
                         }
                         else -> {
                             bundle.putString("id", viewModel.directoryInfo.value!![it].id)
@@ -148,10 +158,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         }
 
-        //拦截返回事件
-        val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            mainViewModel.changeFileOperator()
-        }
+
 
         mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
             callBack.isEnabled = it

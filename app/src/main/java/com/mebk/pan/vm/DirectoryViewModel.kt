@@ -48,6 +48,10 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             //从网络获取
             getNetFile()
         }
+        if (stackSize.value == 0) {
+            fileStack.push(Pair("/", directoryList))
+            stackSize.value = fileStack.size
+        }
     }
 
     /**
@@ -63,15 +67,19 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         } else {
             path + name
         }
+
         if (!TextUtils.isEmpty(getLastRefreshTime(name)) && !isRefresh) {
             //从本地数据库读取
-                LogUtil.err(this@DirectoryViewModel.javaClass,"path=${url}")
+            LogUtil.err(this@DirectoryViewModel.javaClass, "path=${url}")
             directoryList = application.repository.getFile(url)
             directoryInfo.value = directoryList
+
         } else {
             //从网络获取
-            getNetFile(name,url)
+            getNetFile(name, url)
         }
+        fileStack.push(Pair(name, directoryList))
+        stackSize.value = fileStack.size
     }
 
     /**
@@ -80,7 +88,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @param path String 文件夹路径
      * @return Job
      */
-    private fun getNetFile(name: String, url: String ) = viewModelScope.launch {
+    private fun getNetFile(name: String, url: String) = viewModelScope.launch {
         val pair = application.repository.getInternalFile(url)
         if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
@@ -93,8 +101,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
                 application.repository.addFile(it)
             }
             directoryInfo.value = directoryList
-//            fileStack.push(Pair(name, directoryList))
-//            stackSize.value = fileStack.size
+
             //获取文件时也要更新刷新时间
             lastRefreshTimeInfo.value = setLastRefreshTime(name)
         } else {
@@ -162,5 +169,24 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    /**
+     * 返回事件
+     * @return Boolean 是否为最顶层文件夹
+     */
+    fun back(): Boolean {
+        return if (fileStack.size > 1) {
+            fileStack.pop()
+            stackSize.value = fileStack.size
+            directoryList = fileStack.peek().second
+            directoryInfo.value = directoryList
+            false
+        } else {
+            if (!fileStack.empty()) {
+                fileStack.pop()
+                stackSize.value = fileStack.size
+            }
+            false
+        }
+    }
 
 }
