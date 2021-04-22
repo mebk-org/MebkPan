@@ -37,7 +37,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var successCount = 0
     private var cancelCount = 0
 
-
+    companion object {
+        val DELETE_START = 0
+        val DELETE_DONE = 1
+    }
 
     var deleteInfo = MutableLiveData<Int>()
 
@@ -133,8 +136,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 downloadList.removeAt(pos)
             } else {
                 val pair = myApplication.repository.getDownloadClient(file.fileId)
-                if (pair.first !=REQUEST_SUCCESS) {
-                    file.state =DOWNLOAD_STATE_CLIENT_ERR
+                if (pair.first != REQUEST_SUCCESS) {
+                    file.state = DOWNLOAD_STATE_CLIENT_ERR
                     myApplication.repository.updateDownloadingState(file.fileId, DOWNLOAD_STATE_CLIENT_ERR)
                     ++pos
                     continue
@@ -269,11 +272,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun deleteFile() = viewModelScope.launch {
+        deleteInfo.value = DELETE_START
         var deleteList = checkList.map { it.id }
         val pair = myApplication.repository.deleteFile(deleteList)
         if (pair.first == REQUEST_SUCCESS) {
-
+            deleteInfo.value = DELETE_DONE
         }
+
     }
 
 }

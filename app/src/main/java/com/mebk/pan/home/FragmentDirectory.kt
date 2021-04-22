@@ -82,7 +82,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             }
         }
 
-        viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
+        viewModel.directoryInfo.observe(viewLifecycleOwner, {
             LogUtil.err(this::class.java, "更新列表")
             list.clear()
             list.addAll(it)
@@ -90,7 +90,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             sr.isRefreshing = false
         })
 
-        viewModel.requestInfo.observe(viewLifecycleOwner, Observer {
+        viewModel.requestInfo.observe(viewLifecycleOwner, {
             if (it != REQUEST_SUCCESS) {
                 Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
                 sr.isRefreshing = false
@@ -164,7 +164,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
 
 
-        mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
+        mainViewModel.isFileOperator.observe(viewLifecycleOwner, {
             LogUtil.err(this.javaClass, "it=${it},size=${viewModel.stackSize.value}")
             callBack.isEnabled = (it || viewModel.stackSize.value != 1)
 
@@ -172,6 +172,14 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             adapter?.notifyItemRangeChanged(0, list.size)
             LogUtil.err(this.javaClass, "isFileOperator 拦截callback=${callBack.isEnabled}")
         })
+
+        mainViewModel.deleteInfo.observe(viewLifecycleOwner, {
+            if (it == MainViewModel.DELETE_DONE) {
+                viewModel.directory()
+                mainViewModel.changeFileOperator()
+            }
+        })
+
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
