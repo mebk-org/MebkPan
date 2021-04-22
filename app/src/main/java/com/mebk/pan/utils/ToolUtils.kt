@@ -1,5 +1,6 @@
 package com.mebk.pan.utils
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import com.mebk.pan.R
@@ -126,6 +127,7 @@ fun utcToLocal(time: Long, dateType: Int): Date {
     }
     return Date(0L)
 }
+
 /**
  * 时间戳转string
  * @param time Long
@@ -168,4 +170,15 @@ fun checkDownloadState(state: Int): String {
         DOWNLOAD_STATE_CANCEL -> "已取消"
         else -> "状态码不正确，code=${state}"
     }
+}
+
+/**
+ * dp转px
+ * @param context Context
+ * @param dpValue Float
+ * @return Int px
+ */
+fun dp2px(context: Context, dpValue: Float): Int {
+    val scale = context.resources.displayMetrics.density;
+    return (dpValue * scale + 0.5f).toInt()
 }

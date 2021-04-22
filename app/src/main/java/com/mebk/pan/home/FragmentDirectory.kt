@@ -191,6 +191,4 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         }
         return false
     }
-
-
 }
