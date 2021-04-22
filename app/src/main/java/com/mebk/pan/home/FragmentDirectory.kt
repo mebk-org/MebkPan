@@ -74,8 +74,12 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         //拦截返回事件
         val callBack = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-//            mainViewModel.changeFileOperator()
-            viewModel.back()
+            if (mainViewModel.isFileOperator.value == true) {
+                mainViewModel.changeFileOperator()
+            } else {
+                LogUtil.err(this.javaClass, "pop")
+                viewModel.back()
+            }
         }
 
         viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
@@ -97,7 +101,9 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
         viewModel.stackSize.observe(viewLifecycleOwner, {
             LogUtil.err(this::class.java, "栈内有${it}个列表")
-            callBack.isEnabled = (it != 1)
+            callBack.isEnabled = (it != 1 || mainViewModel.isFileOperator.value == true)
+            LogUtil.err(this.javaClass, "stackSize 拦截callback=${callBack.isEnabled}")
+
         })
 
         sr.setOnRefreshListener {
@@ -161,10 +167,12 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
 
         mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
-            callBack.isEnabled = it
+            LogUtil.err(this.javaClass, "it=${it},size=${viewModel.stackSize.value}")
+            callBack.isEnabled = (it || viewModel.stackSize.value != 1)
+
             adapter?.isFileOperator = it
             adapter?.notifyItemRangeChanged(0, list.size)
-
+            LogUtil.err(this.javaClass, "isFileOperator 拦截callback=${callBack.isEnabled}")
         })
     }
 
