@@ -7,6 +7,7 @@ import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.*
+import com.mebk.pan.dtos.DeleteDto
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
@@ -380,7 +381,7 @@ class Repository(val context: Context) {
      * 根据id 删除文件
      * @param ids List<String> 文件id
      */
-    suspend fun deleteFile(ids: List<String>) {
+    suspend fun deleteFile(ids: List<String>): Pair<String, DeleteDto?> {
         var idArr = JsonArray()
         ids.forEach {
             idArr.add(it)
@@ -388,13 +389,27 @@ class Repository(val context: Context) {
         val jsonObj = JsonObject()
 
         var dirsArr = JsonArray()
-
+        var pair = Pair<String, DeleteDto?>("", null)
         jsonObj.add("items", idArr)
         jsonObj.add("dirs", dirsArr)
         LogUtil.err(this.javaClass, "json=${jsonObj.toString()}")
         val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
-        val response = retrofit.create(WebService::class.java).deleteFile(requestBody)
+        try {
 
-        database.fileDao().deleteFileById(ids)
+            val response = retrofit.create(WebService::class.java).deleteFile(requestBody)
+            with(response) {
+                body()?.let {
+                    if (it.code == 0) {
+                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, body())
+                        database.fileDao().deleteFileById(ids)
+                    }
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+        } catch (e: java.lang.Exception) {
+            pair = Pair(e.toString(), null)
+        }
+        return pair
     }
 }
