@@ -12,9 +12,9 @@ interface FileDao {
      * 获取文件
      * @return List<File>
      */
-    @Query("SELECT * FROM file_table")
+    @Query("SELECT * FROM file_table WHERE path=:path")
     //TODO 根据时间排序
-    suspend fun getFile(): List<File>
+    suspend fun getFile(path:String): List<File>
 
     /**
      * 插入文件

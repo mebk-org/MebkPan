@@ -35,7 +35,7 @@ class Repository(val context: Context) {
     /**
      * 从本地获取文件
      */
-    suspend fun getFile(): List<File> = database.fileDao().getFile()
+    suspend fun getFile(path: String="/"): List<File> = database.fileDao().getFile(path)
 
 
     /**
@@ -237,8 +237,6 @@ class Repository(val context: Context) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
                         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-
-                        database.fileDao().clear()
                         for (file in it.objects) {
                             with(database.fileDao()) {
                                 insertFile(File(

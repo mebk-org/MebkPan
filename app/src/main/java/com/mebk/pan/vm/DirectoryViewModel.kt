@@ -58,13 +58,19 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @return Job
      */
     fun directory(name: String, path: String = "/", isRefresh: Boolean = false) = viewModelScope.launch {
+        val url = if (path != "/") {
+            "$path/$name"
+        } else {
+            path + name
+        }
         if (!TextUtils.isEmpty(getLastRefreshTime(name)) && !isRefresh) {
             //从本地数据库读取
-            directoryList = application.repository.getFile()
+                LogUtil.err(this@DirectoryViewModel.javaClass,"path=${url}")
+            directoryList = application.repository.getFile(url)
             directoryInfo.value = directoryList
         } else {
             //从网络获取
-            getNetFile(name, path)
+            getNetFile(name,url)
         }
     }
 
@@ -74,12 +80,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @param path String 文件夹路径
      * @return Job
      */
-    private fun getNetFile(name: String, path: String = "/") = viewModelScope.launch {
-        val url = if (path != "/") {
-            "$path/$name"
-        } else {
-            path + name
-        }
+    private fun getNetFile(name: String, url: String ) = viewModelScope.launch {
         val pair = application.repository.getInternalFile(url)
         if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
@@ -123,7 +124,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         //获取当前时间
         val date = simpleDateFormat.format(Date(System.currentTimeMillis()))
         val set = sp.getStringSet(SharePreferenceUtils.SP_KEY_REFRESH_TIME, setOf())
-        val newSet= set?.union(setOf(name))
+        val newSet = set?.union(setOf(name))
         with(sp.edit()) {
             putStringSet(SharePreferenceUtils.SP_KEY_REFRESH_TIME, newSet)
             putString(name, date)
