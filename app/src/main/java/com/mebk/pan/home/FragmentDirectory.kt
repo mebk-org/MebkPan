@@ -112,7 +112,9 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             rv.scrollToPosition(0)
             adapter?.notifyItemInserted(0)
             sr.isRefreshing = true
-            viewModel.directory(true)
+            if (viewModel.stackSize.value != 1) viewModel.directory(viewModel.getStackFirst().first, viewModel.getStackFirst().second, true)
+            else viewModel.directory(true)
+
         }
 
         adapter?.let { directoryRvAdapter ->

@@ -15,7 +15,6 @@ import java.util.*
 
 class DirectoryViewModel(application: Application) : AndroidViewModel(application) {
 
-
     private val application = getApplication<MyApplication>()
 
     private var directoryList = listOf<File>()
@@ -26,7 +25,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
-    private val fileStack = Stack<Pair<String, List<File>>>()
+    private val fileStack = Stack<Pair<Pair<String, String>, List<File>>>()
+
 
     var stackSize = MutableLiveData<Int>().also {
         it.value = fileStack.size
@@ -38,6 +38,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @return Job
      */
     fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
+
         if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
             directoryList = application.repository.getFile()
@@ -46,9 +47,11 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             //从网络获取
             getNetFile()
         }
-        if (stackSize.value == 0) {
-            fileStack.push(Pair("/", directoryList))
-            stackSize.value = fileStack.size
+        if (!isRefresh) {
+            if (stackSize.value == 0) {
+                fileStack.push(Pair(Pair("/", "/"), directoryList))
+                stackSize.value = fileStack.size
+            }
         }
     }
 
@@ -76,8 +79,10 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             //从网络获取
             getNetFile(name, url)
         }
-        fileStack.push(Pair(name, directoryList))
-        stackSize.value = fileStack.size
+        if (!isRefresh) {
+            fileStack.push(Pair(Pair(name, path), directoryList))
+            stackSize.value = fileStack.size
+        }
     }
 
     /**
@@ -187,4 +192,9 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    /**
+     * 查看当前的文件夹名与路径
+     * @return Pair<String, String>
+     */
+    fun getStackFirst() = fileStack.peek().first
 }
