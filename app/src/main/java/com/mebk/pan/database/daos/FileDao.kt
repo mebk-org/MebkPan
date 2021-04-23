@@ -40,7 +40,18 @@ interface FileDao {
     @Update(entity = File::class)
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient)
 
+    /**
+     * 通过id删除文件
+     * @param ids List<String>
+     */
     @Query("DELETE FROM file_table WHERE id IN (:ids)")
     suspend fun deleteFileById(ids: List<String>)
+
+    /**
+     * 删除文件夹
+     * @param path List<String> 文件夹路径
+     */
+    @Query("DELETE FROM file_table WHERE path IN (:path)")
+    suspend fun deleteFileByPath(path: List<String>)
 
 }

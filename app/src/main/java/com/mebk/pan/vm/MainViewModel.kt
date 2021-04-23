@@ -273,8 +273,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun deleteFile() = viewModelScope.launch {
         deleteInfo.value = DELETE_START
-        var deleteList = checkList.map { it.id }
-        val pair = myApplication.repository.deleteFile(deleteList)
+        var fileList = mutableListOf<String>()
+        var dirList = mutableListOf<String>()
+        var pathSet = mutableSetOf<String>()
+        checkList.forEach {
+            if (it.type == "file") {
+                fileList.add(it.id)
+            } else if (it.type == "dir") {
+                dirList.add(it.id)
+                val url = if (it.path != "/") {
+                    "${it.path}/${it.name}"
+                } else {
+                    it.path + it.name
+                }
+                pathSet.add(url)
+            }
+        }
+        val pair = myApplication.repository.deleteFile(Pair(fileList, dirList), pathSet.toList())
         if (pair.first == REQUEST_SUCCESS) {
             deleteInfo.value = DELETE_DONE
         }

@@ -378,18 +378,23 @@ class Repository(val context: Context) {
     }
 
     /**
-     * 根据id 删除文件
-     * @param ids List<String> 文件id
+     * 删除文件
+     * @param pair Pair<List<String>, List<String>> first=文件id，second=文件夹id
+     * @param pathArr List<String> 如果删除文件夹，则为文件夹路径，否则为空数组
+     * @return Pair<String, DeleteDto?>
      */
-    suspend fun deleteFile(ids: List<String>): Pair<String, DeleteDto?> {
+    suspend fun deleteFile(pair: Pair<List<String>, List<String>>, pathArr: List<String>): Pair<String, DeleteDto?> {
         var idArr = JsonArray()
-        ids.forEach {
+        var dirsArr = JsonArray()
+        pair.first.forEach {
             idArr.add(it)
+        }
+        pair.second.forEach {
+            dirsArr.add(it)
         }
         val jsonObj = JsonObject()
 
-        var dirsArr = JsonArray()
-        var pair = Pair<String, DeleteDto?>("", null)
+        var result = Pair<String, DeleteDto?>("", null)
         jsonObj.add("items", idArr)
         jsonObj.add("dirs", dirsArr)
         val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
@@ -399,16 +404,23 @@ class Repository(val context: Context) {
             with(response) {
                 body()?.let {
                     if (it.code == 0) {
-                        pair = Pair(REQUEST_SUCCESS, body())
-                        database.fileDao().deleteFileById(ids)
+                        result = Pair(REQUEST_SUCCESS, body())
+                        if (pair.first.isNotEmpty()) {
+                            database.fileDao().deleteFileById(pair.first)
+                        }
+
+                        if (pair.second.isNotEmpty()) {
+                            database.fileDao().deleteFileById(pair.second)
+                            database.fileDao().deleteFileByPath(pathArr)
+                        }
                     }
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(REQUEST_TIMEOUT, null)
+            result = Pair(REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
-            pair = Pair(e.toString(), null)
+            result = Pair(e.toString(), null)
         }
-        return pair
+        return result
     }
 }
