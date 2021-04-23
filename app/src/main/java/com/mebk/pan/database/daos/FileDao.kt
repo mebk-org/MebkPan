@@ -12,7 +12,7 @@ interface FileDao {
      * 获取文件
      * @return List<File>
      */
-    @Query("SELECT * FROM file_table WHERE path=:path")
+    @Query("SELECT * FROM file_table WHERE path=:path ORDER BY type,date")
     //TODO 根据时间排序
     suspend fun getFile(path: String): List<File>
 
