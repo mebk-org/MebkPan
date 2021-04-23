@@ -1,40 +1,32 @@
 package com.mebk.pan;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.fragment.app.Fragment;
+import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
-import androidx.transition.Scene;
 import androidx.transition.TransitionManager;
-import androidx.viewpager2.widget.ViewPager2;
-import androidx.work.WorkInfo;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabItem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.mebk.pan.dtos.DirectoryDto;
-import com.mebk.pan.utils.LogUtil;
-import com.mebk.pan.utils.RetrofitClient;
+import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
-
-import java.util.Dictionary;
-import java.util.List;
-import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -45,7 +37,11 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
     private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
-
+    private FloatingActionButton menuFab, uploadFab, mkdirFab, shareFab;
+    private Group uploadGroup, mkdirGroup, shareGroup;
+    private boolean isFabShow = false;
+    private int fabWidth;
+    private int fabRadius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
+        fabRadius = ToolUtilsKt.dp2px(this, 80);
         initView();
 
         onClick();
@@ -83,6 +79,21 @@ public class MainActivity extends AppCompatActivity {
         downloadItem.view.setOnClickListener(v -> {
             mainViewModel.download();
         });
+        deleteItem.view.setOnClickListener(v -> {
+            mainViewModel.deleteFile();
+        });
+
+        menuFab.setOnClickListener(v -> {
+            isFabShow = !isFabShow;
+            AnimatorSet animatorSet = new AnimatorSet();
+            ValueAnimator uploadAnimator = setValueAnimator(uploadFab, uploadGroup);
+            ValueAnimator shareAnimator = setValueAnimator(shareFab, shareGroup);
+            ValueAnimator mkdirAnimator = setValueAnimator(mkdirFab, mkdirGroup);
+
+            animatorSet.playSequentially(uploadAnimator, shareAnimator, mkdirAnimator);
+            animatorSet.start();
+        });
+
     }
 
     /**
@@ -120,6 +131,15 @@ public class MainActivity extends AppCompatActivity {
         shareItem = tabLayout.getTabAt(1);
         deleteItem = tabLayout.getTabAt(2);
         moreItem = tabLayout.getTabAt(3);
+
+        menuFab = findViewById(R.id.fab_menu);
+        uploadFab = findViewById(R.id.fab_upload_file);
+        shareFab = findViewById(R.id.fab_share);
+        mkdirFab = findViewById(R.id.fab_mkdir);
+
+        uploadGroup = findViewById(R.id.gp_upload);
+        shareGroup = findViewById(R.id.gp_share);
+        mkdirGroup = findViewById(R.id.gp_mkdir);
     }
 
     /**
@@ -150,4 +170,58 @@ public class MainActivity extends AppCompatActivity {
         constraintSet.applyTo(rootLayout);
     }
 
+    private ValueAnimator setValueAnimator(FloatingActionButton fab, Group group) {
+        ValueAnimator animator;
+        if (isFabShow) {
+            animator = ValueAnimator.ofFloat(0f, 1f);
+        } else {
+            animator = ValueAnimator.ofFloat(1f, 0f);
+        }
+        animator.setDuration(300);
+        ConstraintLayout.LayoutParams parms = (ConstraintLayout.LayoutParams) fab.getLayoutParams();
+
+        animator.addUpdateListener(animation -> {
+            float v = (float) animation.getAnimatedValue();
+            parms.width = (int) (fabWidth * v);
+
+            Log.e(TAG, "setValueAnimator: parmswidth=" + parms.circleRadius);
+            parms.height = (int) (fabWidth * v);
+            parms.circleRadius = (int) (fabRadius * v);
+            fab.setLayoutParams(parms);
+        });
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (isFabShow) {
+                    group.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!isFabShow) {
+                    group.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        return animator;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        menuFab.post(() -> fabWidth = menuFab.getMeasuredWidth());
+    }
 }

@@ -15,6 +15,7 @@ import com.mebk.pan.R
 import com.mebk.pan.aa.DownloadingRvAdapter
 import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.utils.DOWNLOAD_KEY_PROGRESS
+import com.mebk.pan.utils.DOWNLOAD_STATE_DOWNLOADING
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.vm.DownloadViewModel
@@ -63,8 +64,8 @@ class FragmentDownloading : Fragment() {
 //                            list[mainViewModel.getCurrentPos() + offset].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
 //                            adapter.notifyDataSetChanged()
 //                        }
-                        if (list[0].state != RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
-                            list[0].state = RetrofitClient.DOWNLOAD_STATE_DOWNLOADING
+                        if (list[0].state != DOWNLOAD_STATE_DOWNLOADING) {
+                            list[0].state = DOWNLOAD_STATE_DOWNLOADING
                             adapter.notifyDataSetChanged()
                         }
                         val progress = it.progress.getInt(DOWNLOAD_KEY_PROGRESS, 0)

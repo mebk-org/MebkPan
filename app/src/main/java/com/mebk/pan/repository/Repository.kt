@@ -2,10 +2,12 @@ package com.mebk.pan.repository
 
 import android.content.Context
 import android.os.SystemClock
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.*
+import com.mebk.pan.dtos.DeleteDto
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
@@ -35,8 +37,12 @@ class Repository(val context: Context) {
     /**
      * 从本地获取文件
      */
-    suspend fun getFile(path: String="/"): List<File> = database.fileDao().getFile(path)
+//    suspend fun getDir(): List<File> = database.fileDao().getDir()
 
+    /**
+     * 从本地获取文件夹
+     */
+    suspend fun getFile(path: String = "/"): List<File> = database.fileDao().getFile(path)
 
     /**
      * 更新本地下载链接
@@ -99,7 +105,7 @@ class Repository(val context: Context) {
      * 查询库中处于prepare的数据
      * @return List<DownloadingInfo>
      */
-    suspend fun getDownloadPrepareList() = database.downloadingInfoDao().getDownloadingList(RetrofitClient.DOWNLOAD_STATE_PREPARE)
+    suspend fun getDownloadPrepareList() = database.downloadingInfoDao().getDownloadingList(DOWNLOAD_STATE_PREPARE)
 
     /**
      * 获取历史下载列表
@@ -207,13 +213,13 @@ class Repository(val context: Context) {
                             commit()
                         }
                     }
-                    pair = Pair(RetrofitClient.REQUEST_SUCCESS, body()?.data)
+                    pair = Pair(REQUEST_SUCCESS, body()?.data)
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -251,13 +257,13 @@ class Repository(val context: Context) {
                             }
                         }
                     }
-                    pair = Pair(RetrofitClient.REQUEST_SUCCESS, body()?.data)
+                    pair = Pair(REQUEST_SUCCESS, body()?.data)
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -280,14 +286,14 @@ class Repository(val context: Context) {
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, it)
+                        pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }
@@ -303,7 +309,7 @@ class Repository(val context: Context) {
      * @return Pair<String, String> 文件下载链接
      */
     suspend fun getDownloadClient(id: String): Pair<String, String> {
-        var pair = Pair<String, String>("", "")
+        var pair = Pair("", "")
         try {
             val response = retrofit.create(WebService::class.java)
                     .getDownloadFileClient(splitUrl(API_DOWNLOAD_CLIENT, id))
@@ -312,14 +318,14 @@ class Repository(val context: Context) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
                         updateDownloadClient(FileUpdateDownloadClient(id, it))
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, it)
+                        pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
                     pair = Pair(body()?.msg!!, "")
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, "")
+            pair = Pair(REQUEST_TIMEOUT, "")
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), "")
         }
@@ -357,17 +363,64 @@ class Repository(val context: Context) {
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
-                        pair = Pair(RetrofitClient.REQUEST_SUCCESS, it)
+                        pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
                     pair = Pair(body()?.msg!!, null)
                 }
             }
         } catch (e: SocketTimeoutException) {
-            pair = Pair(RetrofitClient.REQUEST_TIMEOUT, null)
+            pair = Pair(REQUEST_TIMEOUT, null)
         } catch (e: java.lang.Exception) {
             pair = Pair(e.toString(), null)
         }
         return pair
+    }
+
+    /**
+     * 删除文件
+     * @param pair Pair<List<String>, List<String>> first=文件id，second=文件夹id
+     * @param pathArr List<String> 如果删除文件夹，则为文件夹路径，否则为空数组
+     * @return Pair<String, DeleteDto?>
+     */
+    suspend fun deleteFile(pair: Pair<List<String>, List<String>>, pathArr: List<String>): Pair<String, DeleteDto?> {
+        var idArr = JsonArray()
+        var dirsArr = JsonArray()
+        pair.first.forEach {
+            idArr.add(it)
+        }
+        pair.second.forEach {
+            dirsArr.add(it)
+        }
+        val jsonObj = JsonObject()
+
+        var result = Pair<String, DeleteDto?>("", null)
+        jsonObj.add("items", idArr)
+        jsonObj.add("dirs", dirsArr)
+        val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
+        try {
+
+            val response = retrofit.create(WebService::class.java).deleteFile(requestBody)
+            with(response) {
+                body()?.let {
+                    if (it.code == 0) {
+                        result = Pair(REQUEST_SUCCESS, body())
+                        if (pair.first.isNotEmpty()) {
+                            database.fileDao().deleteFileById(pair.first)
+                        }
+
+                        if (pair.second.isNotEmpty()) {
+                            database.fileDao().deleteFileById(pair.second)
+                            database.fileDao().deleteFileByPath(pathArr)
+                        }
+                    }
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            result = Pair(REQUEST_TIMEOUT, null)
+        } catch (e: java.lang.Exception) {
+            result = Pair(e.toString(), null)
+        }
+        return result
     }
 }

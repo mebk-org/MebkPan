@@ -27,8 +27,8 @@
     <string name="dir">文件路径:</string>
     <string name="create_time">创建时间:</string>
     <string name="alert_time">修改时间:</string>
-    <string name="download_client">正在获取下载链接...</string>
-    <string name="loading">正在获取...</string>
+    <string name="download_client">正在获取下载链接…</string>
+    <string name="loading">正在获取…</string>
     <string name="download">下载</string>
     <string name="share">分享</string>
     <string name="delete">删除</string>

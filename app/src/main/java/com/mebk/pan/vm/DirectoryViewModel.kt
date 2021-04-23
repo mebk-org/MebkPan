@@ -8,15 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.utils.SharePreferenceUtils
+import com.mebk.pan.utils.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DirectoryViewModel(application: Application) : AndroidViewModel(application) {
-
 
     private val application = getApplication<MyApplication>()
 
@@ -28,7 +25,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
-    private val fileStack = Stack<Pair<String, List<File>>>()
+    private val fileStack = Stack<Pair<Pair<String, String>, List<File>>>()
+
 
     var stackSize = MutableLiveData<Int>().also {
         it.value = fileStack.size
@@ -40,6 +38,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @return Job
      */
     fun directory(isRefresh: Boolean = false) = viewModelScope.launch {
+
         if (!TextUtils.isEmpty(getLastRefreshTime()) && !isRefresh) {
             //从本地数据库读取
             directoryList = application.repository.getFile()
@@ -48,9 +47,11 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             //从网络获取
             getNetFile()
         }
-        if (stackSize.value == 0) {
-            fileStack.push(Pair("/", directoryList))
-            stackSize.value = fileStack.size
+        if (!isRefresh) {
+            if (stackSize.value == 0) {
+                fileStack.push(Pair(Pair("/", "/"), directoryList))
+                stackSize.value = fileStack.size
+            }
         }
     }
 
@@ -78,8 +79,10 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             //从网络获取
             getNetFile(name, url)
         }
-        fileStack.push(Pair(name, directoryList))
-        stackSize.value = fileStack.size
+        if (!isRefresh) {
+            fileStack.push(Pair(Pair(name, path), directoryList))
+            stackSize.value = fileStack.size
+        }
     }
 
     /**
@@ -90,7 +93,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      */
     private fun getNetFile(name: String, url: String) = viewModelScope.launch {
         val pair = application.repository.getInternalFile(url)
-        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+        if (pair.first == REQUEST_SUCCESS) {
             requestInfo.value = "获取成功"
             LogUtil.err(this.javaClass, pair.second.toString())
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
@@ -148,8 +151,8 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         val pair = application.repository.getDirectory()
         when (pair.first) {
-            RetrofitClient.REQUEST_SUCCESS -> {
-                requestInfo.value = RetrofitClient.REQUEST_SUCCESS
+            REQUEST_SUCCESS -> {
+                requestInfo.value = REQUEST_SUCCESS
                 directoryList = pair.second!!.objects.map {
                     File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
                 }
@@ -159,7 +162,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
                 lastRefreshTimeInfo.value = setLastRefreshTime()
 
             }
-            RetrofitClient.REQUEST_TIMEOUT -> {
+            REQUEST_TIMEOUT -> {
                 requestInfo.value = "链接超时，请重试"
             }
             else -> {
@@ -189,4 +192,9 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    /**
+     * 查看当前的文件夹名与路径
+     * @return Pair<String, String>
+     */
+    fun getStackFirst() = fileStack.peek().first
 }

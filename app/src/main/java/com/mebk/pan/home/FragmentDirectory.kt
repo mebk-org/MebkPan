@@ -82,7 +82,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             }
         }
 
-        viewModel.directoryInfo.observe(viewLifecycleOwner, Observer {
+        viewModel.directoryInfo.observe(viewLifecycleOwner, {
             LogUtil.err(this::class.java, "更新列表")
             list.clear()
             list.addAll(it)
@@ -90,8 +90,8 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             sr.isRefreshing = false
         })
 
-        viewModel.requestInfo.observe(viewLifecycleOwner, Observer {
-            if (it != RetrofitClient.REQUEST_SUCCESS) {
+        viewModel.requestInfo.observe(viewLifecycleOwner, {
+            if (it != REQUEST_SUCCESS) {
                 Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
                 sr.isRefreshing = false
                 list.removeAt(0)
@@ -112,7 +112,9 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             rv.scrollToPosition(0)
             adapter?.notifyItemInserted(0)
             sr.isRefreshing = true
-            viewModel.directory(true)
+            if (viewModel.stackSize.value != 1) viewModel.directory(viewModel.getStackFirst().first, viewModel.getStackFirst().second, true)
+            else viewModel.directory(true)
+
         }
 
         adapter?.let { directoryRvAdapter ->
@@ -127,8 +129,6 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                     bundle.putString("path", viewModel.directoryInfo.value!![it].path)
                     when (viewModel.directoryInfo.value!![it].type) {
                         "dir" -> {
-//                            bundle.putString("name", viewModel.directoryInfo.value!![it].name)
-//                            findNavController().navigate(R.id.action_fragment_directory_to_fragment_internal_file, bundle)
                             viewModel.directory(viewModel.directoryInfo.value!![it].name, viewModel.directoryInfo.value!![it].path)
                         }
                         else -> {
@@ -166,7 +166,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
 
 
-        mainViewModel.isFileOperator.observe(viewLifecycleOwner, Observer {
+        mainViewModel.isFileOperator.observe(viewLifecycleOwner, {
             LogUtil.err(this.javaClass, "it=${it},size=${viewModel.stackSize.value}")
             callBack.isEnabled = (it || viewModel.stackSize.value != 1)
 
@@ -174,6 +174,14 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             adapter?.notifyItemRangeChanged(0, list.size)
             LogUtil.err(this.javaClass, "isFileOperator 拦截callback=${callBack.isEnabled}")
         })
+
+        mainViewModel.deleteInfo.observe(viewLifecycleOwner, {
+            if (it == MainViewModel.DELETE_DONE) {
+                viewModel.directory()
+                mainViewModel.changeFileOperator()
+            }
+        })
+
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -185,6 +193,4 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         }
         return false
     }
-
-
 }

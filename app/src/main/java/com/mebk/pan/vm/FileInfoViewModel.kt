@@ -6,6 +6,7 @@ import com.mebk.pan.application.MyApplication
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.NIOUtils
+import com.mebk.pan.utils.REQUEST_SUCCESS
 import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
 
@@ -17,7 +18,7 @@ class FileInfoViewModel(application: Application) : AndroidViewModel(application
     fun getDownloadClient(id: String) = viewModelScope.launch {
         val pair = application.repository.getDownloadClient(id)
 
-        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+        if (pair.first == REQUEST_SUCCESS) {
             downloadClientInfo.value = pair.second
         } else {
             downloadClientInfo.value = "获取下载链接失败，请重试"
@@ -39,7 +40,7 @@ class FileInfoViewModel(application: Application) : AndroidViewModel(application
 
     fun getFileInfo(id: String, type: String) = viewModelScope.launch {
         val pair = application.repository.getFileInfo(id, type == "dir")
-        if (pair.first == RetrofitClient.REQUEST_SUCCESS) {
+        if (pair.first == REQUEST_SUCCESS) {
             fileInfo.value = pair.second!!
         }
     }

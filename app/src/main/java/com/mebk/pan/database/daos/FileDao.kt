@@ -12,9 +12,12 @@ interface FileDao {
      * 获取文件
      * @return List<File>
      */
-    @Query("SELECT * FROM file_table WHERE path=:path")
+    @Query("SELECT * FROM file_table WHERE path=:path ORDER BY type,date")
     //TODO 根据时间排序
-    suspend fun getFile(path:String): List<File>
+    suspend fun getFile(path: String): List<File>
+
+//    @Query("SELECT * FROM file_table WHERE type=" + "dir")
+//    suspend fun getDir(): List<File>
 
     /**
      * 插入文件
@@ -37,5 +40,18 @@ interface FileDao {
     @Update(entity = File::class)
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient)
 
+    /**
+     * 通过id删除文件
+     * @param ids List<String>
+     */
+    @Query("DELETE FROM file_table WHERE id IN (:ids)")
+    suspend fun deleteFileById(ids: List<String>)
+
+    /**
+     * 删除文件夹
+     * @param path List<String> 文件夹路径
+     */
+    @Query("DELETE FROM file_table WHERE path IN (:path)")
+    suspend fun deleteFileByPath(path: List<String>)
 
 }

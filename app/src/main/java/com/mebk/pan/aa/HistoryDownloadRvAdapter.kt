@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.utils.DOWNLOAD_STATE_DOWNLOADING
 import com.mebk.pan.utils.RetrofitClient
+import com.mebk.pan.utils.checkDownloadState
 import com.mebk.pan.utils.chooseDirectoryThumbnail
 
 class HistoryDownloadRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -39,8 +41,8 @@ class HistoryDownloadRvAdapter(val list: List<DownloadingInfo>, val context: Con
                     Glide.with(context).load(chooseDirectoryThumbnail(list[position].type, list[position].name)).into(thumbnailIv)
                     filenameTv.text = list[position].name
                     holder.itemView.tag = position
-                    stateTv.text = RetrofitClient.checkDownloadState(list[position].state!!)
-                    if (list[position].state == RetrofitClient.DOWNLOAD_STATE_DOWNLOADING) {
+                    stateTv.text = checkDownloadState(list[position].state!!)
+                    if (list[position].state == DOWNLOAD_STATE_DOWNLOADING) {
                         progressBar.visibility = View.VISIBLE
                         sizeTv.visibility = View.VISIBLE
                         sizeTv.text = "0 Mb/s"
