@@ -24,6 +24,7 @@ const val NOTIFICATION_DOWNLOAD_ID = 1
 //请求
 const val REQUEST_SUCCESS = "SUCCESS"
 const val REQUEST_TIMEOUT = "TIMEOUT"
+const val REQUEST_ERR = "ERR"
 
 /*
 * wait 等待下载 未获取链接

@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.REQUEST_SUCCESS
+import com.mebk.pan.utils.REQUEST_TIMEOUT
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DirViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,17 +22,35 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
         it.value = fileStack.size
     }
 
-    fun getDir(path: String = "/", name: String = "", isRefresh: Boolean = false) = viewModelScope.launch {
+    fun getDir(path: String = "/", name: String = "") = viewModelScope.launch {
         val url = if (path != "/") {
             "$path/$name"
         } else {
             path + name
         }
+        LogUtil.err(this@DirViewModel.javaClass, "url=$url")
         dirList = myApplication.repository.getDir(url)
         dirInfo.value = dirList
-        if (!isRefresh) {
-            fileStack.push(Pair(Pair(name, path), dirList))
-            stackSize.value = fileStack.size
+        fileStack.push(Pair(Pair(path, name), dirList))
+        stackSize.value = fileStack.size
+
+    }
+
+    fun getDirNetWork(path: String = "/", name: String = "") = viewModelScope.launch {
+        val url = if (path != "/") {
+            "$path/$name"
+        } else {
+            path + name
+        }
+        val pair = myApplication.repository.getInternalFile(url)
+        when (pair.first) {
+            REQUEST_SUCCESS -> {
+                val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+                dirList = pair.second!!.objects.filter { it.type == "dir" }.map {
+                    File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
+                }
+                dirInfo.value = dirList
+            }
         }
     }
 
@@ -52,4 +73,10 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
             false
         }
     }
+
+    /**
+     * 查看当前的文件夹名与路径
+     * @return Pair<String, String>
+     */
+    fun getStackFirst() = fileStack.peek().first
 }

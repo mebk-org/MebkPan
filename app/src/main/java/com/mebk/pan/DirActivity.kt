@@ -33,10 +33,10 @@ class DirActivity : AppCompatActivity() {
         rv = findViewById(R.id.activity_dir_rv)
         sr = findViewById(R.id.activity_dir_sr)
 
-//        sr.setOnRefreshListener {
-//            sr.isRefreshing=true
-//            viewModel.getDir()
-//        }
+        sr.setOnRefreshListener {
+            sr.isRefreshing = true
+            viewModel.getDirNetWork(viewModel.getStackFirst().first, viewModel.getStackFirst().second)
+        }
 
         rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = DirRVAdapter(this, dirList)
@@ -52,6 +52,7 @@ class DirActivity : AppCompatActivity() {
             dirList.clear()
             dirList.addAll(it)
             adapter.notifyDataSetChanged()
+            if (sr.isRefreshing) sr.isRefreshing = false
         })
     }
 
