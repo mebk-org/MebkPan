@@ -46,9 +46,13 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
         when (pair.first) {
             REQUEST_SUCCESS -> {
                 val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-                dirList = pair.second!!.objects.filter { it.type == "dir" }.map {
+                dirList = pair.second!!.objects.map {
                     File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
                 }
+                dirList.forEach {
+                    myApplication.repository.addFile(it)
+                }
+                dirList = dirList.filter { it.type == "dir" }
                 dirInfo.value = dirList
             }
         }
