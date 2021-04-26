@@ -176,6 +176,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @return Boolean 是否为最顶层文件夹
      */
     fun back(): Boolean {
+        LogUtil.err(this.javaClass, "back")
         return if (fileStack.size > 1) {
             fileStack.pop()
             stackSize.value = fileStack.size

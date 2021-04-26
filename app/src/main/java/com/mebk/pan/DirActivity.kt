@@ -42,6 +42,7 @@ class DirActivity : AppCompatActivity() {
             finish()
         }
         val fileIdList = bundle!!.getStringArrayList("fileList")
+        // TODO: 2021/4/26 有时传递的src_dir为null，暂未找到原因
         val dirIdList = bundle.getStringArrayList("dirList")
         val srcDir = bundle.getString("src_dir")
 
