@@ -25,12 +25,16 @@ class DirFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getDir("/")
+        viewModel.getDir()
         rv = view.findViewById(R.id.fragment_dir_rv)
         rv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         adapter = DirRVAdapter(requireContext(), dirList)
 
         rv.adapter = adapter
+
+        adapter.setClickListener {
+            viewModel.getDir(dirList[it].path, dirList[it].name)
+        }
 
 
         viewModel.dirInfo.observe(viewLifecycleOwner, {
