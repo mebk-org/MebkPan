@@ -3,6 +3,7 @@ package com.mebk.pan;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -87,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         moreItem.view.setOnClickListener(v -> {
-            findNavController(navHostFragment).navigate(R.id.action_fragment_directory_to_dirFragment);
+
+            startActivity(new Intent(this, DirActivity.class));
         });
 
         menuFab.setOnClickListener(v -> {

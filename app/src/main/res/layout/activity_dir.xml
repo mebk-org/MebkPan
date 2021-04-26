@@ -6,33 +6,44 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/fragment_dir_toolbar"
+        android:id="@+id/activity_dir_toolbar"
         android:layout_width="0dp"
         android:layout_height="?android:actionBarSize"
+        android:background="@color/communism"
+        app:titleTextColor="@color/white"
+        app:title="@string/move"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_dir_table_rv"
+        android:id="@+id/activity_dir_table_rv"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:singleLine="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_dir_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_dir_toolbar" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_dir_rv"
-        android:layout_width="0dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_dir_sr"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_dir_cancel_btn"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toTopOf="@+id/activity_dir_cancel_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_dir_table_rv" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_dir_table_rv">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_dir_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <Button
-        android:id="@+id/fragment_dir_cancel_btn"
+        android:id="@+id/activity_dir_cancel_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -45,7 +56,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/fragment_dir_move_btn"
+        android:id="@+id/activity_dir_move_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

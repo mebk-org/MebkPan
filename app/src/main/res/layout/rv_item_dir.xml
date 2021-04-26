@@ -34,7 +34,6 @@
         tools:text="简单来说就是：销量成功了，收益和投资人信心失败了：靠着约1300万的总销量，按照一份60美元算，刨除三四个亿的宣发和开发成本，大概净赚约五个亿美元，但是公司股价下跌了九十多亿波兰兹罗提（约合23亿美元），折合下来净亏损16-18亿美元，更不要说投资人信心大幅度受损，以后融资更难了。这和12月10日一堆人说的「股价下跌是因为持股者高点套现」可不是一个概念的东西嗷。" />
 
     <View
-        android:id="@+id/rv_item_directory_bottom_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"

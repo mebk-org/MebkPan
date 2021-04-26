@@ -112,7 +112,6 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             sr.isRefreshing = true
             if (viewModel.stackSize.value != 1) viewModel.directory(viewModel.getStackFirst().first, viewModel.getStackFirst().second, true)
             else viewModel.directory(true)
-
         }
 
         adapter?.let { directoryRvAdapter ->
