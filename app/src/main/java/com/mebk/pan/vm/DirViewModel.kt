@@ -77,6 +77,7 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
                 myApplication.repository.changePath(list, dst)
             }
         }
+        resultInfo.value=pair.first
     }
 
     /**

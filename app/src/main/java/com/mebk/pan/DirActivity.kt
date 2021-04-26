@@ -17,12 +17,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mebk.pan.aa.DirRVAdapter
 import com.mebk.pan.database.entity.File
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.REQUEST_ERR
+import com.mebk.pan.utils.REQUEST_SUCCESS
+import com.mebk.pan.utils.REQUEST_TIMEOUT
 import com.mebk.pan.vm.DirViewModel
 import com.mebk.pan.vm.MainViewModel
 
 class DirActivity : AppCompatActivity() {
     private val viewModel by viewModels<DirViewModel>()
-
     private var dirList = mutableListOf<File>()
     private lateinit var adapter: DirRVAdapter
     private lateinit var rv: RecyclerView
@@ -46,7 +48,7 @@ class DirActivity : AppCompatActivity() {
 
         rv = findViewById(R.id.activity_dir_rv)
         sr = findViewById(R.id.activity_dir_sr)
-        moveBtn=findViewById(R.id.activity_dir_move_btn)
+        moveBtn = findViewById(R.id.activity_dir_move_btn)
 
         sr.setOnRefreshListener {
             sr.isRefreshing = true
@@ -73,6 +75,20 @@ class DirActivity : AppCompatActivity() {
         moveBtn.setOnClickListener {
             viewModel.move(srcDir!!, dirIdList!!, fileIdList!!, viewModel.getUrl())
         }
+        viewModel.resultInfo.observe(this, {
+            when (it) {
+                REQUEST_TIMEOUT -> {
+                    Toast.makeText(this, "移动失败，请求网络超时，请重试", Toast.LENGTH_SHORT).show()
+                }
+                REQUEST_ERR -> {
+                    Toast.makeText(this, "未知错误，请联系管理员\n $it", Toast.LENGTH_LONG).show()
+                }
+                REQUEST_SUCCESS -> {
+                    Toast.makeText(this, "移动成功", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        })
     }
 
     override fun onBackPressed() {
