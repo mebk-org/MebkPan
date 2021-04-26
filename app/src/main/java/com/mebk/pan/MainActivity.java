@@ -26,8 +26,13 @@ import androidx.transition.TransitionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.mebk.pan.database.entity.File;
+import com.mebk.pan.utils.LogUtil;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static androidx.navigation.fragment.NavHostFragment.findNavController;
 
@@ -88,8 +93,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         moreItem.view.setOnClickListener(v -> {
-
-            startActivity(new Intent(this, DirActivity.class));
+            Intent i = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString("src_dir", mainViewModel.getCheckPath());
+            ArrayList<String> fileIds, dirIds;
+            fileIds = new ArrayList<>();
+            dirIds = new ArrayList<>();
+            for (File file : mainViewModel.getCheckList()) {
+                if (file.getType().equals("file")) {
+                    fileIds.add(file.getId());
+                } else {
+                    dirIds.add(file.getId());
+                }
+            }
+            Log.e(TAG, "onClick: " + mainViewModel.getCheckList().toString());
+            bundle.putStringArrayList("fileList", fileIds);
+            bundle.putStringArrayList("dirList", dirIds);
+            i.putExtra("bundle", bundle);
+            i.setClass(this, DirActivity.class);
+            startActivity(i);
         });
 
         menuFab.setOnClickListener(v -> {

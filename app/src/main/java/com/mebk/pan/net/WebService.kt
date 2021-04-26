@@ -38,7 +38,10 @@ interface WebService {
                             @Query("is_folder") isFolder: Boolean): Response<ResponseData<FileInfoDto>>
 
     //删除文件
-    @HTTP(method = "DELETE", hasBody = true, path = API_DELETE_FILE)
-    suspend fun deleteFile(@Body body: RequestBody): Response<DeleteDto>
+    @HTTP(method = "DELETE", hasBody = true, path = API_FILE_ACTION)
+    suspend fun deleteFile(@Body body: RequestBody): Response<ActionDto>
 
+    //移动文件
+    @PATCH(API_FILE_ACTION)
+    suspend fun moveFile(@Body body: RequestBody): Response<ActionDto>
 }

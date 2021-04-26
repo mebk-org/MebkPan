@@ -1,6 +1,6 @@
 package com.mebk.pan.dtos
 
-data class DeleteDto(
+data class ActionDto(
     val code: Int,
     val msg: String
 )

@@ -12,6 +12,7 @@ import com.mebk.pan.utils.REQUEST_TIMEOUT
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DirViewModel(application: Application) : AndroidViewModel(application) {
     private val myApplication = application as MyApplication
@@ -59,6 +60,22 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
+     * 移动文件
+     * @param srcDir String 文件当前路径
+     * @param dirList List<String> 需要移动的文件列表
+     * @param fileList List<String> 需要移动的文件夹列表
+     * @param dst String  移动的目标路径
+     * @return Job
+     */
+    fun move(srcDir: String, dirList: List<String>, fileList: List<String>, dst: String) = viewModelScope.launch {
+        val pair = myApplication.repository.moveFile(srcDir, dirList, fileList, dst)
+        when (pair.first) {
+            REQUEST_SUCCESS -> {
+            }
+        }
+    }
+
+    /**
      * 返回事件
      * @return Boolean 是否为最顶层文件夹
      */
@@ -83,4 +100,16 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
      * @return Pair<String, String>
      */
     fun getStackFirst() = fileStack.peek().first
+
+    /**
+     * 获取当前文件的路径
+     * @return String
+     */
+    fun getUrl(): String {
+        return if (getStackFirst().first != "/") {
+            "${getStackFirst().first}/${getStackFirst().second}"
+        } else {
+            getStackFirst().first + getStackFirst().second
+        }
+    }
 }

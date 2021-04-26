@@ -5,6 +5,8 @@ import android.os.PersistableBundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.viewModels
@@ -25,13 +27,26 @@ class DirActivity : AppCompatActivity() {
     private lateinit var adapter: DirRVAdapter
     private lateinit var rv: RecyclerView
     private lateinit var sr: SwipeRefreshLayout
+    private lateinit var moveBtn: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dir)
+        val bundle = intent.getBundleExtra("bundle")
+
+
+        if (bundle == null) {
+            Toast.makeText(this, "参数传递错误,请联系管理员", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+        val fileIdList = bundle!!.getStringArrayList("fileList")
+        val dirIdList = bundle.getStringArrayList("dirList")
+        val srcDir = bundle.getString("src_dir")
+
         viewModel.getDir()
 
         rv = findViewById(R.id.activity_dir_rv)
         sr = findViewById(R.id.activity_dir_sr)
+        moveBtn=findViewById(R.id.activity_dir_move_btn)
 
         sr.setOnRefreshListener {
             sr.isRefreshing = true
@@ -54,6 +69,10 @@ class DirActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
             if (sr.isRefreshing) sr.isRefreshing = false
         })
+
+        moveBtn.setOnClickListener {
+            viewModel.move(srcDir!!, dirIdList!!, fileIdList!!, viewModel.getUrl())
+        }
     }
 
     override fun onBackPressed() {

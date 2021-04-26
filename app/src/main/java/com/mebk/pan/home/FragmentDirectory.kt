@@ -141,13 +141,13 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                 if (sr.isRefreshing) {
                     Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
                 } else {
-                    mainViewModel.changeFileOperator()
+                    mainViewModel.changeFileOperator(viewModel.getUrl())
                 }
             }
 
             directoryRvAdapter.setOnClickMoreImageViewListener {
                 if (sr.isRefreshing) Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
-                else mainViewModel.changeFileOperator()
+                else mainViewModel.changeFileOperator(viewModel.getUrl())
             }
 
             directoryRvAdapter.setOnClickCheckBoxListener { position, isCheck ->

@@ -20,13 +20,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isFileOperator = MutableLiveData<Boolean>().also {
         it.value = false
     }
+    var checkPath: String = ""
     private var downloadList = mutableListOf<DownloadingInfo>()
     private var queueList = mutableListOf<String>()
     private val historyDownloadIdList = mutableListOf<String>()
     val checkInfo = MutableLiveData<MutableList<File>>()
     private val downloadChannel = Channel<DownloadingInfo>(100)
     private val clientChannel = Channel<DownloadingInfo>(100)
-    private val checkList = mutableListOf<File>()
+    val checkList = mutableListOf<File>()
     private val workerIdList = mutableListOf<Pair<String, UUID>>()
     private var isDownloadDone = false
     private var isDownloading = false
@@ -64,10 +65,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         downloadWorkerInfo.value = it
     }
 
-    fun changeFileOperator() {
+    /**
+     * 变更文件操作页面
+     * @param path String 当前path(只有进入到文件选择页面才需要设置)
+     */
+    fun changeFileOperator(path: String = "") {
         isFileOperator.value = !(isFileOperator.value)!!
         checkList.clear()
         checkInfo.value = checkList
+        checkPath = path
     }
 
     fun addCheck(file: File) {

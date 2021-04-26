@@ -48,7 +48,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
         }
         if (!isRefresh) {
             if (stackSize.value == 0) {
-                fileStack.push(Pair(Pair("/", "/"), directoryList))
+                fileStack.push(Pair(Pair("/", ""), directoryList))
                 stackSize.value = fileStack.size
             }
         }
@@ -196,4 +196,16 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
      * @return Pair<String, String>
      */
     fun getStackFirst() = fileStack.peek().first
+
+    /**
+     * 获取当前文件的路径
+     * @return String
+     */
+    fun getUrl(): String {
+        return if (getStackFirst().first != "/") {
+            "${getStackFirst().first}/${getStackFirst().second}"
+        } else {
+            getStackFirst().first + getStackFirst().second
+        }
+    }
 }
