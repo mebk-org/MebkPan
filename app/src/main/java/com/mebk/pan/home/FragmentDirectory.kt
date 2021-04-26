@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +23,6 @@ import com.mebk.pan.R
 import com.mebk.pan.UserInfoActivity
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.database.entity.File
-import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.vm.DirectoryViewModel
 import com.mebk.pan.vm.MainViewModel
@@ -114,7 +112,6 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             sr.isRefreshing = true
             if (viewModel.stackSize.value != 1) viewModel.directory(viewModel.getStackFirst().first, viewModel.getStackFirst().second, true)
             else viewModel.directory(true)
-
         }
 
         adapter?.let { directoryRvAdapter ->
@@ -144,13 +141,13 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
                 if (sr.isRefreshing) {
                     Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
                 } else {
-                    mainViewModel.changeFileOperator()
+                    mainViewModel.changeFileOperator(viewModel.getUrl())
                 }
             }
 
             directoryRvAdapter.setOnClickMoreImageViewListener {
                 if (sr.isRefreshing) Toast.makeText(context, "正在刷新，请稍后", Toast.LENGTH_SHORT).show()
-                else mainViewModel.changeFileOperator()
+                else mainViewModel.changeFileOperator(viewModel.getUrl())
             }
 
             directoryRvAdapter.setOnClickCheckBoxListener { position, isCheck ->
@@ -175,8 +172,8 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             LogUtil.err(this.javaClass, "isFileOperator 拦截callback=${callBack.isEnabled}")
         })
 
-        mainViewModel.deleteInfo.observe(viewLifecycleOwner, {
-            if (it == MainViewModel.DELETE_DONE) {
+        mainViewModel.actionInfo.observe(viewLifecycleOwner, {
+            if (it == MainViewModel.ACTION_DONE) {
                 viewModel.directory()
                 mainViewModel.changeFileOperator()
             }

@@ -7,7 +7,6 @@ import androidx.work.*
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.DownloadingInfo
 import com.mebk.pan.database.entity.File
-import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
 import kotlinx.coroutines.channels.Channel
@@ -20,13 +19,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isFileOperator = MutableLiveData<Boolean>().also {
         it.value = false
     }
+    var checkPath: String = ""
     private var downloadList = mutableListOf<DownloadingInfo>()
     private var queueList = mutableListOf<String>()
     private val historyDownloadIdList = mutableListOf<String>()
     val checkInfo = MutableLiveData<MutableList<File>>()
     private val downloadChannel = Channel<DownloadingInfo>(100)
     private val clientChannel = Channel<DownloadingInfo>(100)
-    private val checkList = mutableListOf<File>()
+    val checkList = mutableListOf<File>()
     private val workerIdList = mutableListOf<Pair<String, UUID>>()
     private var isDownloadDone = false
     private var isDownloading = false
@@ -38,11 +38,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var cancelCount = 0
 
     companion object {
-        val DELETE_START = 0
-        val DELETE_DONE = 1
+        val ACTION_START = 0
+        val ACTION_DONE = 1
     }
 
-    var deleteInfo = MutableLiveData<Int>()
+    var actionInfo = MutableLiveData<Int>()
 
     init {
         workManager.pruneWork()
@@ -64,10 +64,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         downloadWorkerInfo.value = it
     }
 
-    fun changeFileOperator() {
+    /**
+     * 变更文件操作页面
+     * @param path String 当前path(只有进入到文件选择页面才需要设置)
+     */
+    fun changeFileOperator(path: String = "") {
+        LogUtil.err(this.javaClass, "${isFileOperator.value}")
         isFileOperator.value = !(isFileOperator.value)!!
         checkList.clear()
         checkInfo.value = checkList
+        checkPath = path
     }
 
     fun addCheck(file: File) {
@@ -272,7 +278,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @return Job
      */
     fun deleteFile() = viewModelScope.launch {
-        deleteInfo.value = DELETE_START
+        actionInfo.value = ACTION_START
         var fileList = mutableListOf<String>()
         var dirList = mutableListOf<String>()
         var pathSet = mutableSetOf<String>()
@@ -291,9 +297,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
         val pair = myApplication.repository.deleteFile(Pair(fileList, dirList), pathSet.toList())
         if (pair.first == REQUEST_SUCCESS) {
-            deleteInfo.value = DELETE_DONE
+            actionInfo.value = ACTION_DONE
         }
+    }
 
+    fun actionDone() {
+        actionInfo.value = ACTION_DONE
     }
 
 }

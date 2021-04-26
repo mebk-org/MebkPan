@@ -3,6 +3,7 @@ package com.mebk.pan;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +13,11 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -25,8 +31,15 @@ import androidx.transition.TransitionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.mebk.pan.database.entity.File;
+import com.mebk.pan.utils.LogUtil;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static androidx.navigation.fragment.NavHostFragment.findNavController;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -42,6 +55,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFabShow = false;
     private int fabWidth;
     private int fabRadius;
+    private NavHostFragment navHostFragment;
+    public static final int MOVE_CODE = 1;
+    private ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == RESULT_OK) {
+//                Log.e(TAG, "onActivityResult: " + result.getData().getBooleanExtra("isMoveSuccess", false));
+//                if (result.getData().getBooleanExtra("isMoveSuccess", false)) {
+                Log.e(TAG, "onActivityResult: ");
+                mainViewModel.actionDone();
+//                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
@@ -81,6 +108,28 @@ public class MainActivity extends AppCompatActivity {
         });
         deleteItem.view.setOnClickListener(v -> {
             mainViewModel.deleteFile();
+        });
+
+        moreItem.view.setOnClickListener(v -> {
+            Intent i = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString("src_dir", mainViewModel.getCheckPath());
+            ArrayList<String> fileIds, dirIds;
+            fileIds = new ArrayList<>();
+            dirIds = new ArrayList<>();
+            for (File file : mainViewModel.getCheckList()) {
+                if (file.getType().equals("file")) {
+                    fileIds.add(file.getId());
+                } else {
+                    dirIds.add(file.getId());
+                }
+            }
+            Log.e(TAG, "onClick: " + mainViewModel.getCheckList().toString());
+            bundle.putStringArrayList("fileList", fileIds);
+            bundle.putStringArrayList("dirList", dirIds);
+            i.putExtra("bundle", bundle);
+            i.setClass(this, DirActivity.class);
+            moveResult.launch(i);
         });
 
         menuFab.setOnClickListener(v -> {
@@ -160,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void fileOperatorAnimation(boolean isFileOperator) {
+        Log.e(TAG, "fileOperatorAnimation: " + isFileOperator);
         ConstraintSet constraintSet = new ConstraintSet();
         if (isFileOperator) {
             constraintSet.load(this, R.layout.layout_file_opreator);

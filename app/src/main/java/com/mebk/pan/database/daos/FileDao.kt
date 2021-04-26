@@ -16,8 +16,8 @@ interface FileDao {
     //TODO 根据时间排序
     suspend fun getFile(path: String): List<File>
 
-//    @Query("SELECT * FROM file_table WHERE type=" + "dir")
-//    suspend fun getDir(): List<File>
+    @Query("SELECT * FROM file_table WHERE type=:type AND path=:path")
+    suspend fun getDir(path: String, type: String = "dir"): List<File>
 
     /**
      * 插入文件
@@ -53,5 +53,8 @@ interface FileDao {
      */
     @Query("DELETE FROM file_table WHERE path IN (:path)")
     suspend fun deleteFileByPath(path: List<String>)
+
+    @Query("UPDATE file_table SET path=:path  WHERE id IN (:id)")
+    suspend fun changePath(id: List<String>,path:String)
 
 }

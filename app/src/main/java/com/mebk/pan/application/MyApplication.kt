@@ -40,9 +40,9 @@ class MyApplication : Application() {
          * 用初始化接口（如需要使用AndroidManifest.xml中配置好的appkey和channel值，
          * UMConfigure.init调用中appkey和channel参数请置为null）。
          */
-        UMConfigure.init(this, "606081bcb8c8d45c13b38b53", "XIAOMI", UMConfigure.DEVICE_TYPE_PHONE, null)
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
-        UMConfigure.setLogEnabled(true)
+//        UMConfigure.init(this, "606081bcb8c8d45c13b38b53", "XIAOMI", UMConfigure.DEVICE_TYPE_PHONE, null)
+//        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
+//        UMConfigure.setLogEnabled(true)
     }
 
 

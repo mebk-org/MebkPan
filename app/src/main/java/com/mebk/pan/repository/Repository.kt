@@ -7,7 +7,7 @@ import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.*
-import com.mebk.pan.dtos.DeleteDto
+import com.mebk.pan.dtos.ActionDto
 import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.dtos.FileInfoDto
 import com.mebk.pan.dtos.UserDto
@@ -37,7 +37,7 @@ class Repository(val context: Context) {
     /**
      * 从本地获取文件
      */
-//    suspend fun getDir(): List<File> = database.fileDao().getDir()
+    suspend fun getDir(path: String): List<File> = database.fileDao().getDir(path)
 
     /**
      * 从本地获取文件夹
@@ -48,6 +48,14 @@ class Repository(val context: Context) {
      * 更新本地下载链接
      */
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient) = database.fileDao().updateDownloadClient(file)
+
+    /**
+     * 修改文件路径
+     * @param id List<String> id列表
+     * @param path String 路径
+     */
+    suspend fun changePath(id: List<String>, path: String) = database.fileDao().changePath(id, path)
+
 
     /**
      * 获取下载列表
@@ -333,8 +341,6 @@ class Repository(val context: Context) {
         return pair
     }
 
-
-    //下载文件
     /**
      * 下载文件
      *
@@ -383,7 +389,7 @@ class Repository(val context: Context) {
      * @param pathArr List<String> 如果删除文件夹，则为文件夹路径，否则为空数组
      * @return Pair<String, DeleteDto?>
      */
-    suspend fun deleteFile(pair: Pair<List<String>, List<String>>, pathArr: List<String>): Pair<String, DeleteDto?> {
+    suspend fun deleteFile(pair: Pair<List<String>, List<String>>, pathArr: List<String>): Pair<String, ActionDto?> {
         var idArr = JsonArray()
         var dirsArr = JsonArray()
         pair.first.forEach {
@@ -394,7 +400,7 @@ class Repository(val context: Context) {
         }
         val jsonObj = JsonObject()
 
-        var result = Pair<String, DeleteDto?>("", null)
+        var result = Pair<String, ActionDto?>("", null)
         jsonObj.add("items", idArr)
         jsonObj.add("dirs", dirsArr)
         val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
@@ -413,6 +419,52 @@ class Repository(val context: Context) {
                             database.fileDao().deleteFileById(pair.second)
                             database.fileDao().deleteFileByPath(pathArr)
                         }
+                    }
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            result = Pair(REQUEST_TIMEOUT, null)
+        } catch (e: java.lang.Exception) {
+            result = Pair(e.toString(), null)
+        }
+        return result
+    }
+
+    /**
+     * 移动文件
+     * @param srcDir String 文件当前路径
+     * @param dirList List<String> 需要移动的文件列表
+     * @param fileList List<String> 需要移动的文件夹列表
+     * @param dst String  移动的目标路径
+     * @return Pair<String, ActionDto?>
+     */
+    suspend fun moveFile(srcDir: String, dirList: List<String>, fileList: List<String>, dst: String): Pair<String, ActionDto?> {
+        val idArr = JsonArray()
+        val dirsArr = JsonArray()
+        fileList.forEach {
+            idArr.add(it)
+        }
+        dirList.forEach {
+            dirsArr.add(it)
+        }
+
+        val srcObj = JsonObject()
+        srcObj.add("dirs", dirsArr)
+        srcObj.add("items", idArr)
+        val jsonObj = JsonObject()
+        jsonObj.add("src", srcObj)
+        jsonObj.addProperty("action", "move")
+        jsonObj.addProperty("src_dir", srcDir)
+        jsonObj.addProperty("dst", dst)
+        var result = Pair<String, ActionDto?>("", null)
+        val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObj.toString())
+        try {
+
+            val response = retrofit.create(WebService::class.java).moveFile(requestBody)
+            with(response) {
+                body()?.let {
+                    if (it.code == 0) {
+                        result = Pair(REQUEST_SUCCESS, body())
                     }
                 }
             }
