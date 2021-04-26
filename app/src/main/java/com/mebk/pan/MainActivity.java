@@ -28,6 +28,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
 
+import static androidx.navigation.fragment.NavHostFragment.findNavController;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     //几个代表页面的常量
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFabShow = false;
     private int fabWidth;
     private int fabRadius;
+    private NavHostFragment navHostFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
@@ -81,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
         });
         deleteItem.view.setOnClickListener(v -> {
             mainViewModel.deleteFile();
+        });
+
+        moreItem.view.setOnClickListener(v -> {
+            findNavController(navHostFragment).navigate(R.id.action_fragment_directory_to_dirFragment);
         });
 
         menuFab.setOnClickListener(v -> {

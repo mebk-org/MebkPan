@@ -37,7 +37,7 @@ class Repository(val context: Context) {
     /**
      * 从本地获取文件
      */
-//    suspend fun getDir(): List<File> = database.fileDao().getDir()
+    suspend fun getDir(path: String): List<File> = database.fileDao().getDir(path)
 
     /**
      * 从本地获取文件夹

@@ -42,4 +42,7 @@
     <string name="history_upload">上传历史</string>
     <string name="detailed_info"><![CDATA[详细信息>]]></string>
     <string name="cloud">网盘</string>
+    <string name="move">移动</string>
+    <string name="cancel">取消</string>
+    <string name="separator"><![CDATA[>]]></string>
 </resources>

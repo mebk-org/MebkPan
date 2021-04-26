@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +23,6 @@ import com.mebk.pan.R
 import com.mebk.pan.UserInfoActivity
 import com.mebk.pan.aa.DirectoryRvAdapter
 import com.mebk.pan.database.entity.File
-import com.mebk.pan.dtos.DirectoryDto
 import com.mebk.pan.utils.*
 import com.mebk.pan.vm.DirectoryViewModel
 import com.mebk.pan.vm.MainViewModel

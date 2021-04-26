@@ -16,8 +16,8 @@ interface FileDao {
     //TODO 根据时间排序
     suspend fun getFile(path: String): List<File>
 
-//    @Query("SELECT * FROM file_table WHERE type=" + "dir")
-//    suspend fun getDir(): List<File>
+    @Query("SELECT * FROM file_table WHERE type=:type AND path=:path")
+    suspend fun getDir(path: String, type: String = "dir"): List<File>
 
     /**
      * 插入文件
