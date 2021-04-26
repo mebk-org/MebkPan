@@ -23,6 +23,8 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
         it.value = fileStack.size
     }
 
+    val resultInfo = MutableLiveData<String>()
+
     fun getDir(path: String = "/", name: String = "") = viewModelScope.launch {
         val url = if (path != "/") {
             "$path/$name"
@@ -71,6 +73,8 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
         val pair = myApplication.repository.moveFile(srcDir, dirList, fileList, dst)
         when (pair.first) {
             REQUEST_SUCCESS -> {
+                val list = dirList + fileList
+                myApplication.repository.changePath(list, dst)
             }
         }
     }

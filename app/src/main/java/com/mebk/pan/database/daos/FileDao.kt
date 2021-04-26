@@ -54,4 +54,7 @@ interface FileDao {
     @Query("DELETE FROM file_table WHERE path IN (:path)")
     suspend fun deleteFileByPath(path: List<String>)
 
+    @Query("UPDATE file_table SET path=:path  WHERE id IN (:id)")
+    suspend fun changePath(id: List<String>,path:String)
+
 }

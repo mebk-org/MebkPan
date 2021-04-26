@@ -50,6 +50,14 @@ class Repository(val context: Context) {
     suspend fun updateDownloadClient(file: FileUpdateDownloadClient) = database.fileDao().updateDownloadClient(file)
 
     /**
+     * 修改文件路径
+     * @param id List<String> id列表
+     * @param path String 路径
+     */
+    suspend fun changePath(id: List<String>, path: String) = database.fileDao().changePath(id, path)
+
+
+    /**
      * 获取下载列表
      */
     fun getDownloadingInfo(): Flow<List<DownloadingInfo>> = database.downloadingInfoDao().getDownloadInfo()
@@ -333,8 +341,6 @@ class Repository(val context: Context) {
         return pair
     }
 
-
-    //下载文件
     /**
      * 下载文件
      *
