@@ -1,5 +1,6 @@
 package com.mebk.pan
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.LayoutInflater
@@ -85,6 +86,7 @@ class DirActivity : AppCompatActivity() {
                 }
                 REQUEST_SUCCESS -> {
                     Toast.makeText(this, "移动成功", Toast.LENGTH_SHORT).show()
+                    setResult(RESULT_OK)
                     finish()
                 }
             }

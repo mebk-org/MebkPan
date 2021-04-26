@@ -13,6 +13,11 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -51,6 +56,19 @@ public class MainActivity extends AppCompatActivity {
     private int fabWidth;
     private int fabRadius;
     private NavHostFragment navHostFragment;
+    public static final int MOVE_CODE = 1;
+    private ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == RESULT_OK) {
+//                Log.e(TAG, "onActivityResult: " + result.getData().getBooleanExtra("isMoveSuccess", false));
+//                if (result.getData().getBooleanExtra("isMoveSuccess", false)) {
+                Log.e(TAG, "onActivityResult: ");
+                mainViewModel.actionDone();
+//                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putStringArrayList("dirList", dirIds);
             i.putExtra("bundle", bundle);
             i.setClass(this, DirActivity.class);
-            startActivity(i);
+            moveResult.launch(i);
         });
 
         menuFab.setOnClickListener(v -> {
@@ -191,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void fileOperatorAnimation(boolean isFileOperator) {
+        Log.e(TAG, "fileOperatorAnimation: " + isFileOperator);
         ConstraintSet constraintSet = new ConstraintSet();
         if (isFileOperator) {
             constraintSet.load(this, R.layout.layout_file_opreator);

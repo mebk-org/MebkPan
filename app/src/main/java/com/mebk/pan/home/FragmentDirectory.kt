@@ -172,8 +172,8 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
             LogUtil.err(this.javaClass, "isFileOperator 拦截callback=${callBack.isEnabled}")
         })
 
-        mainViewModel.deleteInfo.observe(viewLifecycleOwner, {
-            if (it == MainViewModel.DELETE_DONE) {
+        mainViewModel.actionInfo.observe(viewLifecycleOwner, {
+            if (it == MainViewModel.ACTION_DONE) {
                 viewModel.directory()
                 mainViewModel.changeFileOperator()
             }
