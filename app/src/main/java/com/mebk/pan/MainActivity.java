@@ -227,6 +227,38 @@ public class MainActivity extends AppCompatActivity {
 
         pwdRoot.setOnClickListener(v -> pwdPopupwindow.dismiss());
 
+        sharePwdCancelBtn.setOnClickListener(v -> {
+            pwdPopupwindow.dismiss();
+            sharePwd = "";
+            sharePwdEditText.setText("");
+            sharePwdSwitch.setChecked(false);
+        });
+
+        shareTimeSureBtn.setOnClickListener(v -> timePopupwindow.dismiss());
+
+        shareTimeCancelBtn.setOnClickListener(v -> {
+            shareTimeDownload = -1;
+            shareTimeExpire = -1;
+            timePopupwindow.dismiss();
+            shareTimeSwitch.setChecked(false);
+        });
+
+        shareCancelBtn.setOnClickListener(v -> {
+
+            shareTimeDownload = -1;
+            shareTimeExpire = -1;
+            sharePwd = "";
+
+            sharePwdEditText.setText("");
+            timePopupwindowDownloadSpinner.setSelection(0);
+            timePopupwindowExpireSpinner.setSelection(0);
+
+            shareTimeSwitch.setChecked(false);
+            sharePwdSwitch.setChecked(false);
+            sharePreviewSwitch.setChecked(false);
+
+            sharePopupwindow.dismiss();
+        });
     }
 
     private void sharePwd() {
