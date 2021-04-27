@@ -3,179 +3,187 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@color/gray_cc">
 
-    <ImageView
-        android:id="@+id/popupwindow_share_pwd_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/lock_24"
-        app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_pwd_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/popupwindow_share_pwd_tv" />
-
-    <TextView
-        android:id="@+id/popupwindow_share_pwd_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        android:paddingStart="8dp"
-        android:text="@string/share_pwd"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_time_tv"
-        app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_pwd_switch"
-        app:layout_constraintStart_toEndOf="@+id/popupwindow_share_pwd_iv"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--    <com.google.android.material.textfield.TextInputLayout-->
-    <!--        android:id="@+id/popupwindow_share_pwd_textInputLayout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:inputType="textPassword"-->
-    <!--        app:passwordToggleDrawable="@drawable/password_visible_invisible"-->
-    <!--        app:passwordToggleEnabled="true">-->
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/popupwindow_share_pwd_et"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content" />-->
-    <!--    </com.google.android.material.textfield.TextInputLayout>-->
-
-    <!--    <LinearLayout-->
-    <!--        android:id="@+id/popupwindow_share_time_ll"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:orientation="horizontal">-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/popupwindow_share_time_download_tv"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_weight="1" />-->
-
-    <!--        <Spinner-->
-    <!--            android:id="@+id/popupwindow_share_time_download_sp"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_weight="1" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/popupwindow_share_time_expire_tv"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_weight="1" />-->
-
-    <!--        <Spinner-->
-    <!--            android:id="@+id/popupwindow_share_time_expire_sp"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_weight="1" />-->
-    <!--    </LinearLayout>-->
-
-    <!--    <com.google.android.material.chip.Chip-->
-    <!--        android:id="@+id/popupwindow_share_preview_chip"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content" />-->
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/popupwindow_share_pwd_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:theme="@style/MySwitchStyle"
-        app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_pwd_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/popupwindow_share_pwd_tv" />
-
-    <ImageView
-        android:id="@+id/popupwindow_share_time_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/alarm_24"
-        app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_time_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/popupwindow_share_time_tv" />
-
-    <TextView
-        android:id="@+id/popupwindow_share_time_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        android:paddingStart="8dp"
-        android:text="@string/share_time"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_preview_tv"
-        app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_time_switch"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/popupwindow_share_time_iv" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/popupwindow_share_time_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:theme="@style/MySwitchStyle"
-        app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_time_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/popupwindow_share_time_tv" />
-
-    <ImageView
-        android:id="@+id/popupwindow_share_preview_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/preview_24"
-        app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_preview_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/popupwindow_share_preview_tv" />
-
-    <TextView
-        android:id="@+id/popupwindow_share_preview_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        android:paddingStart="8dp"
-        android:text="@string/share_preview"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_sure_tv"
-        app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_preview_switch"
-        app:layout_constraintStart_toEndOf="@+id/popupwindow_share_preview_iv" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/popupwindow_share_preview_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:theme="@style/MySwitchStyle"
-        app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_preview_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/popupwindow_share_preview_tv" />
-
-
-    <Button
-        android:id="@+id/popupwindow_share_sure_tv"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="@color/communism"
-        android:text="@string/share"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_cancel_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/popupwindow_share_cancel_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="@color/gray_cc"
-        android:text="@string/cancel"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
+        <ImageView
+            android:id="@+id/popupwindow_share_pwd_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/lock_24"
+            app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_pwd_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popupwindow_share_pwd_tv" />
+
+        <TextView
+            android:id="@+id/popupwindow_share_pwd_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:paddingStart="8dp"
+            android:text="@string/share_pwd"
+            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_time_tv"
+            app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_pwd_switch"
+            app:layout_constraintStart_toEndOf="@+id/popupwindow_share_pwd_iv" />
+
+        <!--    <com.google.android.material.textfield.TextInputLayout-->
+        <!--        android:id="@+id/popupwindow_share_pwd_textInputLayout"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:inputType="textPassword"-->
+        <!--        app:passwordToggleDrawable="@drawable/password_visible_invisible"-->
+        <!--        app:passwordToggleEnabled="true">-->
+
+        <!--        <EditText-->
+        <!--            android:id="@+id/popupwindow_share_pwd_et"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content" />-->
+        <!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+        <!--    <LinearLayout-->
+        <!--        android:id="@+id/popupwindow_share_time_ll"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:orientation="horizontal">-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/popupwindow_share_time_download_tv"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1" />-->
+
+        <!--        <Spinner-->
+        <!--            android:id="@+id/popupwindow_share_time_download_sp"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/popupwindow_share_time_expire_tv"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1" />-->
+
+        <!--        <Spinner-->
+        <!--            android:id="@+id/popupwindow_share_time_expire_sp"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1" />-->
+        <!--    </LinearLayout>-->
+
+        <!--    <com.google.android.material.chip.Chip-->
+        <!--        android:id="@+id/popupwindow_share_preview_chip"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content" />-->
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/popupwindow_share_pwd_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:theme="@style/MySwitchStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_pwd_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popupwindow_share_pwd_tv" />
+
+        <ImageView
+            android:id="@+id/popupwindow_share_time_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/alarm_24"
+            app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_time_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popupwindow_share_time_tv" />
+
+        <TextView
+            android:id="@+id/popupwindow_share_time_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:paddingStart="8dp"
+            android:text="@string/share_time"
+
+            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_preview_tv"
+            app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_time_switch"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/popupwindow_share_time_iv" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/popupwindow_share_time_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:theme="@style/MySwitchStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_time_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popupwindow_share_time_tv" />
+
+        <ImageView
+            android:id="@+id/popupwindow_share_preview_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/preview_24"
+            app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_preview_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popupwindow_share_preview_tv" />
+
+        <TextView
+            android:id="@+id/popupwindow_share_preview_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:paddingStart="8dp"
+            android:text="@string/share_preview"
+
+            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_sure_tv"
+            app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_preview_switch"
+            app:layout_constraintStart_toEndOf="@+id/popupwindow_share_preview_iv" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/popupwindow_share_preview_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:theme="@style/MySwitchStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/popupwindow_share_preview_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popupwindow_share_preview_tv" />
+
+
+        <Button
+            android:id="@+id/popupwindow_share_sure_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@color/communism"
+            android:text="@string/share"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_cancel_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/popupwindow_share_cancel_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@color/gray_cc"
+            android:text="@string/cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

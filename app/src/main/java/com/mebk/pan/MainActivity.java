@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
 
                 View sharePopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share, null);
-                PopupWindow popupWindow = new PopupWindow(sharePopupWindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                PopupWindow popupWindow = new PopupWindow(sharePopupWindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
                 popupWindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
 
 
