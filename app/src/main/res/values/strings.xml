@@ -49,4 +49,6 @@
     <string name="share_time">自动过期</string>
     <string name="share_preview">允许预览</string>
     <string name="sure">确定</string>
+    <string name="share_download_count">下载次数</string>
+    <string name="share_expire">过期时间</string>
 </resources>

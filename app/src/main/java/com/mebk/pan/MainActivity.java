@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,16 +60,16 @@ public class MainActivity extends AppCompatActivity {
     private int fabWidth;
     private int fabRadius;
     private NavHostFragment navHostFragment;
-    private View sharePopupWindowLayout, pwdPopupWindowLayout;
-    private PopupWindow sharePopupwindow, pwdPopupwindow;
-    private TextView sharePwdTv;
-    private SwitchCompat sharePwdSwitch;
-    private Button sharePwdSureBtn, getSharePwdCancelBtn;
+    private View sharePopupWindowLayout, pwdPopupWindowLayout, timePopupwindowLayout;
+    private PopupWindow sharePopupwindow, pwdPopupwindow, timePopupwindow;
+    private TextView sharePwdTv, shareTimeTv;
+    private SwitchCompat sharePwdSwitch, shareTimeSwitch;
+    private Button sharePwdSureBtn, sharePwdCancelBtn, shareTimeSureBtn, shareTimeCancelBtn;
     private TextInputLayout sharePwdTextTextInputLayout;
     private EditText sharePwdEditText;
     private ImageView sharePwdRandomIv;
     private String sharePwd;
-
+    private Spinner timePopupwindowDownloadSpinner, timePopupwindowExpireSpinner;
     private final ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -173,6 +174,13 @@ public class MainActivity extends AppCompatActivity {
             sharePwd();
         });
 
+        shareTimeTv.setOnClickListener(v -> {
+            shareTime();
+        });
+        shareTimeSwitch.setOnClickListener(v -> {
+            shareTime();
+        });
+
         sharePwdSureBtn.setOnClickListener(v -> {
             if (TextUtils.isEmpty(sharePwdEditText.getText().toString())) {
                 sharePwdTextTextInputLayout.setError("请设置分享密码");
@@ -195,6 +203,9 @@ public class MainActivity extends AppCompatActivity {
         pwdPopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
     }
 
+    public void shareTime(){
+        timePopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
+    }
 
     private void initView() {
         bottomNavigationView = findViewById(R.id.nav_bottom_view);
@@ -202,9 +213,12 @@ public class MainActivity extends AppCompatActivity {
 
         sharePopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share, null);
         pwdPopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_pwd, null);
+        timePopupwindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_time, null);
 
         sharePwdTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_tv);
         sharePwdSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_switch);
+        shareTimeTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_tv);
+        shareTimeSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_switch);
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
 
@@ -224,13 +238,19 @@ public class MainActivity extends AppCompatActivity {
 
         sharePopupwindow = new PopupWindow(sharePopupWindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         pwdPopupwindow = new PopupWindow(pwdPopupWindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        timePopupwindow = new PopupWindow(timePopupwindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
 
         sharePwdSureBtn = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_sure_btn);
-        getSharePwdCancelBtn = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_cancel_btn);
+        sharePwdCancelBtn = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_cancel_btn);
+        shareTimeCancelBtn = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_cancel_btn);
+        shareTimeSureBtn = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_sure_btn);
 
         sharePwdTextTextInputLayout = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_textInputLayout);
         sharePwdEditText = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_et);
         sharePwdRandomIv = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_random_iv);
+
+        timePopupwindowDownloadSpinner = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_download_spinner);
+        timePopupwindowExpireSpinner = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_expire_spinner);
     }
 
 
