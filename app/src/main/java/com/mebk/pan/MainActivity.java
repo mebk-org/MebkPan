@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ import com.mebk.pan.database.entity.File;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView sharePwdRandomIv;
     private String sharePwd;
     private Spinner timePopupwindowDownloadSpinner, timePopupwindowExpireSpinner;
+    private int[] shareTimeDownloadArr, shareTimeExpireArr;
+    private int shareTimeDownload, shareTimeExpire;
     private final ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -195,6 +199,29 @@ public class MainActivity extends AppCompatActivity {
             String pwd = ToolUtilsKt.sharePwdGenerator();
             sharePwdEditText.setText(pwd);
         });
+
+        timePopupwindowExpireSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                shareTimeExpire = shareTimeExpireArr[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                shareTimeExpire = shareTimeExpireArr[0];
+            }
+        });
+        timePopupwindowDownloadSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                shareTimeDownload = shareTimeDownloadArr[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                shareTimeDownload = shareTimeDownloadArr[0];
+            }
+        });
     }
 
     private void sharePwd() {
@@ -203,11 +230,14 @@ public class MainActivity extends AppCompatActivity {
         pwdPopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
     }
 
-    public void shareTime(){
+    public void shareTime() {
         timePopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
     }
 
     private void initView() {
+        shareTimeDownloadArr = new int[]{-1, 1, 5, 10, 30, 50, 100};
+        shareTimeExpireArr = new int[]{-1, 300, 3600, 43200, 86400, 604800, 1296000, 2592000};
+
         bottomNavigationView = findViewById(R.id.nav_bottom_view);
         rootLayout = findViewById(R.id.container);
 
