@@ -45,4 +45,7 @@
     <string name="move">移动</string>
     <string name="cancel">取消</string>
     <string name="separator"><![CDATA[>]]></string>
+    <string name="share_pwd">使用密码保护</string>
+    <string name="share_time">自动过期</string>
+    <string name="share_preview">允许预览</string>
 </resources>

@@ -6,10 +6,13 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -57,15 +60,11 @@ public class MainActivity extends AppCompatActivity {
     private int fabRadius;
     private NavHostFragment navHostFragment;
     public static final int MOVE_CODE = 1;
-    private ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+    private final ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == RESULT_OK) {
-//                Log.e(TAG, "onActivityResult: " + result.getData().getBooleanExtra("isMoveSuccess", false));
-//                if (result.getData().getBooleanExtra("isMoveSuccess", false)) {
-                Log.e(TAG, "onActivityResult: ");
                 mainViewModel.actionDone();
-//                }
             }
         }
     });
@@ -77,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         fabRadius = ToolUtilsKt.dp2px(this, 80);
+
         initView();
 
         onClick();
@@ -111,7 +111,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         shareItem.view.setOnClickListener(v -> {
-            mainViewModel.shareFile(mainViewModel.getCheckList().get(0).getId(), false, "", -1, 86400, true, 0);
+            if (mainViewModel.getCheckList().size() != 1) {
+                Toast.makeText(this, "只能分享单个文件", Toast.LENGTH_SHORT).show();
+            } else {
+
+                View sharePopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share, null);
+                PopupWindow popupWindow = new PopupWindow(sharePopupWindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                popupWindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
+
+
+                File file = mainViewModel.getCheckList().get(0);
+                String id = file.getId();
+                boolean isDir = !file.getType().equals("file");
+                mainViewModel.shareFile(id, isDir, "", -1, 86400, true, 0);
+            }
         });
 
         moreItem.view.setOnClickListener(v -> {
@@ -163,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.list_item:
                 Toast.makeText(this, "你点击了 添加！", Toast.LENGTH_SHORT).show();
@@ -211,7 +223,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * 文件选择动画
+     *
+     * @param isFileOperator 是否进入文件选择页面
+     */
     private void fileOperatorAnimation(boolean isFileOperator) {
         Log.e(TAG, "fileOperatorAnimation: " + isFileOperator);
         ConstraintSet constraintSet = new ConstraintSet();
@@ -224,6 +240,13 @@ public class MainActivity extends AppCompatActivity {
         constraintSet.applyTo(rootLayout);
     }
 
+    /**
+     * 上传fab动画
+     *
+     * @param fab   需要执行动画的fab
+     * @param group 控制当前fab可见性的group
+     * @return ValueAnimator 动画
+     */
     private ValueAnimator setValueAnimator(FloatingActionButton fab, Group group) {
         ValueAnimator animator;
         if (isFabShow) {
