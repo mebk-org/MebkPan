@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -48,32 +49,32 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = "MainActivity";
-    //几个代表页面的常量
-    RadioButton radioButton_file;
-    RadioButton radioButton_img;
-    BottomNavigationView bottomNavigationView;
+
+    private BottomNavigationView bottomNavigationView;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
     private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
     private FloatingActionButton menuFab, uploadFab, mkdirFab, shareFab;
     private Group uploadGroup, mkdirGroup, shareGroup;
-    private boolean isFabShow = false;
-    private int fabWidth;
-    private int fabRadius;
-    private NavHostFragment navHostFragment;
-    private View sharePopupWindowLayout, pwdPopupWindowLayout, timePopupwindowLayout;
     private PopupWindow sharePopupwindow, pwdPopupwindow, timePopupwindow;
-    private TextView sharePwdTv, shareTimeTv;
-    private SwitchCompat sharePwdSwitch, shareTimeSwitch;
+    private TextView sharePwdTv, shareTimeTv, sharePreviewTv;
+    private SwitchCompat sharePwdSwitch, shareTimeSwitch, sharePreviewSwitch;
     private Button sharePwdSureBtn, sharePwdCancelBtn, shareTimeSureBtn, shareTimeCancelBtn;
     private TextInputLayout sharePwdTextTextInputLayout;
     private EditText sharePwdEditText;
     private ImageView sharePwdRandomIv;
     private String sharePwd;
     private Spinner timePopupwindowDownloadSpinner, timePopupwindowExpireSpinner;
+
+
     private int[] shareTimeDownloadArr, shareTimeExpireArr;
     private int shareTimeDownload, shareTimeExpire;
+    private boolean isFabShow = false, isPreview = false;
+    private int fabWidth;
+    private int fabRadius;
+
     private final ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -110,19 +111,15 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
     }
 
     private void onClick() {
-        downloadItem.view.setOnClickListener(v -> {
-            mainViewModel.download();
-        });
-        deleteItem.view.setOnClickListener(v -> {
-            mainViewModel.deleteFile();
-        });
+        downloadItem.view.setOnClickListener(v -> mainViewModel.download());
+        deleteItem.view.setOnClickListener(v -> mainViewModel.deleteFile());
 
         shareItem.view.setOnClickListener(v -> {
             if (mainViewModel.getCheckList().size() != 1) {
@@ -170,20 +167,12 @@ public class MainActivity extends AppCompatActivity {
             animatorSet.start();
         });
 
-        sharePwdSwitch.setOnClickListener(v -> {
-            sharePwd();
-        });
+        sharePwdSwitch.setOnClickListener(v -> sharePwd());
 
-        sharePwdTv.setOnClickListener(v -> {
-            sharePwd();
-        });
+        sharePwdTv.setOnClickListener(v -> sharePwd());
 
-        shareTimeTv.setOnClickListener(v -> {
-            shareTime();
-        });
-        shareTimeSwitch.setOnClickListener(v -> {
-            shareTime();
-        });
+        shareTimeTv.setOnClickListener(v -> shareTime());
+        shareTimeSwitch.setOnClickListener(v -> shareTime());
 
         sharePwdSureBtn.setOnClickListener(v -> {
             if (TextUtils.isEmpty(sharePwdEditText.getText().toString())) {
@@ -222,6 +211,11 @@ public class MainActivity extends AppCompatActivity {
                 shareTimeDownload = shareTimeDownloadArr[0];
             }
         });
+
+        sharePreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isPreview = isChecked;
+            Log.e(TAG, "onCheckedChanged: preview" + isPreview);
+        });
     }
 
     private void sharePwd() {
@@ -241,14 +235,15 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.nav_bottom_view);
         rootLayout = findViewById(R.id.container);
 
-        sharePopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share, null);
-        pwdPopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_pwd, null);
-        timePopupwindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_time, null);
+        View sharePopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share, null);
+        View pwdPopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_pwd, null);
+        View timePopupwindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_time, null);
 
         sharePwdTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_tv);
         sharePwdSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_switch);
         shareTimeTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_tv);
         shareTimeSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_switch);
+        sharePreviewSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_preview_switch);
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
 
