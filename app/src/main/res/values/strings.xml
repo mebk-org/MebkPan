@@ -48,4 +48,5 @@
     <string name="share_pwd">使用密码保护</string>
     <string name="share_time">自动过期</string>
     <string name="share_preview">允许预览</string>
+    <string name="sure">确定</string>
 </resources>
