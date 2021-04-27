@@ -4,6 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -67,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView sharePwdRandomIv;
     private String sharePwd;
     private Spinner timePopupwindowDownloadSpinner, timePopupwindowExpireSpinner;
-
+    private ConstraintLayout shareRoot, pwdRoot, timeRoot;
 
     private int[] shareTimeDownloadArr, shareTimeExpireArr;
     private int shareTimeDownload, shareTimeExpire;
@@ -126,11 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "只能分享单个文件", Toast.LENGTH_SHORT).show();
             } else {
                 sharePopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
-
-//                File file = mainViewModel.getCheckList().get(0);
-//                String id = file.getId();
-//                boolean isDir = !file.getType().equals("file");
-//                mainViewModel.shareFile(id, isDir, "", -1, 86400, true, 0);
             }
         });
 
@@ -221,6 +221,11 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.shareFile(id, isDir, sharePwd, shareTimeDownload, shareTimeExpire, isPreview, 0);
         });
 
+        shareRoot.setOnClickListener(v -> sharePopupwindow.dismiss());
+
+        timeRoot.setOnClickListener(v -> timePopupwindow.dismiss());
+
+        pwdRoot.setOnClickListener(v -> pwdPopupwindow.dismiss());
 
     }
 
@@ -245,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
         View pwdPopupWindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_pwd, null);
         View timePopupwindowLayout = LayoutInflater.from(this).inflate(R.layout.popupwindow_share_time, null);
 
+
+        shareRoot = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_root);
         sharePwdTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_tv);
         sharePwdSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_switch);
         shareTimeTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_tv);
@@ -273,8 +280,11 @@ public class MainActivity extends AppCompatActivity {
         pwdPopupwindow = new PopupWindow(pwdPopupWindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         timePopupwindow = new PopupWindow(timePopupwindowLayout, ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
 
+        pwdRoot = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_root);
         sharePwdSureBtn = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_sure_btn);
         sharePwdCancelBtn = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_cancel_btn);
+
+        timeRoot = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_root);
         shareTimeCancelBtn = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_cancel_btn);
         shareTimeSureBtn = timePopupwindowLayout.findViewById(R.id.popupwindow_share_time_sure_btn);
 
