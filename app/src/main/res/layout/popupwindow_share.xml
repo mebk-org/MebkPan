@@ -95,8 +95,7 @@
             android:paddingVertical="16dp"
             android:paddingStart="8dp"
             android:text="@string/share_preview"
-
-            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_sure_tv"
+            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_sure_btn"
             app:layout_constraintEnd_toStartOf="@+id/popupwindow_share_preview_switch"
             app:layout_constraintStart_toEndOf="@+id/popupwindow_share_preview_iv" />
 
@@ -112,20 +111,20 @@
 
 
         <Button
-            android:id="@+id/popupwindow_share_sure_tv"
+            android:id="@+id/popupwindow_share_sure_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@color/communism"
             android:text="@string/share"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_cancel_tv"
+            app:layout_constraintBottom_toTopOf="@+id/popupwindow_share_cancel_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/popupwindow_share_cancel_tv"
+            android:id="@+id/popupwindow_share_cancel_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private PopupWindow sharePopupwindow, pwdPopupwindow, timePopupwindow;
     private TextView sharePwdTv, shareTimeTv, sharePreviewTv;
     private SwitchCompat sharePwdSwitch, shareTimeSwitch, sharePreviewSwitch;
-    private Button sharePwdSureBtn, sharePwdCancelBtn, shareTimeSureBtn, shareTimeCancelBtn;
+    private Button sharePwdSureBtn, sharePwdCancelBtn, shareTimeSureBtn, shareTimeCancelBtn, shareSureBtn, shareCancelBtn;
     private TextInputLayout sharePwdTextTextInputLayout;
     private EditText sharePwdEditText;
     private ImageView sharePwdRandomIv;
@@ -212,10 +212,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sharePreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isPreview = isChecked;
-            Log.e(TAG, "onCheckedChanged: preview" + isPreview);
+        sharePreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> isPreview = isChecked);
+
+        shareSureBtn.setOnClickListener(v -> {
+            File file = mainViewModel.getCheckList().get(0);
+            String id = file.getId();
+            boolean isDir = !file.getType().equals("file");
+            mainViewModel.shareFile(id, isDir, sharePwd, shareTimeDownload, shareTimeExpire, isPreview, 0);
         });
+
+
     }
 
     private void sharePwd() {
@@ -244,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
         shareTimeTv = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_tv);
         shareTimeSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_time_switch);
         sharePreviewSwitch = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_preview_switch);
+        shareSureBtn = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_sure_btn);
+        shareCancelBtn = sharePopupWindowLayout.findViewById(R.id.popupwindow_share_cancel_btn);
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
 
