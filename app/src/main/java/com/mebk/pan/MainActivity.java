@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
     private Button sharePwdSureBtn, getSharePwdCancelBtn;
     private TextInputLayout sharePwdTextTextInputLayout;
     private EditText sharePwdEditText;
-    public static final int MOVE_CODE = 1;
+    private ImageView sharePwdRandomIv;
     private String sharePwd;
+
     private final ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -181,7 +183,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "onClick: sharePwd=" + sharePwd);
             }
         });
-
+        sharePwdRandomIv.setOnClickListener(v -> {
+            String pwd = ToolUtilsKt.sharePwdGenerator();
+            sharePwdEditText.setText(pwd);
+        });
     }
 
     private void sharePwd() {
@@ -225,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
         sharePwdTextTextInputLayout = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_textInputLayout);
         sharePwdEditText = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_et);
+        sharePwdRandomIv = pwdPopupWindowLayout.findViewById(R.id.popupwindow_share_pwd_random_iv);
     }
 
 
