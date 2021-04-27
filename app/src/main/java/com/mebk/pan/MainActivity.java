@@ -110,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.deleteFile();
         });
 
+        shareItem.view.setOnClickListener(v -> {
+            mainViewModel.shareFile(mainViewModel.getCheckList().get(0).getId(), false, "", -1, 86400, true, 0);
+        });
+
         moreItem.view.setOnClickListener(v -> {
             Intent i = new Intent();
             Bundle bundle = new Bundle();

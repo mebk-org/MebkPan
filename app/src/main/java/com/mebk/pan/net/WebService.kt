@@ -44,4 +44,8 @@ interface WebService {
     //移动文件
     @PATCH(API_FILE_ACTION)
     suspend fun moveFile(@Body body: RequestBody): Response<ActionDto>
+
+    //分享文件
+    @POST(API_FILE_SHARE)
+    suspend fun shareFile(@Body body: RequestBody): Response<ShareDao>
 }
