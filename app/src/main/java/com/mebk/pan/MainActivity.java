@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 sharePwdTextTextInputLayout.setError(null);
                 sharePwd = sharePwdEditText.getText().toString();
                 pwdPopupwindow.dismiss();
+                sharePwdSwitch.setChecked(true);
                 Log.e(TAG, "onClick: sharePwd=" + sharePwd);
             }
         });
@@ -212,6 +213,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        shareTimeSureBtn.setOnClickListener(v -> {
+            shareTimeSwitch.setChecked(true);
+            timePopupwindow.dismiss();
+        });
+
         sharePreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> isPreview = isChecked);
 
         shareSureBtn.setOnClickListener(v -> {
@@ -233,8 +239,6 @@ public class MainActivity extends AppCompatActivity {
             sharePwdEditText.setText("");
             sharePwdSwitch.setChecked(false);
         });
-
-        shareTimeSureBtn.setOnClickListener(v -> timePopupwindow.dismiss());
 
         shareTimeCancelBtn.setOnClickListener(v -> {
             shareTimeDownload = -1;
