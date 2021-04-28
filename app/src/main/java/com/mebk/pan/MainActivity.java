@@ -4,11 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,11 +13,9 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,12 +40,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
-import com.mebk.pan.database.entity.File;
-import com.mebk.pan.utils.LogUtil;
+import com.mebk.pan.database.entity.FileEntity;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -169,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<String> fileIds, dirIds;
             fileIds = new ArrayList<>();
             dirIds = new ArrayList<>();
-            for (File file : mainViewModel.getCheckList()) {
+            for (FileEntity file : mainViewModel.getCheckList()) {
                 if (file.getType().equals("file")) {
                     fileIds.add(file.getId());
                 } else {
@@ -279,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         sharePreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> isPreview = isChecked);
 
         shareSureBtn.setOnClickListener(v -> {
-            File file = mainViewModel.getCheckList().get(0);
+            FileEntity file = mainViewModel.getCheckList().get(0);
             String id = file.getId();
             boolean isDir = !file.getType().equals("file");
             mainViewModel.shareFile(id, isDir, sharePwd, shareTimeDownload, shareTimeExpire, isPreview, 0);

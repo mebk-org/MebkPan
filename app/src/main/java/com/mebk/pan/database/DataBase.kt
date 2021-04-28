@@ -8,12 +8,12 @@ import com.mebk.pan.database.daos.CookieDao
 import com.mebk.pan.database.daos.DownloadingDao
 import com.mebk.pan.database.daos.FileDao
 import com.mebk.pan.database.daos.UserDao
-import com.mebk.pan.database.entity.DownloadingInfo
-import com.mebk.pan.database.entity.File
-import com.mebk.pan.database.entity.User
-import com.mebk.pan.database.entity.UserCookie
+import com.mebk.pan.database.entity.DownloadingInfoEntity
+import com.mebk.pan.database.entity.FileEntity
+import com.mebk.pan.database.entity.UserEntity
+import com.mebk.pan.database.entity.UserCookieEntity
 
-@Database(entities = [UserCookie::class, File::class, DownloadingInfo::class,User::class], version = 1)
+@Database(entities = [UserCookieEntity::class, FileEntity::class, DownloadingInfoEntity::class,UserEntity::class], version = 1)
 abstract class DataBase() : RoomDatabase() {
 
     abstract fun cookieDao(): CookieDao

@@ -47,5 +47,9 @@ interface WebService {
 
     //分享文件
     @POST(API_FILE_SHARE)
-    suspend fun shareFile(@Body body: RequestBody): Response<ShareDao>
+    suspend fun shareFile(@Body body: RequestBody): Response<ShareDto>
+
+    //分享记录
+    @GET("{path}")
+    suspend fun getShareHistory(@Query("page") page: Int, @Query("type") type: String): Response<ShareHistoryDto>
 }

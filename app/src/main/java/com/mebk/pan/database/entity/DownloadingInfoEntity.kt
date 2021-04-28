@@ -12,7 +12,7 @@ import java.util.*
  */
 
 @Entity(tableName = "downloading_info_table")
-class DownloadingInfo(
+class DownloadingInfoEntity(
 
         @ColumnInfo var fileId: String,
 

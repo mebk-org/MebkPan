@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.FileEntity
 import com.mebk.pan.utils.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -16,15 +16,15 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val application = getApplication<MyApplication>()
 
-    private var directoryList = listOf<File>()
+    private var directoryList = listOf<FileEntity>()
 
-    var directoryInfo = MutableLiveData<List<File>>()
+    var directoryInfo = MutableLiveData<List<FileEntity>>()
 
     var requestInfo = MutableLiveData<String>()
     var lastRefreshTimeInfo = MutableLiveData<String>().also {
         it.value = getLastRefreshTime()
     }
-    private val fileStack = Stack<Pair<Pair<String, String>, List<File>>>()
+    private val fileStack = Stack<Pair<Pair<String, String>, List<FileEntity>>>()
 
 
     var stackSize = MutableLiveData<Int>().also {
@@ -97,7 +97,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             LogUtil.err(this.javaClass, pair.second.toString())
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
             directoryList = pair.second!!.objects.map {
-                File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
+                FileEntity(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
             }
             directoryList.forEach {
                 application.repository.addFile(it)
@@ -153,7 +153,7 @@ class DirectoryViewModel(application: Application) : AndroidViewModel(applicatio
             REQUEST_SUCCESS -> {
                 requestInfo.value = REQUEST_SUCCESS
                 directoryList = pair.second!!.objects.map {
-                    File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
+                    FileEntity(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
                 }
                 directoryInfo.value = directoryList
 

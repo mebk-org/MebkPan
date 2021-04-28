@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,12 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import com.mebk.pan.R
 import com.mebk.pan.aa.DownloadingRvAdapter
-import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.DownloadingInfoEntity
 import com.mebk.pan.utils.DOWNLOAD_KEY_PROGRESS
 import com.mebk.pan.utils.DOWNLOAD_STATE_DOWNLOADING
 import com.mebk.pan.utils.LogUtil
-import com.mebk.pan.utils.RetrofitClient
-import com.mebk.pan.vm.DownloadViewModel
 import com.mebk.pan.vm.DownloadingViewModel
 import com.mebk.pan.vm.MainViewModel
 import kotlinx.android.synthetic.main.rv_item_downloading.view.*
@@ -26,7 +23,7 @@ import kotlinx.android.synthetic.main.rv_item_downloading.view.*
 class FragmentDownloading : Fragment() {
     private lateinit var rv: RecyclerView
     private lateinit var adapter: DownloadingRvAdapter
-    private var list = mutableListOf<DownloadingInfo>()
+    private var list = mutableListOf<DownloadingInfoEntity>()
     private val viewModel by viewModels<DownloadingViewModel>()
     private val mainViewModel by activityViewModels<MainViewModel>()
     private var offset = 0

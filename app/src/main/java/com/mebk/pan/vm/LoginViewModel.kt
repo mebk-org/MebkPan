@@ -5,12 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.User
+import com.mebk.pan.database.entity.UserEntity
 import com.mebk.pan.dtos.UserDto
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.REQUEST_SUCCESS
 import com.mebk.pan.utils.REQUEST_TIMEOUT
-import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,7 +33,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 application.repository.insertUser(
                         with(response.second!!) {
-                            User(id, anonymous, avatar, created_at, nickname, preferred_theme, score, status, user_name, group.id, group.name,
+                            UserEntity(id, anonymous, avatar, created_at, nickname, preferred_theme, score, status, user_name, group.id, group.name,
                                     policy.allowSource, policy.maxSize, policy.saveType, policy.upUrl)
                         }
                 )

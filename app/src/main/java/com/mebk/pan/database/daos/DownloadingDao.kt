@@ -1,25 +1,24 @@
 package com.mebk.pan.database.daos
 
 import androidx.room.*
-import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.DownloadingInfoEntity
 import com.mebk.pan.utils.DOWNLOAD_STATE_DONE
 import com.mebk.pan.utils.DOWNLOAD_STATE_DOWNLOADING
-import com.mebk.pan.utils.RetrofitClient
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DownloadingDao {
     @Query("SELECT * FROM downloading_info_table")
-    fun getDownloadInfo(): Flow<List<DownloadingInfo>>
+    fun getDownloadInfo(): Flow<List<DownloadingInfoEntity>>
 
     @Query("SELECT * FROM downloading_info_table WHERE state<${DOWNLOAD_STATE_DONE}  ORDER BY id")
-    fun getDownloadingList(): Flow<List<DownloadingInfo>>
+    fun getDownloadingList(): Flow<List<DownloadingInfoEntity>>
 
     @Query("SELECT * FROM downloading_info_table WHERE state=${DOWNLOAD_STATE_DONE}  ORDER BY id DESC")
-    fun getDownloadDoneList(): Flow<List<DownloadingInfo>>
+    fun getDownloadDoneList(): Flow<List<DownloadingInfoEntity>>
 
     @Query("SELECT * FROM downloading_info_table WHERE state=:state  ORDER BY id")
-    suspend fun getDownloadingList(state: Int): List<DownloadingInfo>
+    suspend fun getDownloadingList(state: Int): List<DownloadingInfoEntity>
 
     @Query("SELECT workID FROM downloading_info_table WHERE state<${DOWNLOAD_STATE_DONE}  ORDER BY id")
     suspend fun getDownloadingWorkIdList(): List<String>
@@ -28,10 +27,10 @@ interface DownloadingDao {
     suspend fun getDownloadingFileIdList(): List<String>
 
     @Query("SELECT * FROM downloading_info_table WHERE state>${DOWNLOAD_STATE_DOWNLOADING}  ORDER BY id")
-    suspend fun getHistoryDownloadList(): List<DownloadingInfo>
+    suspend fun getHistoryDownloadList(): List<DownloadingInfoEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDownloadFile(file: DownloadingInfo)
+    suspend fun insertDownloadFile(file: DownloadingInfoEntity)
 
     @Query("UPDATE downloading_info_table SET state=:state WHERE fileId=:fileId AND state<${DOWNLOAD_STATE_DONE}")
     suspend fun updateDownloadFileState(fileId: String, state: Int)
@@ -55,5 +54,5 @@ interface DownloadingDao {
     suspend fun clear()
 
     @Delete
-    suspend fun delete(file: DownloadingInfo)
+    suspend fun delete(file: DownloadingInfoEntity)
 }

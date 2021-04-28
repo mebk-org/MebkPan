@@ -1,8 +1,6 @@
 package com.mebk.pan.aa
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -14,11 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
-import com.mebk.pan.database.entity.File
-import com.mebk.pan.dtos.DirectoryDto
+import com.mebk.pan.database.entity.FileEntity
 import com.mebk.pan.utils.*
 
-class DirectoryRvAdapter(private val context: Context, val list: List<File>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DirectoryRvAdapter(private val context: Context, val list: List<FileEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var clickListener: ((Int) -> Unit)
     private lateinit var clickOnLongListener: ((Int) -> Unit)
     var isFileOperator = false

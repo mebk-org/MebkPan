@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mebk.pan.R
-import com.mebk.pan.database.entity.File
-import kotlinx.android.synthetic.main.rv_item_dir_table.*
+import com.mebk.pan.database.entity.FileEntity
 
-class DirRVAdapter(val context: Context, val list: List<File>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DirRVAdapter(val context: Context, val list: List<FileEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var clickListener: ((Int) -> Unit)
     fun setClickListener(clickListener: ((Int) -> Unit)) {
         this.clickListener = clickListener
