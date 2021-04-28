@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         callback = new OnBackPressedCallback(false) {
             @Override
             public void handleOnBackPressed() {
-                Log.e(TAG, "handleOnBackPressed: " );
+                Log.e(TAG, "handleOnBackPressed: ");
                 switch (mainViewModel.back()) {
                     case MainViewModel.POPUPWINDOW_TIME:
                         timePopupwindow.dismiss();
@@ -195,12 +195,30 @@ public class MainActivity extends AppCompatActivity {
             animatorSet.start();
         });
 
-        sharePwdSwitch.setOnClickListener(v -> sharePwd());
+        sharePwdSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !pwdPopupwindow.isShowing()) {
+                sharePwd();
+            } else if (!isChecked) {
+                sharePwd = "";
+                sharePwdEditText.setText("");
+                sharePwdTextTextInputLayout.setError(null);
+            }
+        });
 
         sharePwdTv.setOnClickListener(v -> sharePwd());
 
         shareTimeTv.setOnClickListener(v -> shareTime());
-        shareTimeSwitch.setOnClickListener(v -> shareTime());
+
+        shareTimeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !timePopupwindow.isShowing()) {
+                shareTime();
+            } else if (!isChecked) {
+                shareTimeDownload = -1;
+                shareTimeExpire = -1;
+                timePopupwindowDownloadSpinner.setSelection(0);
+                timePopupwindowExpireSpinner.setSelection(0);
+            }
+        });
 
         sharePwdSureBtn.setOnClickListener(v -> {
             if (TextUtils.isEmpty(sharePwdEditText.getText().toString())) {
@@ -208,13 +226,21 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 sharePwdTextTextInputLayout.setError(null);
                 sharePwd = sharePwdEditText.getText().toString();
-                pwdPopupwindow.dismiss();
+                sharePwd = "";
                 sharePwdSwitch.setChecked(true);
-                Log.e(TAG, "onClick: sharePwd=" + sharePwd);
-                Log.e(TAG, "onClick: sharePwdSureBtn=");
+                pwdPopupwindow.dismiss();
                 mainViewModel.back();
             }
         });
+
+        sharePwdCancelBtn.setOnClickListener(v -> {
+            sharePwd = "";
+            sharePwdEditText.setText("");
+            sharePwdSwitch.setChecked(false);
+            pwdPopupwindow.dismiss();
+            mainViewModel.back();
+        });
+
         sharePwdRandomIv.setOnClickListener(v -> {
             String pwd = ToolUtilsKt.sharePwdGenerator();
             sharePwdEditText.setText(pwd);
@@ -231,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 shareTimeExpire = shareTimeExpireArr[0];
             }
         });
+
         timePopupwindowDownloadSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -246,7 +273,6 @@ public class MainActivity extends AppCompatActivity {
         shareTimeSureBtn.setOnClickListener(v -> {
             shareTimeSwitch.setChecked(true);
             timePopupwindow.dismiss();
-            Log.e(TAG, "onClick: shareTimeSureBtn");
             mainViewModel.back();
         });
 
@@ -262,55 +288,34 @@ public class MainActivity extends AppCompatActivity {
         shareRoot.setOnClickListener(v -> {
             sharePopupwindow.dismiss();
             mainViewModel.back();
-            Log.e(TAG, "onClick: shareRoot");
         });
 
         timeRoot.setOnClickListener(v -> {
             timePopupwindow.dismiss();
             mainViewModel.back();
-            Log.e(TAG, "onClick: timeRoot");
         });
 
         pwdRoot.setOnClickListener(v -> {
             pwdPopupwindow.dismiss();
             mainViewModel.back();
-            Log.e(TAG, "onClick: pwdRoot");
         });
 
-        sharePwdCancelBtn.setOnClickListener(v -> {
-            pwdPopupwindow.dismiss();
-            sharePwd = "";
-            sharePwdEditText.setText("");
-            sharePwdSwitch.setChecked(false);
-            Log.e(TAG, "onClick: sharePwdCancelBtn");
-            mainViewModel.back();
-        });
 
         shareTimeCancelBtn.setOnClickListener(v -> {
             shareTimeDownload = -1;
             shareTimeExpire = -1;
-            timePopupwindow.dismiss();
             shareTimeSwitch.setChecked(false);
-            Log.e(TAG, "onClick: shareTimeCancelBtn");
+            timePopupwindow.dismiss();
             mainViewModel.back();
         });
 
         shareCancelBtn.setOnClickListener(v -> {
-
-            shareTimeDownload = -1;
-            shareTimeExpire = -1;
-            sharePwd = "";
-
-            sharePwdEditText.setText("");
-            timePopupwindowDownloadSpinner.setSelection(0);
-            timePopupwindowExpireSpinner.setSelection(0);
 
             shareTimeSwitch.setChecked(false);
             sharePwdSwitch.setChecked(false);
             sharePreviewSwitch.setChecked(false);
 
             sharePopupwindow.dismiss();
-            Log.e(TAG, "onClick: shareCancelBtn");
             mainViewModel.back();
         });
     }
