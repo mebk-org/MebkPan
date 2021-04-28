@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="share_time_download_entity">
+        <item>不限制</item>
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="share_time_expire_entity">
+        <item>永久</item>
+        <item>5分钟</item>
+        <item>1小时</item>
+        <item>12小时</item>
+        <item>1天</item>
+        <item>7天</item>
+        <item>15天</item>
+        <item>30天</item>
+    </string-array>
+</resources>

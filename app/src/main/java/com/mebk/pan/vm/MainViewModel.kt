@@ -11,9 +11,12 @@ import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+
     private var workManager: WorkManager = WorkManager.getInstance(application)
     private val myApplication = application as MyApplication
     val isFileOperator = MutableLiveData<Boolean>().also {
@@ -37,12 +40,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var successCount = 0
     private var cancelCount = 0
 
+
+    private val stack = Stack<Int>()
+
     companion object {
         val ACTION_START = 0
         val ACTION_DONE = 1
+
+        const val POPUPWINDOW_NONE = -1
+        const val POPUPWINDOW_SHARE = 0
+        const val POPUPWINDOW_PWD = 1
+        const val POPUPWINDOW_TIME = 2
+
     }
 
     var actionInfo = MutableLiveData<Int>()
+    var popupwindowInfo = MutableLiveData<Int>()
 
     init {
         workManager.pruneWork()
@@ -274,7 +287,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     *
+     *  删除文件
      * @return Job
      */
     fun deleteFile() = viewModelScope.launch {
@@ -305,4 +318,35 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         actionInfo.value = ACTION_DONE
     }
 
+    /**
+     * 文件分享
+     * @param id String 文件id
+     * @param isDir Boolean 是否为文件夹
+     * @param pwd String 分享密码
+     * @param downloads Int 下载次数，-1为不限
+     * @param expire Long 有效期 单位秒
+     * @param preview Boolean 是否支持预览
+     * @param score Int 积分，暂未开通默认为0
+     * @return Job
+     */
+    fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0) = viewModelScope.launch {
+        val pair = myApplication.repository.shareFile(id, isDir, pwd, downloads, expire, preview, score)
+    }
+
+    fun openPopupWindow(popupwindowId: Int) {
+        stack.push(popupwindowId)
+        popupwindowInfo.value = stack.size
+    }
+
+    fun back(): Int {
+        if (stack.size > 0) {
+            val id = stack.peek()
+            stack.pop()
+            popupwindowInfo.value = stack.size
+            return id
+        }
+        return POPUPWINDOW_NONE
+    }
+
+    fun popupwindowSize() = stack.size
 }

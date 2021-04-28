@@ -7,10 +7,7 @@ import com.google.gson.JsonObject
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.DataBase
 import com.mebk.pan.database.entity.*
-import com.mebk.pan.dtos.ActionDto
-import com.mebk.pan.dtos.DirectoryDto
-import com.mebk.pan.dtos.FileInfoDto
-import com.mebk.pan.dtos.UserDto
+import com.mebk.pan.dtos.*
 import com.mebk.pan.net.WebService
 import com.mebk.pan.utils.*
 import kotlinx.coroutines.flow.Flow
@@ -475,4 +472,44 @@ class Repository(val context: Context) {
         }
         return result
     }
+
+    /**
+     * 文件分享
+     * @param id String 文件id
+     * @param isDir Boolean 是否为文件夹
+     * @param pwd String 分享密码
+     * @param downloads Int 下载次数，-1为不限
+     * @param expire Long 有效期 单位秒
+     * @param preview Boolean 是否支持预览
+     * @param score Int 积分，暂未开通默认为0
+     * @return Pair<String, ShareDao>
+     */
+    suspend fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0): Pair<String, ShareDao?> {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("id", id)
+        jsonObject.addProperty("is_dir", isDir)
+        jsonObject.addProperty("password", pwd)
+        jsonObject.addProperty("downloads", downloads)
+        jsonObject.addProperty("expire", expire)
+        jsonObject.addProperty("score", score)
+        jsonObject.addProperty("preview", preview)
+        val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObject.toString())
+        var result = Pair<String, ShareDao?>("", null)
+        try {
+            val response = retrofit.create(WebService::class.java).shareFile(requestBody)
+            with(response) {
+                body()?.let {
+                    if (it.code == 0) {
+                        result = Pair(REQUEST_SUCCESS, body())
+                    }
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            result = Pair(REQUEST_TIMEOUT, null)
+        } catch (e: java.lang.Exception) {
+            result = Pair(e.toString(), null)
+        }
+        return result
+    }
+
 }

@@ -182,3 +182,23 @@ fun dp2px(context: Context, dpValue: Float): Int {
     val scale = context.resources.displayMetrics.density;
     return (dpValue * scale + 0.5f).toInt()
 }
+
+/**
+ * 分享密码生成器
+ * @return String
+ */
+fun sharePwdGenerator(): String {
+    val min = 48
+    val max = 122
+    var count = 0
+    var result = ""
+    var c = 0
+    while (count < 6) {
+        c = Random().nextInt(max - min) + min
+        if (c in 48..57 || c in 97..122) {
+            result += (c.toChar())
+            ++count
+        }
+    }
+    return result
+}

@@ -27,7 +27,6 @@ interface DownloadingDao {
     @Query("SELECT fileId FROM downloading_info_table WHERE state<${DOWNLOAD_STATE_DONE}  ORDER BY id")
     suspend fun getDownloadingFileIdList(): List<String>
 
-
     @Query("SELECT * FROM downloading_info_table WHERE state>${DOWNLOAD_STATE_DOWNLOADING}  ORDER BY id")
     suspend fun getHistoryDownloadList(): List<DownloadingInfo>
 
@@ -54,7 +53,6 @@ interface DownloadingDao {
 
     @Query("DELETE FROM downloading_info_table")
     suspend fun clear()
-
 
     @Delete
     suspend fun delete(file: DownloadingInfo)
