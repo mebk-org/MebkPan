@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -47,6 +48,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mebk.pan.database.entity.File;
+import com.mebk.pan.utils.LogUtil;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
 
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private int fabWidth;
     private int fabRadius;
 
+    private OnBackPressedCallback callback;
     private final ActivityResultLauncher<Intent> moveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -101,9 +104,31 @@ public class MainActivity extends AppCompatActivity {
 
         onClick();
 
+        callback = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.e(TAG, "handleOnBackPressed: " );
+                switch (mainViewModel.back()) {
+                    case MainViewModel.POPUPWINDOW_TIME:
+                        timePopupwindow.dismiss();
+                        break;
+                    case MainViewModel.POPUPWINDOW_SHARE:
+                        sharePopupwindow.dismiss();
+                        break;
+                    case MainViewModel.POPUPWINDOW_PWD:
+                        pwdPopupwindow.dismiss();
+                        break;
+                }
+            }
+        };
+
         mainViewModel.isFileOperator().observe(this, this::fileOperatorAnimation);
 
         mainViewModel.getCheckInfo().observe(this, item -> {
+        });
+
+        mainViewModel.getPopupwindowInfo().observe(this, item -> {
+            callback.setEnabled(item != 0);
         });
 
         mainViewModel.getDownloadWorkerInfo().observe(this, item -> {
@@ -120,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
+
     }
 
     private void onClick() {
@@ -131,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "只能分享单个文件", Toast.LENGTH_SHORT).show();
             } else {
                 sharePopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
+                mainViewModel.openPopupWindow(MainViewModel.POPUPWINDOW_SHARE);
+                getOnBackPressedDispatcher().addCallback(this, callback);
             }
         });
 
@@ -183,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
                 pwdPopupwindow.dismiss();
                 sharePwdSwitch.setChecked(true);
                 Log.e(TAG, "onClick: sharePwd=" + sharePwd);
+                Log.e(TAG, "onClick: sharePwdSureBtn=");
+                mainViewModel.back();
             }
         });
         sharePwdRandomIv.setOnClickListener(v -> {
@@ -216,6 +246,8 @@ public class MainActivity extends AppCompatActivity {
         shareTimeSureBtn.setOnClickListener(v -> {
             shareTimeSwitch.setChecked(true);
             timePopupwindow.dismiss();
+            Log.e(TAG, "onClick: shareTimeSureBtn");
+            mainViewModel.back();
         });
 
         sharePreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> isPreview = isChecked);
@@ -227,17 +259,31 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.shareFile(id, isDir, sharePwd, shareTimeDownload, shareTimeExpire, isPreview, 0);
         });
 
-        shareRoot.setOnClickListener(v -> sharePopupwindow.dismiss());
+        shareRoot.setOnClickListener(v -> {
+            sharePopupwindow.dismiss();
+            mainViewModel.back();
+            Log.e(TAG, "onClick: shareRoot");
+        });
 
-        timeRoot.setOnClickListener(v -> timePopupwindow.dismiss());
+        timeRoot.setOnClickListener(v -> {
+            timePopupwindow.dismiss();
+            mainViewModel.back();
+            Log.e(TAG, "onClick: timeRoot");
+        });
 
-        pwdRoot.setOnClickListener(v -> pwdPopupwindow.dismiss());
+        pwdRoot.setOnClickListener(v -> {
+            pwdPopupwindow.dismiss();
+            mainViewModel.back();
+            Log.e(TAG, "onClick: pwdRoot");
+        });
 
         sharePwdCancelBtn.setOnClickListener(v -> {
             pwdPopupwindow.dismiss();
             sharePwd = "";
             sharePwdEditText.setText("");
             sharePwdSwitch.setChecked(false);
+            Log.e(TAG, "onClick: sharePwdCancelBtn");
+            mainViewModel.back();
         });
 
         shareTimeCancelBtn.setOnClickListener(v -> {
@@ -245,6 +291,8 @@ public class MainActivity extends AppCompatActivity {
             shareTimeExpire = -1;
             timePopupwindow.dismiss();
             shareTimeSwitch.setChecked(false);
+            Log.e(TAG, "onClick: shareTimeCancelBtn");
+            mainViewModel.back();
         });
 
         shareCancelBtn.setOnClickListener(v -> {
@@ -262,6 +310,8 @@ public class MainActivity extends AppCompatActivity {
             sharePreviewSwitch.setChecked(false);
 
             sharePopupwindow.dismiss();
+            Log.e(TAG, "onClick: shareCancelBtn");
+            mainViewModel.back();
         });
     }
 
@@ -269,10 +319,12 @@ public class MainActivity extends AppCompatActivity {
         pwdPopupwindow.setFocusable(true);
         pwdPopupwindow.update();
         pwdPopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
+        mainViewModel.openPopupWindow(MainViewModel.POPUPWINDOW_PWD);
     }
 
     public void shareTime() {
         timePopupwindow.showAtLocation(rootLayout, Gravity.BOTTOM, 0, 0);
+        mainViewModel.openPopupWindow(MainViewModel.POPUPWINDOW_TIME);
     }
 
     private void initView() {

@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+
     private var workManager: WorkManager = WorkManager.getInstance(application)
     private val myApplication = application as MyApplication
     val isFileOperator = MutableLiveData<Boolean>().also {
@@ -38,12 +40,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var successCount = 0
     private var cancelCount = 0
 
+
+    private val stack = Stack<Int>()
+
     companion object {
         val ACTION_START = 0
         val ACTION_DONE = 1
+
+        const val POPUPWINDOW_NONE = -1
+        const val POPUPWINDOW_SHARE = 0
+        const val POPUPWINDOW_PWD = 1
+        const val POPUPWINDOW_TIME = 2
+
     }
 
     var actionInfo = MutableLiveData<Int>()
+    var popupwindowInfo = MutableLiveData<Int>()
 
     init {
         workManager.pruneWork()
@@ -319,6 +331,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0) = viewModelScope.launch {
         val pair = myApplication.repository.shareFile(id, isDir, pwd, downloads, expire, preview, score)
-
     }
+
+    fun openPopupWindow(popupwindowId: Int) {
+        stack.push(popupwindowId)
+        popupwindowInfo.value = stack.size
+    }
+
+    fun back(): Int {
+        if (stack.size > 0) {
+            val id = stack.peek()
+            stack.pop()
+            popupwindowInfo.value = stack.size
+            return id
+        }
+        return POPUPWINDOW_NONE
+    }
+
+    fun popupwindowSize() = stack.size
 }
