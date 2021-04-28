@@ -512,7 +512,28 @@ class Repository(val context: Context) {
         return result
     }
 
-    suspend fun shareHistory(id:String,page:Int){
-
+    /**
+     * 获取分享历史
+     * @param id String user id
+     * @param page Int 页数
+     * @return Pair<String, ShareHistoryEntity?>
+     */
+    suspend fun shareHistory(id: String, page: Int): Pair<String, ShareHistoryEntity?> {
+        var result = Pair<String, ShareHistoryEntity?>("", null)
+        try {
+            val response = retrofit.create(WebService::class.java).getShareHistory(splitUrl(API_SHARE_HISTORY, id), page, "default")
+            with(response) {
+                body()?.let {
+                    if (it.code == 0) {
+//                        result = Pair(REQUEST_SUCCESS, body())
+                    }
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            result = Pair(REQUEST_TIMEOUT, null)
+        } catch (e: java.lang.Exception) {
+            result = Pair(e.toString(), null)
+        }
+        return result
     }
 }

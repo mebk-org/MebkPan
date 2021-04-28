@@ -51,5 +51,5 @@ interface WebService {
 
     //分享记录
     @GET("{path}")
-    suspend fun getShareHistory(@Query("page") page: Int, @Query("type") type: String): Response<ShareHistoryDto>
+    suspend fun getShareHistory(@Path("path") path: String, @Query("page") page: Int, @Query("type") type: String): Response<ShareHistoryDto>
 }

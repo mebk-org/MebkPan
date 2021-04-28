@@ -17,9 +17,13 @@ class UserInfoViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             if (!TextUtils.isEmpty(MyApplication.uid)) {
                 it.value = myApplication.repository.getUserInfo(MyApplication.uid!!)
-                LogUtil.err(this@UserInfoViewModel.javaClass,"userinfo=$it")
+                LogUtil.err(this@UserInfoViewModel.javaClass, "userinfo=$it")
             }
         }
+    }
+
+    fun getShareHistory(id: String, page: Int) = viewModelScope.launch {
+        myApplication.repository.shareHistory(id, 1)
     }
 
 }
