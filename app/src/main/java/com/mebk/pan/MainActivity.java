@@ -30,6 +30,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Group;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -38,9 +39,11 @@ import androidx.transition.TransitionManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mebk.pan.database.entity.FileEntity;
+import com.mebk.pan.utils.ConfigureKt;
 import com.mebk.pan.utils.ToolUtilsKt;
 import com.mebk.pan.vm.MainViewModel;
 
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView bottomNavigationView;
+    private CoordinatorLayout coordinatorLayout;
     private ConstraintLayout rootLayout;
     private MainViewModel mainViewModel;
     private TabLayout.Tab downloadItem, shareItem, deleteItem, moreItem;
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout sharePwdTextTextInputLayout;
     private EditText sharePwdEditText;
     private ImageView sharePwdRandomIv;
-    private String sharePwd;
+    private String sharePwd = "";
     private Spinner timePopupwindowDownloadSpinner, timePopupwindowExpireSpinner;
     private ConstraintLayout shareRoot, pwdRoot, timeRoot;
 
@@ -130,6 +134,23 @@ public class MainActivity extends AppCompatActivity {
                 mainViewModel.downloadDone(item.getState());
             }
 
+        });
+
+        mainViewModel.getShareInfo().observe(this, item -> {
+            if (ConfigureKt.REQUEST_SUCCESS.equals(item.getFirst())) {
+                sharePopupwindow.dismiss();
+                mainViewModel.back();
+                mainViewModel.actionDone();
+                String res = item.getSecond() + "提取密码" + sharePwd;
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, "分享成功", 10000);
+                snackbar.setAction(getResources().getString(R.string.app_name), v -> {
+
+                });
+                snackbar.show();
+
+            } else {
+                Toast.makeText(this, item.getSecond(), Toast.LENGTH_SHORT).show();
+            }
         });
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
@@ -324,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        coordinatorLayout = findViewById(R.id.coordinator);
         shareTimeDownloadArr = new int[]{-1, 1, 5, 10, 30, 50, 100};
         shareTimeExpireArr = new int[]{-1, 300, 3600, 43200, 86400, 604800, 1296000, 2592000};
 

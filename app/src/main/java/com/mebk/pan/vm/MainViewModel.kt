@@ -55,6 +55,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var actionInfo = MutableLiveData<Int>()
     var popupwindowInfo = MutableLiveData<Int>()
+    var shareInfo = MutableLiveData<Pair<String, String>>()
 
     init {
         workManager.pruneWork()
@@ -330,6 +331,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0) = viewModelScope.launch {
         val pair = myApplication.repository.shareFile(id, isDir, pwd, downloads, expire, preview, score)
+        when (pair.first) {
+            REQUEST_ERR -> {
+                shareInfo.value = Pair(REQUEST_ERR, "未知错误，请联系管理员")
+            }
+            REQUEST_TIMEOUT -> {
+                shareInfo.value = Pair(REQUEST_TIMEOUT, "请求超时，请重试")
+            }
+            REQUEST_SUCCESS -> {
+                shareInfo.value = Pair(REQUEST_SUCCESS, pair.second!!.msg)
+            }
+
+        }
     }
 
     fun openPopupWindow(popupwindowId: Int) {
