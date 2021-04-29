@@ -15,3 +15,4 @@ gradlew
 app/proguard-rules.pro
 app/src/main/java/com/mebk/pan/utils/HttpConfigure.kt
 network/src/androidTest/java/com/mebk/network/ExampleInstrumentedTest.kt
+projectFilesBackup/.idea/workspace.xml
