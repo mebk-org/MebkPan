@@ -5,13 +5,12 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.work.*
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.DownloadingInfo
-import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.DownloadingInfoEntity
+import com.mebk.pan.database.entity.FileEntity
 import com.mebk.pan.utils.*
 import com.mebk.pan.worker.DownloadWorker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -23,13 +22,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         it.value = false
     }
     var checkPath: String = ""
-    private var downloadList = mutableListOf<DownloadingInfo>()
+    private var downloadList = mutableListOf<DownloadingInfoEntity>()
     private var queueList = mutableListOf<String>()
     private val historyDownloadIdList = mutableListOf<String>()
-    val checkInfo = MutableLiveData<MutableList<File>>()
-    private val downloadChannel = Channel<DownloadingInfo>(100)
-    private val clientChannel = Channel<DownloadingInfo>(100)
-    val checkList = mutableListOf<File>()
+    val checkInfo = MutableLiveData<MutableList<FileEntity>>()
+    private val downloadChannel = Channel<DownloadingInfoEntity>(100)
+    private val clientChannel = Channel<DownloadingInfoEntity>(100)
+    val checkList = mutableListOf<FileEntity>()
     private val workerIdList = mutableListOf<Pair<String, UUID>>()
     private var isDownloadDone = false
     private var isDownloading = false
@@ -56,6 +55,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var actionInfo = MutableLiveData<Int>()
     var popupwindowInfo = MutableLiveData<Int>()
+    var shareInfo = MutableLiveData<Pair<String, String>>()
 
     init {
         workManager.pruneWork()
@@ -89,12 +89,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         checkPath = path
     }
 
-    fun addCheck(file: File) {
+    fun addCheck(file: FileEntity) {
         checkList += file
         checkInfo.value = checkList
     }
 
-    fun removeCheck(file: File) {
+    fun removeCheck(file: FileEntity) {
         checkList -= file
         checkInfo.value = checkList
     }
@@ -112,11 +112,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         if (historyDownloadIdList.isEmpty()) {
             historyDownloadIdList.addAll(checkList.map { it.id })
-            downloadList.addAll(checkList.map { DownloadingInfo(it.id, it.name, "", "", it.size, it.type, utcToLocal(it.date, DATE_TYPE_UTC).time, DOWNLOAD_STATE_WAIT, 0, "") })
+            downloadList.addAll(checkList.map { DownloadingInfoEntity(it.id, it.name, "", "", it.size, it.type, utcToLocal(it.date, DATE_TYPE_UTC).time, DOWNLOAD_STATE_WAIT, 0, "") })
         } else {
             for (file in checkList) {
                 if (historyDownloadIdList.indexOf(file.id) == -1) {
-                    downloadList.add(DownloadingInfo(file.id, file.name, "", "", file.size, file.type, utcToLocal(file.date, DATE_TYPE_UTC).time, DOWNLOAD_STATE_WAIT, 0, ""))
+                    downloadList.add(DownloadingInfoEntity(file.id, file.name, "", "", file.size, file.type, utcToLocal(file.date, DATE_TYPE_UTC).time, DOWNLOAD_STATE_WAIT, 0, ""))
                     historyDownloadIdList.add(file.id)
                 }
             }
@@ -174,7 +174,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @param file DownloadingInfo
      * @return Job
      */
-    private fun downloadFile(file: DownloadingInfo) = viewModelScope.launch {
+    private fun downloadFile(file: DownloadingInfoEntity) = viewModelScope.launch {
         val dataBuilder = Data.Builder()
                 .putString(DOWNLOAD_KEY_OUTPUT_FILE_ID, file.fileId)
                 .putString(DOWNLOAD_KEY_OUTPUT_FILE_NAME, file.name)
@@ -331,6 +331,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0) = viewModelScope.launch {
         val pair = myApplication.repository.shareFile(id, isDir, pwd, downloads, expire, preview, score)
+        when (pair.first) {
+            REQUEST_ERR -> {
+                shareInfo.value = Pair(REQUEST_ERR, "未知错误，请联系管理员")
+            }
+            REQUEST_TIMEOUT -> {
+                shareInfo.value = Pair(REQUEST_TIMEOUT, "请求超时，请重试")
+            }
+            REQUEST_SUCCESS -> {
+                shareInfo.value = Pair(REQUEST_SUCCESS, pair.second!!.msg)
+            }
+
+        }
     }
 
     fun openPopupWindow(popupwindowId: Int) {

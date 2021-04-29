@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.mebk.pan.aa.HistoryDownloadRvAdapter
-import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.DownloadingInfoEntity
 import com.mebk.pan.utils.getFileMimeType
 import com.mebk.pan.vm.HistoryDownloadViewModel
 import java.io.File
@@ -20,7 +20,7 @@ import java.io.File
 class HistoryDownloadActivity : AppCompatActivity() {
     private lateinit var rv: RecyclerView
     private lateinit var adapter: HistoryDownloadRvAdapter
-    private var list = mutableListOf<DownloadingInfo>()
+    private var list = mutableListOf<DownloadingInfoEntity>()
     private val viewModel by viewModels<HistoryDownloadViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {

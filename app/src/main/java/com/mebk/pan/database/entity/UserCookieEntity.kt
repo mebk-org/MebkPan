@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "cookie_table")
-data class UserCookie(
+data class UserCookieEntity(
         @PrimaryKey val id: String,
         @ColumnInfo(name = "nikeName") val name: String?,
         @ColumnInfo(name = "cookie1") val cookie1: String?,

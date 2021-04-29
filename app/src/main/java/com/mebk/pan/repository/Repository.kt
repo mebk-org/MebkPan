@@ -28,23 +28,23 @@ class Repository(val context: Context) {
     /**
      *从本地获取cookie
      */
-    suspend fun getUserCookie(uid: String): List<UserCookie> = database.cookieDao().getUserCookie(uid)
+    suspend fun getUserCookie(uid: String): List<UserCookieEntity> = database.cookieDao().getUserCookie(uid)
 
 
     /**
      * 从本地获取文件
      */
-    suspend fun getDir(path: String): List<File> = database.fileDao().getDir(path)
+    suspend fun getDir(path: String): List<FileEntity> = database.fileDao().getDir(path)
 
     /**
      * 从本地获取文件夹
      */
-    suspend fun getFile(path: String = "/"): List<File> = database.fileDao().getFile(path)
+    suspend fun getFile(path: String = "/"): List<FileEntity> = database.fileDao().getFile(path)
 
     /**
      * 更新本地下载链接
      */
-    suspend fun updateDownloadClient(file: FileUpdateDownloadClient) = database.fileDao().updateDownloadClient(file)
+    suspend fun updateDownloadClient(file: FileUpdateDownloadClientEntity) = database.fileDao().updateDownloadClient(file)
 
     /**
      * 修改文件路径
@@ -57,17 +57,17 @@ class Repository(val context: Context) {
     /**
      * 获取下载列表
      */
-    fun getDownloadingInfo(): Flow<List<DownloadingInfo>> = database.downloadingInfoDao().getDownloadInfo()
+    fun getDownloadingInfo(): Flow<List<DownloadingInfoEntity>> = database.downloadingInfoDao().getDownloadInfo()
 
     /**
      * 存储下载列表
      */
-    suspend fun addDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().insertDownloadFile(file)
+    suspend fun addDownloadingInfo(file: DownloadingInfoEntity) = database.downloadingInfoDao().insertDownloadFile(file)
 
     /**
      * 删除下载列表
      */
-    suspend fun deleteDownloadingInfo(file: DownloadingInfo) = database.downloadingInfoDao().delete(file)
+    suspend fun deleteDownloadingInfo(file: DownloadingInfoEntity) = database.downloadingInfoDao().delete(file)
 
     /**
      * 更新下载状态
@@ -134,20 +134,20 @@ class Repository(val context: Context) {
      * 保存用户信息
      * @param user User
      */
-    suspend fun insertUser(user: User) = database.userDao().insertUser(user)
+    suspend fun insertUser(user: UserEntity) = database.userDao().insertUser(user)
 
     /**
      * 获取用户信息
      * @param id String
      * @return User
      */
-    suspend fun getUserInfo(id: String): User = database.userDao().getUser(id)
+    suspend fun getUserInfo(id: String): UserEntity = database.userDao().getUser(id)
 
     /**
      * 插入文件
      * @param file File
      */
-    suspend fun addFile(file: File) = database.fileDao().insertFile(file)
+    suspend fun addFile(file: FileEntity) = database.fileDao().insertFile(file)
 
     /**
      * 登录
@@ -203,7 +203,7 @@ class Repository(val context: Context) {
                     body()?.data?.let {
 
                         database.cookieDao().clear()
-                        database.cookieDao().insertUserCookie(UserCookie(it.id,
+                        database.cookieDao().insertUserCookie(UserCookieEntity(it.id,
                                 it.nickname,
                                 this.headers().toMultimap()["set-cookie"]?.get(0),
                                 if (this.headers().toMultimap()["set-cookie"]?.size!! > 1) this.headers().toMultimap()["set-cookie"]?.get(1) else ""
@@ -250,7 +250,7 @@ class Repository(val context: Context) {
                         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
                         for (file in it.objects) {
                             with(database.fileDao()) {
-                                insertFile(File(
+                                insertFile(FileEntity(
                                         file.id,
                                         file.name,
                                         file.path,
@@ -322,7 +322,7 @@ class Repository(val context: Context) {
             with(response) {
                 if (body()?.code == 0) {
                     body()?.data?.let {
-                        updateDownloadClient(FileUpdateDownloadClient(id, it))
+                        updateDownloadClient(FileUpdateDownloadClientEntity(id, it))
                         pair = Pair(REQUEST_SUCCESS, it)
                     }
                 } else {
@@ -484,7 +484,7 @@ class Repository(val context: Context) {
      * @param score Int 积分，暂未开通默认为0
      * @return Pair<String, ShareDao>
      */
-    suspend fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0): Pair<String, ShareDao?> {
+    suspend fun shareFile(id: String, isDir: Boolean, pwd: String, downloads: Int, expire: Long, preview: Boolean, score: Int = 0): Pair<String, ShareDto?> {
         val jsonObject = JsonObject()
         jsonObject.addProperty("id", id)
         jsonObject.addProperty("is_dir", isDir)
@@ -494,7 +494,7 @@ class Repository(val context: Context) {
         jsonObject.addProperty("score", score)
         jsonObject.addProperty("preview", preview)
         val requestBody = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), jsonObject.toString())
-        var result = Pair<String, ShareDao?>("", null)
+        var result = Pair<String, ShareDto?>("", null)
         try {
             val response = retrofit.create(WebService::class.java).shareFile(requestBody)
             with(response) {
@@ -512,4 +512,38 @@ class Repository(val context: Context) {
         return result
     }
 
+    /**
+     * 获取分享历史
+     * @param id String user id
+     * @param page Int 页数
+     * @return Pair<String, ShareHistoryEntity?>
+     */
+    suspend fun shareHistory(id: String, page: Int): Pair<String, List<ShareHistoryEntity>> {
+        var result = Pair<String, List<ShareHistoryEntity>>("", listOf())
+        try {
+            val response = retrofit.create(WebService::class.java).getShareHistory(splitUrl(API_SHARE_HISTORY, id), page, "default")
+            LogUtil.err(this.javaClass,"response=$response")
+            with(response) {
+                body()?.let {
+                    if (it.code == 0) {
+                        val source = it.data.items
+                        val list = source.map { sourceData ->
+                            ShareHistoryEntity(sourceData.key, utcToLocal(sourceData.create_date,
+                                    DATE_TYPE_UTC).time, sourceData.downloads, sourceData.expire,
+                                    sourceData.is_dir, sourceData.password, sourceData.preview, sourceData.remain_downloads,
+                                    sourceData.score, sourceData.views, sourceData.source.name, sourceData.source.size)
+                        }
+                        result = Pair(REQUEST_SUCCESS, list)
+                    }
+                }
+            }
+        } catch (e: SocketTimeoutException) {
+            result = Pair(REQUEST_TIMEOUT, listOf())
+            LogUtil.err(this.javaClass,"err=${e}")
+        } catch (e: java.lang.Exception) {
+            LogUtil.err(this.javaClass,"err=${e}")
+            result = Pair(e.toString(), listOf())
+        }
+        return result
+    }
 }

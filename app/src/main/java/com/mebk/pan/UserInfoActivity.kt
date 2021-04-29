@@ -8,11 +8,12 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.mebk.pan.application.MyApplication
 import com.mebk.pan.utils.splitUrl
 import com.mebk.pan.vm.UserInfoViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 
-private const val TAG = "UserInfoActivity"
+
 class UserInfoActivity : AppCompatActivity() {
     private val viewModel by viewModels<UserInfoViewModel>()
     private lateinit var circleImageView: CircleImageView
@@ -27,7 +28,6 @@ class UserInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_info)
-        Log.e(TAG, "onCreate: ", )
         initView()
 
         viewModel.userInfoData.observe(this, {
@@ -41,9 +41,18 @@ class UserInfoActivity : AppCompatActivity() {
             groupTv.text = it.groupName
         })
 
+        shareHistory.setOnClickListener {
+//            MyApplication.uid?.let {
+//                viewModel.getShareHistory(it, 1)
+//            }
+            startActivity(Intent(this, ShareHistoryActivity::class.java))
+        }
+
         downloadHistory.setOnClickListener {
             startActivity(Intent(this, HistoryDownloadActivity::class.java))
         }
+
+
     }
 
     private fun initView() {

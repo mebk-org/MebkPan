@@ -5,20 +5,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
-import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.FileEntity
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.REQUEST_SUCCESS
-import com.mebk.pan.utils.REQUEST_TIMEOUT
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DirViewModel(application: Application) : AndroidViewModel(application) {
     private val myApplication = application as MyApplication
-    private var dirList = listOf<File>()
-    var dirInfo = MutableLiveData<List<File>>()
-    private val fileStack = Stack<Pair<Pair<String, String>, List<File>>>()
+    private var dirList = listOf<FileEntity>()
+    var dirInfo = MutableLiveData<List<FileEntity>>()
+    private val fileStack = Stack<Pair<Pair<String, String>, List<FileEntity>>>()
     var stackSize = MutableLiveData<Int>().also {
         it.value = fileStack.size
     }
@@ -50,7 +48,7 @@ class DirViewModel(application: Application) : AndroidViewModel(application) {
             REQUEST_SUCCESS -> {
                 val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
                 dirList = pair.second!!.objects.map {
-                    File(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
+                    FileEntity(it.id, it.name, it.path, it.pic, it.size, it.type, format.parse(it.date)!!.time, "")
                 }
                 dirList.forEach {
                     myApplication.repository.addFile(it)

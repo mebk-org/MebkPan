@@ -10,13 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mebk.pan.R
-import com.mebk.pan.database.entity.DownloadingInfo
+import com.mebk.pan.database.entity.DownloadingInfoEntity
 import com.mebk.pan.utils.DOWNLOAD_STATE_DOWNLOADING
-import com.mebk.pan.utils.RetrofitClient
 import com.mebk.pan.utils.checkDownloadState
 import com.mebk.pan.utils.chooseDirectoryThumbnail
 
-class DownloadingRvAdapter(val list: List<DownloadingInfo>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DownloadingRvAdapter(val list: List<DownloadingInfoEntity>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var clickCancelImageViewListener: ((Int) -> Unit)
     fun setOnClickCancelImageViewListener(clickCancelImageViewListener: ((Int) -> Unit)) {
         this.clickCancelImageViewListener = clickCancelImageViewListener

@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide
 import com.mebk.pan.R
 import com.mebk.pan.UserInfoActivity
 import com.mebk.pan.aa.DirectoryRvAdapter
-import com.mebk.pan.database.entity.File
+import com.mebk.pan.database.entity.FileEntity
 import com.mebk.pan.utils.*
 import com.mebk.pan.vm.DirectoryViewModel
 import com.mebk.pan.vm.MainViewModel
@@ -40,7 +40,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list: MutableList<File> = mutableListOf()
+        val list: MutableList<FileEntity> = mutableListOf()
 
         rv = view.findViewById(R.id.fragment_directory_rv)
         sr = view.findViewById(R.id.fragment_directory_sr)
@@ -105,7 +105,7 @@ class FragmentDirectory : Fragment(), Toolbar.OnMenuItemClickListener {
         })
 
         sr.setOnRefreshListener {
-            val refreshDto = File("0", "正在刷新...", "", "", 0, "refresh", string2timeStamp(viewModel.lastRefreshTimeInfo.value!!), "")
+            val refreshDto = FileEntity("0", "正在刷新...", "", "", 0, "refresh", string2timeStamp(viewModel.lastRefreshTimeInfo.value!!), "")
             list.add(0, refreshDto)
             rv.scrollToPosition(0)
             adapter?.notifyItemInserted(0)

@@ -1,9 +1,8 @@
 package com.mebk.pan.database.daos
 
 import androidx.room.*
-import com.mebk.pan.database.entity.File
-import com.mebk.pan.database.entity.FileUpdateDownloadClient
-import com.mebk.pan.utils.RetrofitClient
+import com.mebk.pan.database.entity.FileEntity
+import com.mebk.pan.database.entity.FileUpdateDownloadClientEntity
 
 @Dao
 interface FileDao {
@@ -14,17 +13,17 @@ interface FileDao {
      */
     @Query("SELECT * FROM file_table WHERE path=:path ORDER BY type,date")
     //TODO 根据时间排序
-    suspend fun getFile(path: String): List<File>
+    suspend fun getFile(path: String): List<FileEntity>
 
     @Query("SELECT * FROM file_table WHERE type=:type AND path=:path")
-    suspend fun getDir(path: String, type: String = "dir"): List<File>
+    suspend fun getDir(path: String, type: String = "dir"): List<FileEntity>
 
     /**
      * 插入文件
      * @param file File
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFile(file: File)
+    suspend fun insertFile(file: FileEntity)
 
     /**
      * 删除表中全部数据
@@ -37,8 +36,8 @@ interface FileDao {
      * 更新文件表的下载链接
      * @param file FileUpdateDownloadClient
      */
-    @Update(entity = File::class)
-    suspend fun updateDownloadClient(file: FileUpdateDownloadClient)
+    @Update(entity = FileEntity::class)
+    suspend fun updateDownloadClient(file: FileUpdateDownloadClientEntity)
 
     /**
      * 通过id删除文件
