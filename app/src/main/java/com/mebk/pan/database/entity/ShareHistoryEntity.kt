@@ -3,7 +3,7 @@ package com.mebk.pan.database.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "share_history_table")
 data class ShareHistoryEntity(
         @PrimaryKey val key: String,
         val create_date: Long,
@@ -16,5 +16,5 @@ data class ShareHistoryEntity(
         val score: Int,
         val views: Int,
         val name: String,
-        val size: Int
+        val size: Long
 )

@@ -522,6 +522,7 @@ class Repository(val context: Context) {
         var result = Pair<String, List<ShareHistoryEntity>>("", listOf())
         try {
             val response = retrofit.create(WebService::class.java).getShareHistory(splitUrl(API_SHARE_HISTORY, id), page, "default")
+            LogUtil.err(this.javaClass,"response=$response")
             with(response) {
                 body()?.let {
                     if (it.code == 0) {
@@ -532,14 +533,15 @@ class Repository(val context: Context) {
                                     sourceData.is_dir, sourceData.password, sourceData.preview, sourceData.remain_downloads,
                                     sourceData.score, sourceData.views, sourceData.source.name, sourceData.source.size)
                         }
-
                         result = Pair(REQUEST_SUCCESS, list)
                     }
                 }
             }
         } catch (e: SocketTimeoutException) {
             result = Pair(REQUEST_TIMEOUT, listOf())
+            LogUtil.err(this.javaClass,"err=${e}")
         } catch (e: java.lang.Exception) {
+            LogUtil.err(this.javaClass,"err=${e}")
             result = Pair(e.toString(), listOf())
         }
         return result

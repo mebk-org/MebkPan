@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
+import com.mebk.pan.database.entity.ShareHistoryEntity
 import com.mebk.pan.database.entity.UserEntity
 import com.mebk.pan.utils.LogUtil
 import com.mebk.pan.utils.REQUEST_ERR
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class UserInfoViewModel(application: Application) : AndroidViewModel(application) {
     private val myApplication = application as MyApplication
 
+
     val userInfoData = MutableLiveData<UserEntity>().also {
         viewModelScope.launch {
             if (!TextUtils.isEmpty(MyApplication.uid)) {
@@ -25,19 +27,6 @@ class UserInfoViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun getShareHistory(id: String, page: Int) = viewModelScope.launch {
-        val result = myApplication.repository.shareHistory(id, 1)
-        when (result.first) {
-            REQUEST_SUCCESS -> {
 
-            }
-            REQUEST_TIMEOUT -> {
-
-            }
-            REQUEST_ERR -> {
-                LogUtil.err(this@UserInfoViewModel.javaClass, "err=${result.second}")
-            }
-        }
-    }
 
 }

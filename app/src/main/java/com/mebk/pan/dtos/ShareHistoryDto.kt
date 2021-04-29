@@ -35,6 +35,6 @@ data class ShareHistoryDto(
 
     data class Source(
             val name: String,
-            val size: Int
+            val size: Long
     )
 }
