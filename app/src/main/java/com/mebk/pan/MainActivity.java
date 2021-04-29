@@ -3,6 +3,9 @@ package com.mebk.pan;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -141,10 +144,18 @@ public class MainActivity extends AppCompatActivity {
                 sharePopupwindow.dismiss();
                 mainViewModel.back();
                 mainViewModel.actionDone();
-                String res = item.getSecond() + "提取密码" + sharePwd;
-                Snackbar snackbar = Snackbar.make(coordinatorLayout, "分享成功", 10000);
-                snackbar.setAction(getResources().getString(R.string.app_name), v -> {
 
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, "分享成功", 10000);
+                snackbar.setAction(getResources().getString(R.string.copy_share_client), v -> {
+                    String res = item.getSecond();
+                    if (!TextUtils.isEmpty(sharePwd)) {
+                        res += (" 提取密码: ");
+                        res += sharePwd;
+                    }
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    Log.e(TAG, "onCreate: "+res );
+                    ClipData clipData = ClipData.newPlainText("share client", res);
+                    clipboard.setPrimaryClip(clipData);
                 });
                 snackbar.show();
 
@@ -238,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 sharePwdTextTextInputLayout.setError(null);
                 sharePwd = sharePwdEditText.getText().toString();
-                sharePwd = "";
                 sharePwdSwitch.setChecked(true);
                 pwdPopupwindow.dismiss();
                 mainViewModel.back();

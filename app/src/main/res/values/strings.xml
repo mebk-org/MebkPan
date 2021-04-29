@@ -52,4 +52,5 @@
     <string name="share_download_count">下载次数</string>
     <string name="share_expire">过期时间</string>
     <string name="share_history">分享记录</string>
+    <string name="copy_share_client">复制</string>
 </resources>

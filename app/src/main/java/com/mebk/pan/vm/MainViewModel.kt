@@ -339,7 +339,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 shareInfo.value = Pair(REQUEST_TIMEOUT, "请求超时，请重试")
             }
             REQUEST_SUCCESS -> {
-                shareInfo.value = Pair(REQUEST_SUCCESS, pair.second!!.msg)
+                shareInfo.value = Pair(REQUEST_SUCCESS, pair.second!!.data)
             }
 
         }
