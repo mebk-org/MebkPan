@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.mebk.pan.application.MyApplication
 import com.mebk.pan.database.entity.UserEntity
 import com.mebk.pan.utils.LogUtil
+import com.mebk.pan.utils.REQUEST_ERR
+import com.mebk.pan.utils.REQUEST_SUCCESS
+import com.mebk.pan.utils.REQUEST_TIMEOUT
 import kotlinx.coroutines.launch
 
 class UserInfoViewModel(application: Application) : AndroidViewModel(application) {
@@ -23,7 +26,18 @@ class UserInfoViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getShareHistory(id: String, page: Int) = viewModelScope.launch {
-        myApplication.repository.shareHistory(id, 1)
+        val result = myApplication.repository.shareHistory(id, 1)
+        when (result.first) {
+            REQUEST_SUCCESS -> {
+
+            }
+            REQUEST_TIMEOUT -> {
+
+            }
+            REQUEST_ERR -> {
+                LogUtil.err(this@UserInfoViewModel.javaClass, "err=${result.second}")
+            }
+        }
     }
 
 }
