@@ -201,4 +201,27 @@ fun sharePwdGenerator(): String {
         }
     }
     return result
+
+}
+
+/**
+ * 将秒数转化为时间
+ * @param second Long
+ * @return String
+ */
+fun second2Time(second: Long): String {
+    return when {
+        second < 60 -> {
+            "$second 秒"
+        }
+        second < 3600 -> {
+            "${second / 60} 分钟"
+        }
+        second < 86400 -> {
+            "${second / 3600} 小时"
+        }
+        else -> {
+            "${second / 86400} 天"
+        }
+    }
 }

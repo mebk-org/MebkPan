@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.mebk.pan.database.entity.ShareHistoryEntity
-import com.mebk.pan.utils.chooseDirectoryThumbnail
+import com.mebk.pan.utils.*
 import kotlinx.android.synthetic.main.activity_share_file_info.*
 
 class ShareFileInfoActivity : AppCompatActivity() {
@@ -24,11 +24,11 @@ class ShareFileInfoActivity : AppCompatActivity() {
 
         Glide.with(this).load(ContextCompat.getDrawable(this, chooseDirectoryThumbnail(type, file.name))).into(shareFileInfo_iv)
         shareFileInfo_name.text = file.name
-        shareFileInfo_share_download_tv.text = file.downloads.toString()
-        shareFileInfo_share_limit_download_tv.text = file.remain_downloads.toString()
-        shareFileInfo_share_limit_expire_tv.text = file.expire.toString()
-        shareFileInfo_share_time_tv.text = file.create_date.toString()
-        shareFileInfo_share_view_tv.text = file.views.toString()
+        shareFileInfo_share_download_tv.text = "${file.downloads} 次"
+        shareFileInfo_share_limit_download_tv.text = if (file.remain_downloads == -1) "无限制" else "${file.remain_downloads} 次"
+        shareFileInfo_share_limit_expire_tv.text = if (file.expire == -1L) "无限制" else second2Time(file.expire)
+        shareFileInfo_share_time_tv.text = timeStamp2String(file.create_date)
+        shareFileInfo_share_view_tv.text = "${file.views} 次"
 
     }
 }

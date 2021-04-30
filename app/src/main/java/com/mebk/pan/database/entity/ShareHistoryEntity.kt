@@ -10,7 +10,7 @@ data class ShareHistoryEntity(
         val key: String,
         val create_date: Long,
         val downloads: Int,
-        val expire: Int,
+        val expire: Long,
         val is_dir: Boolean,
         val password: String,
         val preview: Boolean,

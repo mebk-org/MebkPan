@@ -127,7 +127,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/shareFileInfo_share_limit_title"
                 app:layout_constraintStart_toEndOf="@+id/shareFileInfo_share_limit_expire_title"
                 app:layout_constraintTop_toBottomOf="@+id/shareFileInfo_share_limit_title"
-                tools:text="1121" />
+                />
 
             <TextView
                 android:id="@+id/shareFileInfo_share_view_title"
