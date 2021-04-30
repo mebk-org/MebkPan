@@ -1,11 +1,15 @@
 package com.mebk.pan
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
-import android.widget.TextView
+import android.text.TextUtils
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.mebk.pan.database.entity.ShareHistoryEntity
 import com.mebk.pan.utils.*
 import kotlinx.android.synthetic.main.activity_share_file_info.*
@@ -14,6 +18,7 @@ class ShareFileInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_share_file_info)
+
         val bundle = intent.getBundleExtra("fileInfo")
         val file = bundle?.getParcelable<ShareHistoryEntity>("file")
         if (file == null) {
@@ -30,5 +35,24 @@ class ShareFileInfoActivity : AppCompatActivity() {
         shareFileInfo_share_time_tv.text = timeStamp2String(file.create_date)
         shareFileInfo_share_view_tv.text = "${file.views} 次"
 
+        shareFileInfo_share_copyClient_btn.setOnClickListener {
+            val snackBar = Snackbar.make(shareFileInfo_coordinator, "分享成功", 10000)
+            LogUtil.err(this@ShareFileInfoActivity.javaClass, "key=${file.key}")
+            LogUtil.err(this@ShareFileInfoActivity.javaClass, "pwd=${file.password}")
+            with(snackBar) {
+                setAction(resources.getString(R.string.copy)) { v: View? ->
+                    var res = BASE_URL + "s/" + file.key
+                    if (!TextUtils.isEmpty(file.password)) {
+                        res += " 提取密码: "
+                        res += file.password
+                    }
+                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData = ClipData.newPlainText("share client", res)
+                    LogUtil.err(this@ShareFileInfoActivity.javaClass, "client=$res")
+                    clipboard.setPrimaryClip(clipData)
+                }
+                show()
+            }
+        }
     }
 }
