@@ -59,4 +59,5 @@
     <string name="share_again">再次分享</string>
     <string name="share_create_time">分享时间</string>
     <string name="share_views">游览次数:</string>
+    <string name="load_err">加载失败</string>
 </resources>

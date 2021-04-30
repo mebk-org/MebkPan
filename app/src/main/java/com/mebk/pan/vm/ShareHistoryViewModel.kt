@@ -14,16 +14,15 @@ import kotlinx.coroutines.launch
 
 class ShareHistoryViewModel(application: Application) : AndroidViewModel(application) {
     private val myApplication = application as MyApplication
-    private val list = mutableListOf<ShareHistoryEntity>()
+    private var list = mutableListOf<ShareHistoryEntity>()
 
     val shareHistoryInfo = MutableLiveData<List<ShareHistoryEntity>>()
 
-    fun getShareHistory(id: String, page: Int) = viewModelScope.launch {
-        val result = myApplication.repository.shareHistory(id, 1)
+    fun getShareHistory(page: Int) = viewModelScope.launch {
+        val result = myApplication.repository.shareHistory(MyApplication.uid!!, page)
         when (result.first) {
             REQUEST_SUCCESS -> {
-                list.clear()
-                list.addAll(result.second)
+                list = result.second.toMutableList()
                 LogUtil.err(this@ShareHistoryViewModel.javaClass, "list=$list")
                 shareHistoryInfo.value = list
             }

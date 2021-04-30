@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,13 @@ class ShareHistoryRvAdapter(val context: Context, val list: List<ShareHistoryEnt
         this.clickListener = clickListener
     }
 
+    var isEnd = false
+
+    companion object {
+        const val FOOTER = 0
+        const val OTHER = 1
+    }
+
     private class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val iv = itemView.findViewById<ImageView>(R.id.rv_item_share_history_iv)
         val nameTv = itemView.findViewById<TextView>(R.id.rv_item_share_history_name_tv)
@@ -31,25 +39,60 @@ class ShareHistoryRvAdapter(val context: Context, val list: List<ShareHistoryEnt
         val previewNumTv = itemView.findViewById<TextView>(R.id.rv_item_share_history_preview_tv)
     }
 
+    private class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val footerTv = itemView.findViewById<TextView>(R.id.layout_rv_footer_tv)
+        val progressBar = itemView.findViewById<ProgressBar>(R.id.layout_rv_footer_progressBar)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.rv_item_share_history, parent, false)
-        view.setOnClickListener {
-            clickListener(view.tag as Int)
+        return when (viewType) {
+            OTHER -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.rv_item_share_history, parent, false)
+                view.setOnClickListener {
+                    clickListener(view.tag as Int)
+                }
+                MyViewHolder(view)
+            }
+            else -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.layout_recyclerview_footer, parent, false)
+                FooterViewHolder(view)
+            }
         }
-        return MyViewHolder(view)
+
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        with(holder as MyViewHolder) {
-            val type = if (list[position].is_dir) "dir" else "file"
-            Glide.with(context).load(ContextCompat.getDrawable(context, chooseDirectoryThumbnail(type, list[position].name))).into(iv)
-            nameTv.text = list[position].name
-            downloadBnNumTv.text = "下载次数： ${list[position].downloads}"
-            previewNumTv.text = "游览次数： ${list[position].views}"
-            timeTv.text = timeStamp2String(list[position].create_date)
-            itemView.tag = position
+        when (holder) {
+            is MyViewHolder -> {
+                with(holder) {
+                    val type = if (list[position].is_dir) "dir" else "file"
+                    Glide.with(context).load(ContextCompat.getDrawable(context, chooseDirectoryThumbnail(type, list[position].name))).into(iv)
+                    nameTv.text = list[position].name
+                    downloadBnNumTv.text = "下载次数： ${list[position].downloads}"
+                    previewNumTv.text = "游览次数： ${list[position].views}"
+                    timeTv.text = timeStamp2String(list[position].create_date)
+                    itemView.tag = position
+                }
+            }
+            is FooterViewHolder -> {
+                if (isEnd) {
+                    holder.footerTv.text = "已加载全部数据"
+                    holder.progressBar.visibility = View.GONE
+                }
+            }
+        }
+
+    }
+
+    override fun getItemCount() = list.size + 1
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == itemCount - 1) {
+            FOOTER
+        } else {
+            OTHER
         }
     }
 
-    override fun getItemCount() = list.size
+
 }
