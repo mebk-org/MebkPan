@@ -49,7 +49,15 @@
     <string name="share_time">自动过期</string>
     <string name="share_preview">允许预览</string>
     <string name="sure">确定</string>
-    <string name="share_download_count">下载次数</string>
-    <string name="share_expire">过期时间</string>
+    <string name="share_download_count">下载次数:</string>
+    <string name="share_expire">过期时间:</string>
+    <string name="share_limit">下载限制</string>
     <string name="share_history">分享记录</string>
+    <string name="share_info">分享详情</string>
+    <string name="copy">复制</string>
+    <string name="copy_share_client">复制分享链接</string>
+    <string name="share_again">再次分享</string>
+    <string name="share_create_time">分享时间</string>
+    <string name="share_views">游览次数:</string>
+    <string name="load_err">加载失败</string>
 </resources>

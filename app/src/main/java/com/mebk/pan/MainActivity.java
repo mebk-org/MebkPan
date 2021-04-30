@@ -3,12 +3,16 @@ package com.mebk.pan;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
@@ -141,10 +145,18 @@ public class MainActivity extends AppCompatActivity {
                 sharePopupwindow.dismiss();
                 mainViewModel.back();
                 mainViewModel.actionDone();
-                String res = item.getSecond() + "提取密码" + sharePwd;
-                Snackbar snackbar = Snackbar.make(coordinatorLayout, "分享成功", 10000);
-                snackbar.setAction(getResources().getString(R.string.app_name), v -> {
 
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, "分享成功", 10000);
+                snackbar.setAction(getResources().getString(R.string.copy), v -> {
+                    String res = item.getSecond();
+                    if (!TextUtils.isEmpty(sharePwd)) {
+                        res += (" 提取密码: ");
+                        res += sharePwd;
+                    }
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    Log.e(TAG, "onCreate: " + res);
+                    ClipData clipData = ClipData.newPlainText("share client", res);
+                    clipboard.setPrimaryClip(clipData);
                 });
                 snackbar.show();
 
@@ -153,10 +165,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-
 
     }
 
@@ -238,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 sharePwdTextTextInputLayout.setError(null);
                 sharePwd = sharePwdEditText.getText().toString();
-                sharePwd = "";
                 sharePwdSwitch.setChecked(true);
                 pwdPopupwindow.dismiss();
                 mainViewModel.back();

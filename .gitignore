@@ -9,6 +9,7 @@
 .cxx
 app/src/androidTest/*
 app/src/test/*
+app/debug/*
 gradle/wrapper/gradle-wrapper.jar
 gradlew
 *.bat

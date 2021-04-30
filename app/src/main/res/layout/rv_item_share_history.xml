@@ -38,20 +38,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        tools:text="2021-04-18 12:10:20"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/rv_item_share_history_download_tv"
         app:layout_constraintStart_toEndOf="@+id/rv_item_share_history_iv"
-        app:layout_constraintTop_toBottomOf="@+id/rv_item_share_history_name_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_item_share_history_name_tv"
+        tools:text="2021-04-18 12:10:20" />
 
     <TextView
         android:id="@+id/rv_item_share_history_download_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        tools:text="下载量：12"
+        android:layout_marginEnd="4dp"
+        android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/rv_item_share_history_preview_tv"
-        app:layout_constraintTop_toBottomOf="@+id/rv_item_share_history_name_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_item_share_history_name_tv"
+        tools:text="下载量：12" />
 
     <TextView
         android:id="@+id/rv_item_share_history_preview_tv"
@@ -59,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         tools:text="预览量：12"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_item_share_history_name_tv" />
 

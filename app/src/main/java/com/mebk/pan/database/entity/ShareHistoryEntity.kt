@@ -1,14 +1,16 @@
 package com.mebk.pan.database.entity
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
-@Entity(tableName = "share_history_table")
+@Parcelize
 data class ShareHistoryEntity(
-        @PrimaryKey val key: String,
+        val key: String,
         val create_date: Long,
         val downloads: Int,
-        val expire: Int,
+        val expire: Long,
         val is_dir: Boolean,
         val password: String,
         val preview: Boolean,
@@ -17,4 +19,4 @@ data class ShareHistoryEntity(
         val views: Int,
         val name: String,
         val size: Long
-)
+) : Parcelable

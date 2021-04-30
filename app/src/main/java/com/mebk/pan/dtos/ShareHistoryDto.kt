@@ -15,7 +15,7 @@ data class ShareHistoryDto(
     data class Item(
             val create_date: String,
             val downloads: Int,
-            val expire: Int,
+            val expire: Long,
             val is_dir: Boolean,
             val key: String,
             val password: String,
