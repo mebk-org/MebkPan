@@ -78,6 +78,9 @@ class ShareHistoryRvAdapter(val context: Context, val list: List<ShareHistoryEnt
                 if (isEnd) {
                     holder.footerTv.text = "已加载全部数据"
                     holder.progressBar.visibility = View.GONE
+                } else {
+                    holder.footerTv.text = context.resources.getString(R.string.loading)
+                    holder.progressBar.visibility = View.VISIBLE
                 }
             }
         }

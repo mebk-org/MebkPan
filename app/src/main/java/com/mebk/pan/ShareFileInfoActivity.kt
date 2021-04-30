@@ -67,5 +67,8 @@ class ShareFileInfoActivity : AppCompatActivity() {
                 show()
             }
         }
+
+
+
     }
 }

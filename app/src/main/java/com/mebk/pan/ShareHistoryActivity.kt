@@ -50,8 +50,6 @@ class ShareHistoryActivity : AppCompatActivity() {
         rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-
-                LogUtil.err(this@ShareHistoryActivity.javaClass, "lastVisiblePosition=$lastVisiblePosition,childCount=${recyclerView.childCount}")
                 if (lastVisiblePosition == list.size - 1 && !isLoading) {
                     if (!adapter.isEnd) {
                         isLoading = true
@@ -61,9 +59,18 @@ class ShareHistoryActivity : AppCompatActivity() {
             }
         })
 
+        sr.setOnRefreshListener {
+            sr.isRefreshing = true
+            isLoading = true
+            page = 1
+            viewModel.getShareHistory(page)
+        }
+
         viewModel.shareHistoryInfo.observe(this, {
             isLoading = false
             if (page == 1) {
+                sr.isRefreshing = false
+                adapter.isEnd = false
                 list.clear()
             }
             if (it.isNullOrEmpty()) {
