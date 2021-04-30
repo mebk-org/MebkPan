@@ -1,12 +1,16 @@
 package com.mebk.pan
 
+import android.app.ActionBar
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -15,6 +19,7 @@ import com.mebk.pan.utils.*
 import kotlinx.android.synthetic.main.activity_share_file_info.*
 
 class ShareFileInfoActivity : AppCompatActivity() {
+    var pwd = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_share_file_info)
@@ -34,6 +39,14 @@ class ShareFileInfoActivity : AppCompatActivity() {
         shareFileInfo_share_limit_expire_tv.text = if (file.expire == -1L) "无限制" else second2Time(file.expire)
         shareFileInfo_share_time_tv.text = timeStamp2String(file.create_date)
         shareFileInfo_share_view_tv.text = "${file.views} 次"
+        if (TextUtils.isEmpty(file.password)) {
+            Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.unlock_24)).into(shareFileInfo_pwd_iv)
+        }
+
+        if (file.preview) {
+            Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.share_preview_24)).into(shareFileInfo_preview)
+        }
+
 
         shareFileInfo_share_copyClient_btn.setOnClickListener {
             val snackBar = Snackbar.make(shareFileInfo_coordinator, "分享成功", 10000)

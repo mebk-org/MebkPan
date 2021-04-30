@@ -2,12 +2,13 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shareFileInfo_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/shareFileInfo_coordinator"
     tools:context=".ShareFileInfoActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shareInfo_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -43,6 +44,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shareFileInfo_iv" />
 
+        <ImageView
+            android:id="@+id/shareFileInfo_pwd_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/lock_24"
+            app:layout_constraintEnd_toStartOf="@+id/guideline7"
+            app:layout_constraintTop_toBottomOf="@+id/shareFileInfo_name" />
+
+        <ImageView
+            android:id="@+id/shareFileInfo_preview"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/visibility_off_16"
+            app:layout_constraintStart_toStartOf="@+id/guideline7"
+            app:layout_constraintTop_toTopOf="@+id/shareFileInfo_pwd_iv"
+            app:tint="@color/communism" />
+
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -53,7 +72,7 @@
             app:layout_constraintBottom_toTopOf="@+id/shareFileInfo_share_again_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shareFileInfo_name"
+            app:layout_constraintTop_toBottomOf="@+id/shareFileInfo_pwd_iv"
             app:layout_constraintVertical_bias="0.2">
 
             <androidx.constraintlayout.widget.ConstraintLayout

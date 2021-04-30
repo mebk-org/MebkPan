@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         res += sharePwd;
                     }
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    Log.e(TAG, "onCreate: "+res );
+                    Log.e(TAG, "onCreate: " + res);
                     ClipData clipData = ClipData.newPlainText("share client", res);
                     clipboard.setPrimaryClip(clipData);
                 });
@@ -163,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, item.getSecond(), Toast.LENGTH_SHORT).show();
             }
         });
+
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
