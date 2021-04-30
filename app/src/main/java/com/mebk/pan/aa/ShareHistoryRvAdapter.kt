@@ -18,6 +18,10 @@ import com.mebk.pan.utils.timeStamp2String
 import com.mebk.pan.utils.utcToLocal
 
 class ShareHistoryRvAdapter(val context: Context, val list: List<ShareHistoryEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private lateinit var clickListener: ((Int) -> Unit)
+    fun setClickListener(clickListener: ((Int) -> Unit)) {
+        this.clickListener = clickListener
+    }
 
     private class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val iv = itemView.findViewById<ImageView>(R.id.rv_item_share_history_iv)
@@ -29,6 +33,9 @@ class ShareHistoryRvAdapter(val context: Context, val list: List<ShareHistoryEnt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.rv_item_share_history, parent, false)
+        view.setOnClickListener {
+            clickListener(view.tag as Int)
+        }
         return MyViewHolder(view)
     }
 
@@ -40,6 +47,7 @@ class ShareHistoryRvAdapter(val context: Context, val list: List<ShareHistoryEnt
             downloadBnNumTv.text = "下载次数： ${list[position].downloads}"
             previewNumTv.text = "游览次数： ${list[position].views}"
             timeTv.text = timeStamp2String(list[position].create_date)
+            itemView.tag = position
         }
     }
 

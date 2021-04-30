@@ -50,6 +50,9 @@ android {
 //            arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
 //        }
 //    }
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {

@@ -1,5 +1,6 @@
 package com.mebk.pan
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -26,13 +27,23 @@ class ShareHistoryActivity : AppCompatActivity() {
 
         rv = findViewById(R.id.shareHistory_rv)
         adapter = ShareHistoryRvAdapter(this, list)
+        adapter.setClickListener {
+            val bundle = Bundle().apply {
+                putParcelable("file", list[it])
+            }
+            val intent = Intent().apply {
+                setClass(this@ShareHistoryActivity, ShareFileInfoActivity::class.java)
+                putExtra("fileInfo", bundle)
+            }
+            startActivity(intent)
+        }
         rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv.adapter = adapter
 
         viewModel.shareHistoryInfo.observe(this, {
             list.clear()
             list.addAll(it)
-            LogUtil.err(this.javaClass,"list=$list")
+            LogUtil.err(this.javaClass, "list=$list")
             adapter.notifyDataSetChanged()
         })
     }

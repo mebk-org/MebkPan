@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 mainViewModel.actionDone();
 
                 Snackbar snackbar = Snackbar.make(coordinatorLayout, "分享成功", 10000);
-                snackbar.setAction(getResources().getString(R.string.copy_share_client), v -> {
+                snackbar.setAction(getResources().getString(R.string.copy), v -> {
                     String res = item.getSecond();
                     if (!TextUtils.isEmpty(sharePwd)) {
                         res += (" 提取密码: ");
@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-
 
     }
 
